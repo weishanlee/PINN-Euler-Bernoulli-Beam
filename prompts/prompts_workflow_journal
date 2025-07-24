@@ -1,0 +1,416 @@
+# Journal Paper Workflow
+
+## 📚 Complete Workflow for Peer-Reviewed Journal Papers
+
+### Important: Incremental PDF Compilation
+This workflow now uses incremental section-by-section compilation. Each section is compiled into its own PDF for review before proceeding. See `prompts_incremental_workflow` for details.
+
+### Prerequisites
+- Ensure MCP tools are installed and configured
+- Activate appropriate Python virtual environments
+- Have research outline/proposal in `problem/` folder
+- Know target journal requirements
+
+### Phase 1: Initial Setup
+
+1. **Identify Target Journal**
+   - Ask user: "Which journal are you targeting?"
+   - Available templates:
+     - Elsevier journals
+     - ASCE (American Society of Civil Engineers)
+     - Springer journals
+     - AMCS (Annals of Mathematics and Computer Science)
+
+2. **Copy Template Files**
+   ```bash
+   # For Elsevier
+   cp templates/elsevierTemplate/elsarticle.cls output/
+   cp templates/elsevierTemplate/elsarticle-template-num.tex output/main.tex
+   
+   # For ASCE
+   cp templates/asceTemplate/ascelike-new.cls output/
+   cp templates/asceTemplate/template.tex output/main.tex
+   
+   # For Springer
+   cp templates/springerTemplate/sn-jnl.cls output/
+   cp templates/springerTemplate/template.tex output/main.tex
+   
+   # For AMCS
+   cp templates/amcsTemplate/amcs.cls output/
+   cp templates/amcsTemplate/template.tex output/main.tex
+   ```
+
+3. **Review Journal Guidelines**
+   - Check citation style requirements
+   - Note word/page limits
+   - Review section requirements
+   - Understand figure/table formatting
+
+### Phase 2: Research & Literature Review
+
+#### Step 1: Comprehensive Literature Search
+1. **Paper Collection**
+   - Use `prompts/prompts_webScraping` guidelines
+   - Target: 50+ arXiv papers, 30+ journal papers
+   - Focus on recent publications (last 5 years)
+   - Include seminal works in the field
+   - Search terms should include `filetype:pdf`
+
+2. **Source Verification**
+   - Verify all downloads with HTTP 200
+   - Compute checksums for authenticity
+   - Remove duplicates and invalid files
+   - Store in `output/papers/`
+   - Double check downloaded PDFs match with bibliography entries
+   - For undownloadable papers:
+     * Use Playwright to verify on journal website
+     * Check title and authors match
+     * Create undownloadable_papers_list.md
+     * Include only verified genuine papers in bibliography
+
+3. **CRITICAL: Content Verification with Kill Switches**
+   **⚠️ AUTOMATIC PROCESS - NO USER INTERVENTION**
+   
+   For EVERY downloaded paper:
+   - Extract title, authors, abstract from PDF
+   - Calculate title similarity (must be ≥80%)
+   - **KILL SWITCH**: If similarity <80%, DELETE and exclude
+   - Check domain relevance using abstract keywords
+   - **KILL SWITCH**: If wrong field, DELETE immediately
+   - Verify paper metadata matches expectations
+   - Store all verification data in paper_metadata.json
+   
+   All failures are:
+   - Automatically handled (no stopping for user)
+   - Logged in verification_failures.log
+   - Excluded from bibliography
+   - Reported in introduction.pdf for final review
+
+4. **Bibliography Building**
+   - Extract metadata from papers
+   - Create comprehensive `ref.bib`
+   - Ensure proper formatting for journal style
+
+### Phase 2.5: Research Breakthrough Analysis (NEW)
+
+**CRITICAL**: This phase elevates your paper from incremental to groundbreaking!
+
+#### Step 1: Deep Literature Analysis
+1. **Systematic Gap Identification**:
+   - Use: `prompts/prompts_research_breakthrough`
+   - Thoroughly analyze ALL downloaded papers
+   - Create: `output/research_gaps_analysis.md`
+   - Document 10+ specific limitations/weaknesses
+   - Support each gap with multiple citations
+
+2. **Innovation Development**:
+   - Synthesize existing theories/methodologies
+   - Challenge fundamental assumptions
+   - Apply interdisciplinary approaches
+   - Create: `output/breakthrough_proposal.md`
+   - Include rigorous mathematical formulations
+
+3. **Validation Check**:
+   - Create: `output/innovation_check.json`
+   - Verify novelty score ≥ 7/10 (higher for journals)
+   - Ensure 3-4 major research gaps addressed
+   - Confirm theoretical soundness
+
+4. **Quality Gate - DO NOT PROCEED UNLESS**:
+   - ✓ 10+ research gaps with strong evidence
+   - ✓ Novel approach with theoretical justification
+   - ✓ Clear differentiation from existing work
+   - ✓ Expected improvements (20-30% for journals)
+   - ✓ Implementation and validation plan
+
+**If quality gate fails**: Return to literature search for:
+- Recent survey papers on open problems
+- Papers discussing failures and limitations
+- Challenge/benchmark papers showing SOTA limits
+
+### Phase 3: Paper Generation (INCREMENTAL WORKFLOW)
+
+**IMPORTANT**: Each section is now compiled separately for review. You MUST stop and wait for approval after each PDF is created.
+
+#### Step 1: Introduction Section
+1. **Generate Content**:
+   - File: `output/introduction.tex`
+   - Use: `prompts/prompts_introduction`
+   - Components: Problem context, literature review, research gap, objectives
+   
+2. **Create Section PDF**:
+   - Extract citations to `introduction_refs.bib`
+   - Create `introduction_wrapper.tex` with journal template
+   - Include geometry settings
+   - Compile `introduction_v1.pdf`
+   
+3. **STOP - Review Checkpoint**:
+   - Display review checklist from `prompts_review_checkpoint`
+   - Wait for user approval or revision requests
+
+#### Step 2: Infographic Design
+1. **After Introduction Approval**:
+   - Use: `prompts/prompts_infographicDesign`
+   - Create: `output/figures/infographic.png`
+   
+2. **STOP - Review Checkpoint**:
+   - Show infographic for approval
+
+#### Step 3: Methods/Methodology Section
+1. **Generate Content**:
+   - File: `output/methods.tex`
+   - Use: `prompts/prompts_methods`
+   - Include: Theoretical framework, formulations, experimental design
+   
+2. **Create Section PDF**:
+   - Extract citations to `methods_refs.bib`
+   - Compile `methods_v1.pdf`
+   
+3. **STOP - Review Checkpoint**:
+   - Display methods checklist
+   - Wait for approval
+
+#### Step 4: Code Development
+1. **After Methods Approval**:
+   - Generate analysis scripts in `output/codes/`
+   - Test all scripts with minimal data
+   
+2. **STOP - Code Review**:
+   - Display .py files directly (no PDF)
+   - Show script summaries
+   - Wait for approval before continuing
+
+#### Step 5: Code Execution Handoff
+1. **After Code Approval**:
+   - Use: `prompts/prompts_code_execution_instructions`
+   - Provide detailed execution instructions
+   - Include runtime estimates
+   
+2. **STOP - Execution Handoff**:
+   - User executes scripts on their system
+   - Wait for execution completion
+   - User provides outputs (figures/data)
+
+#### Step 6: Results and Discussion
+1. **After Receiving Execution Outputs**:
+   - Use user-provided figures/data
+   - Write `resultsAndDiscussions.tex`
+   
+2. **Create Section PDF**:
+   - Include all figures and tables
+   - Compile `results_v1.pdf`
+   
+3. **STOP - Review Checkpoint**:
+   - Display results checklist
+   - Verify figure quality (300 dpi)
+
+#### Step 7: Conclusions Section
+1. **Generate Content**:
+   - File: `output/conclusions.tex`
+   - Use: `prompts/prompts_conclusions`
+   
+2. **Create Section PDF**:
+   - Compile `conclusions_v1.pdf`
+   
+3. **STOP - Review Checkpoint**:
+   - Display conclusions checklist
+
+#### Step 8: Abstract
+1. **After All Main Sections Approved**:
+   - File: `output/abstract.tex`
+   - Length: ~300 words (per journal)
+   
+2. **Create Section PDF**:
+   - Compile `abstract_v1.pdf`
+   
+3. **STOP - Review Checkpoint**:
+   - Verify word count
+   - Check structure compliance
+
+#### Step 9: Appendices
+1. **MANDATORY AI Disclosure**:
+   - File: `output/appendixAIReport.tex`
+   - REQUIRED by journal ethics policies
+   - Lists AI tools used and how they were employed
+   - See `prompts/prompts_AIReport` for specific format
+   
+2. **OPTIONAL General Appendix** (if needed):
+   - File: `output/appendix.tex`
+   - ONLY if you have supplementary material
+   - Examples: Extended proofs, additional experiments, extra figures
+   - See `prompts/prompts_appendix` for what belongs here
+   
+3. **CRITICAL DISTINCTION**:
+   - `appendixAIReport.tex` = MANDATORY ethics requirement (AI disclosure)
+   - `appendix.tex` = OPTIONAL academic supplement (extra technical content)
+   - DO NOT confuse these two!
+   
+4. **Create PDF**:
+   - Compile `appendices_v1.pdf`
+   - STOP for review
+
+### Phase 4: Final Assembly (ONLY AFTER ALL SECTIONS APPROVED)
+
+#### Step 1: Add Author Information
+1. **Primary Author**:
+   ```latex
+   \author{Wei Shan Lee\corref{cor1}}
+   \ead{wslee@g.puiching.edu.mo}
+   \affiliation[pcms]{organization={Pui Ching Middle School Macau},
+               addressline={Edificio Pui Ching, 7A Av. de Horta e Costa},
+               city={Macao Special Administrative Region},
+               postcode={999078},
+               country={People's Republic of China}}
+   ```
+
+2. **Add Co-authors** (if specified by user)
+
+#### Step 2: Generate Title Suggestions
+1. **Create Title Options**:
+   - Follow `prompts/prompts_title_generation` to analyze your research
+   - Generate `output/title_suggestions.md` with 5-7 analyzed options
+   - Focus on academic rigor and searchability
+   - Example: "Adaptive Hyperbolic Embeddings: A Novel Framework for Large-Scale Graph Analysis with Linear Complexity"
+
+2. **Select Best Title**:
+   - Choose title that best represents your breakthrough
+   - Ensure it includes key searchable terms for the field
+   - Verify it accurately reflects the innovation
+
+#### Step 3: Combine All Approved Content and Bibliography
+1. **Merge Section Bibliographies**:
+   ```bash
+   # Use the automated merger utility
+   cd output
+   ~/.venv/ml_31123121/bin/python ../utilityScripts/merge_bibliographies.py \
+     --output ref_final.bib
+   
+   # Verify the merge
+   echo "Merged bibliography contains $(grep -c '@' ref_final.bib) entries"
+   ```
+
+2. **Update main.tex to include ALL content**:
+   ```latex
+   % Set the title from title_suggestions.md
+   \title{Your Selected Title from title_suggestions.md}
+   
+   % Include all approved section content
+   \begin{abstract}
+   \input{abstract}
+   \end{abstract}
+   
+   \input{introduction}
+   \input{methods}
+   \input{resultsAndDiscussions}
+   \input{conclusions}
+   
+   % Appendices if any
+   \appendix
+   \input{appendixAIReport}
+   % \input{appendix}  % Uncomment ONLY if you have general appendix content
+   
+   % Use the merged bibliography
+   \bibliography{ref_final}  % NOT ref.bib or individual section files
+   ```
+
+3. **Add author information and configure journal options**
+
+**CRITICAL**: The final assembly includes:
+- All section content files (.tex) that were already written and approved
+- All figures and tables referenced in the sections
+- The merged bibliography containing all citations from all sections
+- Author information and journal-specific formatting
+- NO rewriting or regeneration of content - just assembly!
+
+#### Step 4: Final Compilation
+1. **Compile Complete Paper**:
+   ```bash
+   cd output
+   pdflatex main.tex
+   biber main
+   pdflatex main.tex
+   pdflatex main.tex
+   ```
+
+2. **Final Quality Check**:
+   - Verify all sections included
+   - Check citation formatting
+   - Ensure figures at 300 dpi
+   - Confirm within page limits
+
+3. **Post-Compilation File Listing**:
+   - Generate and review `main_compilation_summary.md`
+   - Verify all files were correctly included
+   - See CLAUDE.md for detailed steps
+
+4. **Generate Submission Documents** (NEW):
+   - Follow `prompts/prompts_cover_letter_highlights`
+   - Research journal-specific requirements using Playwright
+   - Create `cover_letter.odt` with paper summary and significance
+   - Create `highlights.odt` with 5-6 bullet points
+   - Review both documents against journal guidelines
+
+5. **Prepare Submission Package**:
+   - Main manuscript (main.pdf and LaTeX source files)
+   - Cover letter (cover_letter.odt)
+   - Highlights (highlights.odt)
+   - High-resolution figures separately
+   - Supplementary materials
+   - Author agreement forms (if required)
+
+### Journal-Specific Considerations
+
+#### Elsevier Journals
+- Often use numbered citations
+- May require graphical abstract
+- Highlights section common
+- CRediT authorship statement
+
+#### ASCE Journals
+- Author-year citations typical
+- Strict formatting for equations
+- Professional practice focus
+- Data availability statement
+
+#### Springer Journals
+- Flexible citation styles
+- ORCID integration
+- Open access options
+- Ethics declarations
+
+### Quality Assurance Checklist
+
+- [ ] Abstract within word limit
+- [ ] Keywords selected (5-7 typical)
+- [ ] All figures at publication quality (300 dpi)
+- [ ] Tables properly formatted
+- [ ] Citations match journal style
+- [ ] Equations numbered correctly
+- [ ] Supplementary materials organized
+- [ ] Conflict of interest declared
+- [ ] Funding acknowledged
+- [ ] Data availability stated
+- [ ] Ethics approval mentioned (if applicable)
+- [ ] All co-author details complete
+- [ ] All downloaded PDFs verified to match bibliography
+- [ ] Undownloadable papers verified as genuine via publisher websites
+- [ ] Created undownloadable_papers_list.md for human review
+
+### Common Pitfalls to Avoid
+
+1. **Citation Style Mismatch**
+   - Never override journal template defaults
+   - Use journal-specific commands
+
+2. **Figure Quality Issues**
+   - Ensure 300 dpi minimum
+   - Use vector formats when possible
+   - Apply consistent color schemes
+
+3. **Length Violations**
+   - Stay within word/page limits
+   - Account for references in count
+
+4. **Missing Declarations**
+   - Include all required statements
+   - Follow journal ethics guidelines

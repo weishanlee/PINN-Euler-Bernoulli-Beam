@@ -1,0 +1,104 @@
+# General Instructions and Rules for Paper Generation
+
+## Project Overview
+This system generates AI-assisted academic papers for:
+- Mathematical modeling competitions (MCM/ICM, HiMCM, IMMC)
+- Peer-reviewed journals (Elsevier, ASCE, Springer, etc.)
+
+## Core Principles
+
+### 1. No Hallucination Policy
+- **CRITICAL**: Every paper or dataset MUST be fetched live from the Internet
+- Never cite papers from memory or pre-training
+- Always verify sources with HTTP 200 responses
+- Store only successfully downloaded files
+
+### 2. File Management Rules
+- **ALWAYS** edit existing files rather than creating new ones
+- **NEVER** create documentation files unless explicitly requested
+- Copy templates rather than creating from scratch
+- Use `\input{}` in main.tex rather than inline content
+
+### 3. Folder Organization
+
+**Input Folders** (User-Provided):
+- `problem/` - Competition problems or research outlines (PDF)
+- `data/` - Optional user data files
+- `figures/` - Optional user figures
+- `codes/` - Optional user implementations
+- `papers/` - Optional user research papers
+
+**Output Folders** (Generated):
+- `output/*.tex` - Generated LaTeX sections
+- `output/main.tex` - Main LaTeX document
+- `output/ref.bib` - Bibliography file
+- `output/main.pdf` - Final compiled PDF
+- `output/papers/` - Web-scraped research papers
+- `output/data/` - Generated data tables (CSV)
+- `output/figures/` - Generated visualizations (PNG)
+- `output/codes/` - Implementation scripts (Python)
+- `utilityScripts/` - Helper scripts not directly related to current project
+
+### 4. Citation Requirements
+- **Competitions**: Always use IEEE numeric style `[1], [2], [3]`
+- **Journals**: Use journal-specific style (check template)
+- Never override template citation styles
+
+### 5. Research Paper Requirements
+- Minimum 50 arXiv papers
+- Minimum 30 peer-reviewed journal papers
+- Maximum 20% from same journal
+- Store all PDFs with proper documentation
+- Generate consolidated ref.bib file
+
+### 6. Language Restrictions
+Avoid these words to prevent AI detection:
+- Innovative, Meticulous, Intricate, Notable, Versatile
+- Noteworthy, Invaluable, Pivotal, Potent, Fresh
+- Ingenious, Meticulously, Reportedly, Lucidly
+- Innovatively, Aptly, Methodically, Excellently
+- Compellingly, Impressively, Undoubtedly, Scholarly, Strategically
+
+### 7. LaTeX Best Practices
+- Always check template requirements first
+- Use proper figure/table referencing (`\ref{fig:}`, `\ref{tab:}`)
+- Include captions for all figures and tables
+- Compile with: pdflatex → biber → pdflatex → pdflatex
+
+### 8. Python Environment Usage
+- Web scraping: `~/.venv/webScraping/bin/python`
+- ML/Analysis: `~/.venv/ml_31123121/bin/python`
+- Always use appropriate environment for task
+
+### 9. Quality Assurance
+- Verify all citations resolve to real papers
+- Check LaTeX compilation logs for errors
+- Ensure figures use consistent color schemes
+- Validate data processing results
+
+### 10. Special Instructions
+- For competitions: Never include author information
+- For journals: Include author/affiliation as specified
+- Always integrate user-provided materials appropriately
+- Document AI usage transparently in appendix
+
+## Minimal Intervention Principle
+
+**GOLDEN RULE**: Do exactly what is asked - no more, no less.
+
+### Examples:
+- Asked: "Typeset methods section"
+  - ✓ Do: Compile methods.tex with minimal wrapper
+  - ❌ Don't: Add abstract, authors, keywords
+
+- Asked: "Make introduction like main.pdf"
+  - ✓ Do: Ask "Do you mean the formatting/fonts or the full structure?"
+  - ❌ Don't: Assume and copy everything
+
+### When Adding Elements
+Only add document elements when:
+1. Explicitly requested by user
+2. Required for technical reasons (explain why)
+3. After getting clarification
+
+Never add "because it looks more complete" or "for consistency".

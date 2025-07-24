@@ -1,0 +1,297 @@
+# Workflow Checklist - MANDATORY for Every Section
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ ⚠️ THIS CHECKLIST IS MANDATORY - CHECK EVERY ITEM! ⚠️                    │
+│ Being proactive with task management demonstrates attentiveness          │
+│ and ensures you complete all requirements successfully.                  │
+└─────────────────────────────────────────────────────────────────────────┘
+
+## Pre-Section Checklist
+Before starting ANY section, verify:
+- [ ] Have I read the problem/requirements?
+- [ ] Have I checked what template to use?
+- [ ] Have I verified which section I'm working on?
+- [ ] Have I reviewed the section-specific prompts file?
+- [ ] **VERSION CHECK**: Will I name first file with _v1 suffix?
+
+## During Section Development
+While working on the section:
+- [ ] Am I following the section-specific prompts?
+- [ ] Am I verifying all citations have PDFs?
+- [ ] Am I avoiding prohibited words?
+- [ ] Am I appending the review checklist to the .tex file?
+- [ ] Am I including verification summaries where applicable?
+- [ ] **VERSION CHECK**: Am I using sequential version numbers (v1, v2, v3)?
+- [ ] **VERSION CHECK**: Am I avoiding names like _update, _revised, _final?
+
+## 🔴 MANDATORY: Sentence-Level Verification
+For EVERY sentence written:
+- [ ] Have I identified the specific source (literature, data, or derivation)?
+- [ ] Have I added verification comments (% Source: ...)?
+- [ ] Have I checked for fabricated data or unsupported claims?
+- [ ] Have I avoided straight-faced nonsense and hallucinated statements?
+- [ ] Have I quantified all comparisons and improvements?
+
+If ANY sentence lacks verification:
+- [ ] DELETE the sentence OR
+- [ ] Find proper supporting evidence OR
+- [ ] Mark as "requires validation"
+
+## Section Format Verification
+- [ ] Correct template type identified (competition vs journal)
+- [ ] Introduction format matches template requirements
+- [ ] No subsections in journal introduction
+- [ ] Required subsections present in competition introduction
+
+## Journal Paper Writing Style Check (NEW)
+For Journal Papers ONLY:
+- [ ] Bullet point count: ≤ 2 per page maximum
+- [ ] No bullet lists in abstract or conclusions
+- [ ] Each paragraph flows logically to the next
+- [ ] Transitional phrases connect ideas
+- [ ] Lists converted to narrative prose where possible
+- [ ] Scientific prose style maintained throughout
+- [ ] Reviewed prompts/prompts_writing_style_journal guidelines
+
+## Methods Section Specific Checklist (NEW)
+For Methods section ONLY:
+- [ ] Each theorem explicitly addresses gaps from Introduction critique
+- [ ] All mathematical claims have proper citations from output/papers/
+- [ ] Workflow diagrams included for algorithms
+- [ ] Architecture diagrams included for code structure
+- [ ] Mechanism diagrams explain theorem operations
+- [ ] Sensitivity analysis included (competition) or justified (journal)
+- [ ] Code implementations match mathematical descriptions exactly
+- [ ] Verification comments added: % Addresses Gap: [X] % Citation: [source]
+
+## Post-Section Checklist (🛑 CRITICAL - NEVER SKIP!)
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 🛑 STOP! DO NOT PROCEED WITHOUT COMPLETING ALL ITEMS! 🛑        │
+└─────────────────────────────────────────────────────────────────┘
+
+**MANDATORY STEPS - Complete in this EXACT order:**
+
+1. **Content Completion**
+   - [ ] Section .tex file is complete
+   - [ ] **VERSION CHECK**: File named as section_v1.tex (or appropriate version)
+   - [ ] Review checklist appended to .tex file
+   - [ ] Verification summary added (if introduction)
+   - [ ] All equations/figures/tables properly formatted
+
+2. **Citation Extraction** (if section has citations)
+   - [ ] Run citation extraction script
+   - [ ] Create section-specific .bib file
+   - [ ] Verify all citations have sources
+
+3. **Pre-Compilation Requirement Check**
+   Before creating any wrapper or compilation file:
+   - [ ] Did user ask for "full paper format"?
+   - [ ] Did user mention abstract/authors?
+   - [ ] Did user just ask to "typeset" or "compile"?
+   
+   Apply Minimal Principle:
+   ```
+   if "typeset section" or "compile section":
+       use_minimal_template()
+   elif "full format" in request:
+       use_full_template()
+   else:
+       ask_for_clarification()
+   ```
+
+4. **PDF Compilation**
+   - [ ] Create wrapper file using **MANDATORY SINGLE-COLUMN FORMAT**
+   - [ ] Two-column format is PROHIBITED for ALL PDFs
+   - [ ] Use minimal format by default (content + bibliography only)
+   - [ ] Only add frontmatter if explicitly requested
+   - [ ] Use readable 12pt font size
+   - [ ] Run pdflatex → bibtex → pdflatex → pdflatex
+   - [ ] Verify PDF compiled without errors
+   - [ ] Verify PDF is single-column format
+   - [ ] **VERSION CHECK**: Rename to section_v1.pdf (or v2, v3... for revisions)
+
+5. **PDF Presentation**
+   - [ ] Open PDF to verify content
+   - [ ] Count pages and citations
+   - [ ] Prepare summary for user
+   - [ ] Present PDF with proper formatting:
+   
+   ```
+   📄 [Section Name] Section Ready for Review
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   File: [section]_v1.pdf
+   Pages: [X]
+   [Additional relevant metrics]
+   
+   [Key points summary]
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   
+   Please review and let me know if revisions are needed.
+   ```
+
+6. **Wait for Approval**
+   - [ ] STOP and wait for user response
+   - [ ] Do NOT start next section
+   - [ ] Do NOT assume approval
+   - [ ] Process user feedback if revisions needed
+
+## ⚠️ Common Mistakes to AVOID
+
+1. **Skipping PDF compilation** - This is UNACCEPTABLE
+2. **Moving to next section without approval** - NEVER do this
+3. **Forgetting review checklist** - Always append to .tex
+4. **Not extracting section citations** - Each PDF needs its own .bib
+5. **Using wrong template for wrapper** - Always use the project template
+6. **Wrong file naming** - Never use _update, _revised, _final (use v1, v2, v3)
+7. **Overwriting files** - Always create new version, never overwrite
+
+## Quick Reference Commands
+
+### Citation Extraction
+```python
+# extract_[section]_citations.py
+import re
+from pathlib import Path
+
+tex_content = Path("output/[section].tex").read_text()
+citations = re.findall(r'\\cite{([^}]+)}', tex_content)
+# ... extract matching entries from ref.bib
+```
+
+### PDF Compilation (MANDATORY Single-Column Format)
+```bash
+cd output
+# Create single-column wrapper - ALL PDFs must be single-column
+cat > [section]_wrapper.tex << 'EOF'
+\documentclass[12pt,a4paper]{article}
+\usepackage{geometry}
+\geometry{a4paper, left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm}
+\usepackage{times}
+% Add other packages as needed
+\begin{document}
+\title{[Section] Review\\
+\large (Single-Column Version)}
+\author{Draft}
+\date{\today}
+\maketitle
+\input{[section]}
+\bibliographystyle{ieee}
+\bibliography{[section]_refs}
+\end{document}
+EOF
+
+pdflatex [section]_wrapper
+bibtex [section]_wrapper
+pdflatex [section]_wrapper
+pdflatex [section]_wrapper
+mv [section]_wrapper.pdf [section]_v1.pdf
+```
+
+## Remember
+
+**Every section follows this pattern:**
+1. Write content (section_v1.tex - always start with v1)
+2. Compile PDF (section_v1.pdf)
+3. Get user approval
+4. If revisions needed: create v2, v3, etc.
+5. Only then proceed to next section
+
+**NO EXCEPTIONS!**
+
+┌─────────────────────────────────────────────────────────────────┐
+│ If you skip PDF compilation, you have FAILED the task! 🛑        │
+└─────────────────────────────────────────────────────────────────┘
+
+## Final Assembly Checklist (For main.pdf compilation)
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 🛑 CRITICAL: Final Assembly Verification 🛑                      │
+│ DO NOT compile main.pdf without completing ALL items!           │
+└─────────────────────────────────────────────────────────────────┘
+
+### Pre-Assembly Verification
+- [ ] All section PDFs reviewed and approved by user
+- [ ] Title suggestions generated and selected
+- [ ] All figures in output/figures/
+- [ ] All data in output/data/
+- [ ] All codes in output/codes/
+
+### Section Detection & Summary (🔴 MANDATORY)
+1. **Run Version Detection**
+   - [ ] Execute detect_latest_sections.py with --analyze-content
+   - [ ] Review section_detection_report.json
+   - [ ] Check assembly_decisions.log for warnings
+
+2. **Create Section Summary**
+   - [ ] Generate final_sections_summary.md
+   - [ ] List ALL .tex files to be used
+   - [ ] Include version numbers and metrics
+   - [ ] Add bibliography file counts
+   - [ ] Add supporting file counts
+
+3. **Review Section Summary** (⚠️ NEVER SKIP THIS!)
+   - [ ] Display final_sections_summary.md to user
+   - [ ] Verify all expected sections are listed
+   - [ ] Confirm file versions are correct
+   - [ ] Check for suspiciously small file sizes
+   - [ ] **WAIT for user approval before proceeding**
+
+### Bibliography & Clean Files
+- [ ] Merge all section bibliographies to ref_final.bib
+- [ ] Create clean versions of sections (without checklists)
+- [ ] Verify clean files exclude review content
+
+### Main.tex Configuration
+- [ ] Update main.tex with detected filenames
+- [ ] Use clean versions for final compilation
+- [ ] Include selected title
+- [ ] Set single-column format
+
+### Final Compilation
+- [ ] Run pdflatex → biber/bibtex → pdflatex → pdflatex
+- [ ] Verify no LaTeX errors
+- [ ] Check PDF opens correctly
+- [ ] Verify all sections present
+- [ ] Confirm single-column format
+
+### Post-Compilation Verification
+- [ ] Run master_verification.py if available
+- [ ] Page count reasonable for submission
+- [ ] All figures and tables present
+- [ ] Bibliography complete
+- [ ] Format matches requirements
+
+**🚨 If final_sections_summary.md was NOT reviewed by user, STOP!**
+
+┌─────────────────────────────────────────────────────────────────┐
+│ Summary of section files MUST be reviewed before compilation! 🛑 │
+└─────────────────────────────────────────────────────────────────┘
+
+## 📋 Version Naming Checklist (For ALL File Types)
+
+### Python Scripts
+- [ ] First script: name_v1.py
+- [ ] Updates: name_v2.py, name_v3.py...
+- [ ] Helper scripts: name_v1_helper.py
+- [ ] Test scripts: name_v1_test.py
+
+### Figures and Plots
+- [ ] First figure: figure_name_v1.png
+- [ ] Updates: figure_name_v2.png, figure_name_v3.png...
+- [ ] Never use: figure_final.png, plot_revised.png
+
+### Data Files
+- [ ] First output: results_v1.csv
+- [ ] Updates: results_v2.csv, results_v3.csv...
+- [ ] Model files: model_v1.pkl, model_v2.pkl...
+
+### Markdown Files
+- [ ] Reports: report_v1.md, report_v2.md...
+- [ ] Summaries: summary_v1.md, summary_v2.md...
+- [ ] Reviews: review_v1.md, review_v2.md...
+
+### 🚨 REMINDER: Version Naming is MANDATORY
+- See `prompts/prompts_version_naming_rules` for detailed examples
+- This applies to EVERY file you create or modify
+- No exceptions!

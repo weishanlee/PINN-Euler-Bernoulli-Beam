@@ -1,0 +1,1095 @@
+# Paper Content Verification Protocol
+
+## 🚨 CRITICAL: Mandatory Content Extraction and Verification
+
+This document defines the MANDATORY procedures for extracting and verifying content from every downloaded paper. Failure to follow these procedures will result in fake references contaminating the bibliography.
+
+## 📋 Required Extractions from Every PDF
+
+### 1. Primary Metadata Extraction
+
+For EVERY downloaded paper, extract:
+
+```python
+required_extractions = {
+    "title": "Extract from first page header/title",
+    "authors": "Extract all author names from first page",
+    "abstract": "Extract abstract text if present",
+    "keywords": "Extract keywords if listed",
+    "arxiv_id": "Extract arXiv identifier if present",
+    "year": "Extract publication/submission year",
+    "journal": "Extract journal/conference name if present",
+    "doi": "Extract DOI if present"
+}
+```
+
+### 2. Extraction Implementation
+
+```python
+import PyPDF2
+import pdfplumber
+import re
+from difflib import SequenceMatcher
+import json
+from datetime import datetime
+
+def extract_paper_content(pdf_path, expected_metadata):
+    """
+    Extract and verify paper content against expected metadata
+    Returns: (success: bool, extracted_data: dict, verification_report: dict)
+    """
+    
+    extracted = {}
+    verification = {}
+    
+    try:
+        # Try multiple PDF readers for robustness
+        with pdfplumber.open(pdf_path) as pdf:
+            # Extract first page text
+            first_page = pdf.pages[0]
+            text = first_page.extract_text()
+            
+            # Extract title (usually largest font on first page)
+            title_match = extract_title(text)
+            extracted['title'] = title_match
+            
+            # Extract authors
+            authors = extract_authors(text)
+            extracted['authors'] = authors
+            
+            # Extract abstract
+            abstract = extract_abstract(text, pdf)
+            extracted['abstract'] = abstract
+            
+            # Extract arXiv ID
+            arxiv_id = extract_arxiv_id(text)
+            extracted['arxiv_id'] = arxiv_id
+            
+    except Exception as e:
+        return False, {}, {"error": str(e)}
+    
+    # Perform verification
+    verification = verify_extracted_content(extracted, expected_metadata)
+    
+    return verification['passed'], extracted, verification
+
+def extract_title(text):
+    """Extract paper title from first page"""
+    lines = text.split('\n')
+    
+    # Title is usually in first 10 lines
+    for i, line in enumerate(lines[:10]):
+        # Skip empty lines and short lines
+        if len(line.strip()) > 20:
+            # Check if next line is authors (contains commas or "and")
+            if i+1 < len(lines) and (',' in lines[i+1] or ' and ' in lines[i+1]):
+                return line.strip()
+    
+    # Fallback: longest line in first 10 lines
+    title_candidate = max(lines[:10], key=len)
+    return title_candidate.strip()
+
+def extract_authors(text):
+    """Extract author names"""
+    authors = []
+    
+    # Look for lines with commas and "and"
+    lines = text.split('\n')
+    for line in lines[:20]:  # Authors usually in first 20 lines
+        if ',' in line or ' and ' in line:
+            # Clean and split
+            cleaned = line.replace('∗', '').replace('†', '').strip()
+            if len(cleaned) > 5 and len(cleaned) < 200:
+                # Likely author line
+                parts = re.split(r'[,]|\s+and\s+', cleaned)
+                authors.extend([p.strip() for p in parts if len(p.strip()) > 2])
+    
+    # CRITICAL: Check for Unknown Authors
+    authors_str = ' '.join(authors).lower()
+    if any(term in authors_str for term in ["unknown author", "unknown authors", "authors unknown", "anonymous"]):
+        # Return special marker for immediate rejection
+        return ["UNKNOWN_AUTHORS_DETECTED"]
+    
+    return authors
+
+def extract_abstract(text, pdf):
+    """Extract abstract text"""
+    # Look for "Abstract" heading
+    abstract_start = text.lower().find('abstract')
+    if abstract_start == -1:
+        return ""
+    
+    # Extract text after "Abstract" until next section
+    abstract_text = ""
+    start_collecting = False
+    
+    for page in pdf.pages:
+        page_text = page.extract_text()
+        if 'abstract' in page_text.lower():
+            start_collecting = True
+        
+        if start_collecting:
+            # Look for next section markers
+            if any(marker in page_text.lower() for marker in 
+                   ['introduction', '1.', 'keywords:', 'introduction']):
+                break
+            abstract_text += page_text
+    
+    return abstract_text.strip()
+
+def extract_arxiv_id(text):
+    """Extract arXiv ID using regex"""
+    # Pattern: arXiv:XXXX.XXXXX or XXXX.XXXXX
+    pattern = r'(?:arXiv:)?(\d{4}\.\d{4,5})'
+    match = re.search(pattern, text)
+    return match.group(1) if match else None
+```
+
+### 3. Verification Algorithm
+
+```python
+def verify_extracted_content(extracted, expected):
+    """
+    Verify extracted content against expected metadata
+    Returns detailed verification report
+    """
+    
+    report = {
+        "passed": True,
+        "checks": {},
+        "similarity_scores": {},
+        "timestamp": datetime.now().isoformat()
+    }
+    
+    # Title verification (CRITICAL)
+    title_similarity = calculate_similarity(
+        extracted.get('title', ''), 
+        expected.get('title', '')
+    )
+    report['similarity_scores']['title'] = title_similarity
+    report['checks']['title_match'] = title_similarity >= 0.8
+    
+    if title_similarity < 0.8:
+        report['passed'] = False
+        report['failure_reason'] = f"Title mismatch: {title_similarity:.2f} < 0.8"
+    
+    # CRITICAL: Check for Unknown Authors FIRST
+    if extracted.get('authors') == ["UNKNOWN_AUTHORS_DETECTED"]:
+        report['passed'] = False
+        report['checks']['unknown_authors'] = True
+        report['failure_reason'] = "Unknown Authors detected - STRICTLY FORBIDDEN"
+        return report
+    
+    # Author verification
+    author_match = verify_authors(
+        extracted.get('authors', []), 
+        expected.get('authors', [])
+    )
+    report['checks']['author_match'] = author_match
+    
+    if not author_match:
+        report['passed'] = False
+        report['failure_reason'] = "No matching authors found"
+    
+    # ArXiv ID verification (if applicable)
+    if expected.get('arxiv_id'):
+        arxiv_match = extracted.get('arxiv_id') == expected.get('arxiv_id')
+        report['checks']['arxiv_match'] = arxiv_match
+        
+        if not arxiv_match:
+            report['passed'] = False
+            report['failure_reason'] = f"ArXiv ID mismatch: {extracted.get('arxiv_id')} != {expected.get('arxiv_id')}"
+    
+    # Domain relevance check
+    if 'abstract' in extracted and 'keywords' in expected:
+        relevance_score = check_domain_relevance(
+            extracted['abstract'], 
+            expected['keywords']
+        )
+        report['checks']['domain_relevant'] = relevance_score > 0.3
+        
+        if relevance_score < 0.3:
+            report['passed'] = False
+            report['failure_reason'] = "Paper not relevant to expected domain"
+    
+    return report
+
+def calculate_similarity(str1, str2):
+    """Calculate string similarity using SequenceMatcher"""
+    if not str1 or not str2:
+        return 0.0
+    
+    # Normalize strings
+    s1 = str1.lower().strip()
+    s2 = str2.lower().strip()
+    
+    # Remove punctuation for comparison
+    s1 = re.sub(r'[^\w\s]', '', s1)
+    s2 = re.sub(r'[^\w\s]', '', s2)
+    
+    return SequenceMatcher(None, s1, s2).ratio()
+
+def verify_authors(extracted_authors, expected_authors):
+    """Verify at least one author matches"""
+    if not extracted_authors or not expected_authors:
+        return False
+    
+    # Normalize author names
+    extracted_normalized = [a.lower().strip() for a in extracted_authors]
+    expected_normalized = [a.lower().strip() for a in expected_authors]
+    
+    # Check for any match
+    for exp_author in expected_normalized:
+        # Last name match is sufficient
+        exp_parts = exp_author.split()
+        if exp_parts:
+            exp_last = exp_parts[-1]
+            for ext_author in extracted_normalized:
+                if exp_last in ext_author:
+                    return True
+    
+    return False
+
+def check_domain_relevance(abstract, keywords):
+    """Check if abstract contains expected domain keywords"""
+    if not abstract or not keywords:
+        return 0.0
+    
+    abstract_lower = abstract.lower()
+    matches = 0
+    
+    for keyword in keywords:
+        if keyword.lower() in abstract_lower:
+            matches += 1
+    
+    return matches / len(keywords) if keywords else 0.0
+```
+
+### 4. Storage Requirements
+
+Create these files/directories for every verification:
+
+```bash
+output/
+├── paper_metadata.json          # All extracted metadata
+├── verification_db.json         # Verification results database
+├── paper_abstracts/            # Directory for abstract texts
+│   ├── citation_key_1.txt
+│   ├── citation_key_2.txt
+│   └── ...
+├── verification_log.txt        # Detailed verification log
+└── verification_failures.log   # Failed verifications only
+```
+
+### 5. Enhanced Content Extraction
+
+When extracting paper content, use multiple methods to ensure accuracy:
+
+#### Primary Extraction Method
+```python
+def extract_content_primary(pdf_path):
+    """Primary extraction using pdfplumber"""
+    try:
+        import pdfplumber
+        
+        with pdfplumber.open(pdf_path) as pdf:
+            # Extract metadata
+            metadata = pdf.metadata
+            
+            # Extract text from first few pages
+            text_pages = []
+            for i, page in enumerate(pdf.pages[:3]):
+                text_pages.append(page.extract_text())
+            
+            # Parse extracted text
+            full_text = '\n'.join(text_pages)
+            
+            return {
+                'success': True,
+                'method': 'pdfplumber',
+                'metadata': metadata,
+                'text': full_text,
+                'title': extract_title_from_text(full_text),
+                'authors': extract_authors_from_text(full_text),
+                'abstract': extract_abstract_from_text(full_text)
+            }
+    except Exception as e:
+        return {'success': False, 'error': str(e)}
+```
+
+#### Secondary Extraction Method
+```python
+def extract_content_secondary(pdf_path):
+    """Secondary extraction using PyMuPDF"""
+    try:
+        import fitz  # PyMuPDF
+        
+        doc = fitz.open(pdf_path)
+        
+        # Extract text from first page
+        first_page = doc[0]
+        text = first_page.get_text()
+        
+        # Try to get text blocks with position info
+        blocks = first_page.get_text("dict")
+        
+        # Find title (usually largest font)
+        title = find_title_from_blocks(blocks)
+        
+        # Extract authors
+        authors = find_authors_from_blocks(blocks)
+        
+        return {
+            'success': True,
+            'method': 'pymupdf',
+            'text': text,
+            'title': title,
+            'authors': authors,
+            'blocks': blocks
+        }
+    except Exception as e:
+        return {'success': False, 'error': str(e)}
+```
+
+#### Tertiary Extraction Method
+```python
+def extract_content_tertiary(pdf_path):
+    """Tertiary extraction using Apache Tika (handles difficult PDFs)"""
+    try:
+        from tika import parser
+        
+        # Parse PDF
+        parsed = parser.from_file(pdf_path)
+        
+        # Extract content
+        content = parsed.get('content', '')
+        metadata = parsed.get('metadata', {})
+        
+        # Parse for specific fields
+        title = metadata.get('title') or extract_title_from_text(content)
+        authors = metadata.get('creator') or extract_authors_from_text(content)
+        
+        return {
+            'success': True,
+            'method': 'tika',
+            'text': content,
+            'title': title,
+            'authors': authors,
+            'metadata': metadata
+        }
+    except Exception as e:
+        return {'success': False, 'error': str(e)}
+```
+
+#### Multi-Method Extraction with Validation
+```python
+def extract_and_verify_content(pdf_path):
+    """
+    Use multiple methods and compare results
+    """
+    results = []
+    
+    # Try all methods
+    primary = extract_content_primary(pdf_path)
+    if primary['success']:
+        results.append(primary)
+    
+    secondary = extract_content_secondary(pdf_path)
+    if secondary['success']:
+        results.append(secondary)
+    
+    tertiary = extract_content_tertiary(pdf_path)
+    if tertiary['success']:
+        results.append(tertiary)
+    
+    # Compare and validate results
+    if len(results) == 0:
+        return {'success': False, 'reason': 'All extraction methods failed'}
+    
+    # Compare titles from different methods
+    titles = [r.get('title', '') for r in results if r.get('title')]
+    if len(titles) >= 2:
+        # Check similarity
+        title_similarity = calculate_similarity(titles[0], titles[1])
+        if title_similarity < 0.8:
+            # Methods disagree - use majority vote or manual review
+            return {
+                'success': False,
+                'reason': 'Title extraction inconsistent across methods',
+                'titles': titles
+            }
+    
+    # Use the most complete result
+    best_result = max(results, key=lambda r: len(str(r.get('title', ''))) + 
+                                           len(str(r.get('authors', ''))) +
+                                           len(str(r.get('abstract', ''))))
+    
+    return {
+        'success': True,
+        'content': best_result,
+        'methods_tried': len(results),
+        'method_used': best_result['method']
+    }
+```
+
+### 6. Verification Failure Recovery
+
+When a paper fails verification, follow these recovery procedures:
+
+#### Automated Recovery Steps
+```python
+def handle_verification_failure(pdf_path, failure_reason, expected_metadata):
+    """
+    Attempt to recover from verification failure
+    """
+    recovery_log = {
+        'pdf_path': pdf_path,
+        'failure_reason': failure_reason,
+        'recovery_attempts': []
+    }
+    
+    # Step 1: Try alternative extraction methods
+    if 'extraction failed' in failure_reason.lower():
+        # Try OCR if text extraction failed
+        ocr_result = attempt_ocr_extraction(pdf_path)
+        recovery_log['recovery_attempts'].append({
+            'method': 'OCR',
+            'success': ocr_result['success']
+        })
+        
+        if ocr_result['success']:
+            return verify_ocr_result(ocr_result, expected_metadata)
+    
+    # Step 2: Try downloading from alternative source
+    if 'title mismatch' in failure_reason.lower():
+        # Search for paper by expected title
+        alt_source = search_alternative_source(expected_metadata['title'])
+        recovery_log['recovery_attempts'].append({
+            'method': 'alternative_source_search',
+            'source': alt_source
+        })
+        
+        if alt_source:
+            return download_and_verify_alternative(alt_source, expected_metadata)
+    
+    # Step 3: Check if it's a preprint vs published version issue
+    if 'year mismatch' in failure_reason.lower():
+        # Could be arxiv preprint vs journal version
+        version_check = check_paper_versions(expected_metadata)
+        recovery_log['recovery_attempts'].append({
+            'method': 'version_check',
+            'found_versions': version_check
+        })
+    
+    # Step 4: Mark for manual review if all automated recovery fails
+    if all(not attempt.get('success', False) 
+           for attempt in recovery_log['recovery_attempts']):
+        add_to_manual_review_queue(pdf_path, expected_metadata, recovery_log)
+        
+    return recovery_log
+```
+
+#### Alternative Source Search
+```python
+def search_alternative_source(title, authors=None):
+    """
+    Search for paper from alternative sources
+    """
+    sources_to_try = [
+        {'name': 'arxiv', 'search_func': search_arxiv},
+        {'name': 'semantic_scholar', 'search_func': search_semantic_scholar},
+        {'name': 'crossref', 'search_func': search_crossref},
+        {'name': 'publisher_direct', 'search_func': search_publisher}
+    ]
+    
+    for source in sources_to_try:
+        try:
+            result = source['search_func'](title, authors)
+            if result and result.get('pdf_url'):
+                return {
+                    'source': source['name'],
+                    'url': result['pdf_url'],
+                    'metadata': result.get('metadata', {})
+                }
+        except Exception as e:
+            continue
+    
+    return None
+```
+
+#### Failure Logging and Tracking
+```python
+def log_verification_failure(pdf_path, expected, extracted, failure_details):
+    """
+    Comprehensive failure logging for pattern analysis
+    """
+    failure_entry = {
+        'timestamp': datetime.now().isoformat(),
+        'pdf_path': pdf_path,
+        'expected': expected,
+        'extracted': extracted,
+        'failure_type': categorize_failure(expected, extracted),
+        'failure_details': failure_details,
+        'recovery_attempted': False,
+        'recovery_successful': False
+    }
+    
+    # Append to failures log
+    with open('output/verification_failures.jsonl', 'a') as f:
+        f.write(json.dumps(failure_entry) + '\n')
+    
+    # Update failure statistics
+    update_failure_statistics(failure_entry['failure_type'])
+    
+    # Check for patterns
+    if detect_systematic_failure_pattern():
+        trigger_manual_intervention_alert()
+```
+
+### 7. Kill Switch Implementation
+
+```python
+def check_kill_switch(verification_report):
+    """
+    Implement kill switch provisions
+    Returns: (should_stop: bool, action: str)
+    
+    STOP IMMEDIATELY if ANY of these conditions occur:
+    1. Title Mismatch: Extracted title similarity < 80%
+    2. Wrong Field: Abstract doesn't contain ANY expected keywords
+    3. ArXiv Mismatch: Paper's arXiv ID doesn't match citation
+    4. Author Mismatch: No author names match citation
+    5. Year Mismatch: Publication year differs by >1 year
+    6. Unknown Authors: ANY variation of "Unknown Authors" detected
+    """
+    
+    if not verification_report['passed']:
+        reason = verification_report.get('failure_reason', 'Unknown')
+        
+        # Log failure
+        with open('output/verification_failures.log', 'a') as f:
+            f.write(f"{datetime.now()} - KILL SWITCH: {reason}\n")
+        
+        # Determine action based on failure type
+        if 'Unknown Authors' in reason:
+            return True, "DELETE_AND_EXCLUDE_IMMEDIATELY"
+        elif 'Title mismatch' in reason or verification_report.get('title_similarity', 100) < 80:
+            return True, "DELETE_AND_RETRY"
+        elif 'ArXiv ID mismatch' in reason:
+            return True, "DELETE_AND_EXCLUDE"
+        elif 'No matching authors' in reason or 'Author Mismatch' in reason:
+            return True, "QUARANTINE_AND_REVIEW"
+        elif 'not relevant' in reason or 'Wrong Field' in reason:
+            return True, "DELETE_AND_EXCLUDE"
+        elif 'Year Mismatch' in reason:
+            return True, "DELETE_AND_RETRY"
+        else:
+            return True, "REQUEST_USER_INTERVENTION"
+    
+    return False, "PROCEED"
+```
+
+### 6. Integration with Download Workflow
+
+```python
+def download_and_verify_paper(citation_key, expected_metadata, download_url):
+    """
+    Complete download and verification workflow
+    """
+    
+    # Step 1: Download paper
+    pdf_path = download_paper(download_url, citation_key)
+    
+    if not pdf_path:
+        return False, "Download failed"
+    
+    # Step 2: Extract content IMMEDIATELY
+    success, extracted, verification = extract_paper_content(
+        pdf_path, expected_metadata
+    )
+    
+    # Step 3: Check kill switch
+    should_stop, action = check_kill_switch(verification)
+    
+    if should_stop:
+        # Handle based on action
+        if action == "DELETE_AND_EXCLUDE_IMMEDIATELY":
+            os.remove(pdf_path)
+            # Log to special file for Unknown Authors
+            with open('output/unknown_authors_rejected.log', 'a') as f:
+                f.write(f"{datetime.now()} - {citation_key} - REJECTED: Unknown Authors\n")
+            return False, "REJECTED: Unknown Authors strictly forbidden"
+        elif action == "DELETE_AND_RETRY":
+            os.remove(pdf_path)
+            # Try alternative source
+            return download_from_alternative_source(citation_key, expected_metadata)
+        elif action == "DELETE_AND_EXCLUDE":
+            os.remove(pdf_path)
+            return False, f"Excluded: {verification['failure_reason']}"
+        elif action == "QUARANTINE_AND_REVIEW":
+            quarantine_path = f"output/quarantine/{citation_key}.pdf"
+            os.rename(pdf_path, quarantine_path)
+            return False, f"Quarantined for review: {verification['failure_reason']}"
+        elif action == "REQUEST_USER_INTERVENTION":
+            # Log for final review but don't stop process
+            with open('output/verification_issues.log', 'a') as f:
+                f.write(f"\n⚠️ VERIFICATION ISSUE: {citation_key}\n")
+                f.write(f"Reason: {verification['failure_reason']}\n")
+                f.write(f"Action: Excluded from bibliography\n")
+            os.remove(pdf_path)
+            return False, "Automatically excluded - logged for review"
+    
+    # Step 4: Store verification data
+    store_verification_data(citation_key, extracted, verification)
+    
+    # Step 5: Save abstract
+    if extracted.get('abstract'):
+        with open(f"output/paper_abstracts/{citation_key}.txt", 'w') as f:
+            f.write(extracted['abstract'])
+    
+    return True, "Verified successfully"
+```
+
+### 7. Batch Verification Check
+
+```python
+def verify_all_citations_before_compilation():
+    """
+    Final verification of all citations before PDF compilation
+    Must achieve >95% success rate
+    """
+    
+    with open('output/ref.bib', 'r') as f:
+        bib_content = f.read()
+    
+    # Extract all citation keys
+    citation_keys = re.findall(r'@\w+{([^,]+),', bib_content)
+    
+    # Load verification database
+    with open('output/verification_db.json', 'r') as f:
+        verification_db = json.load(f)
+    
+    # Check each citation
+    verified = 0
+    failed = []
+    
+    for key in citation_keys:
+        if key in verification_db['verification_details']:
+            details = verification_db['verification_details'][key]
+            if details['checks'].get('title_match', False):
+                verified += 1
+            else:
+                failed.append(key)
+        else:
+            failed.append(key)
+    
+    success_rate = verified / len(citation_keys) if citation_keys else 0
+    
+    if success_rate < 0.95:
+        print(f"\n❌ VERIFICATION FAILED: Only {success_rate:.1%} papers verified")
+        print(f"Failed citations: {', '.join(failed)}")
+        return False
+    
+    # Log verification results for user's final review
+    log_verification_summary(verified, failed, citation_keys)
+    
+    return True
+```
+
+### 8. Automated Verification Summary for Introduction
+
+```python
+def generate_verification_summary_for_introduction():
+    """
+    Generate verification summary to be included in introduction.tex
+    This allows user to review all verifications in the final PDF
+    """
+    
+    # Load verification data
+    with open('output/verification_db.json', 'r') as f:
+        verification_db = json.load(f)
+    
+    # Create LaTeX formatted summary
+    summary = r"""
+%% ========== AUTOMATED VERIFICATION SUMMARY ==========
+%% Total papers attempted: {total}
+%% Successfully verified: {verified} ({rate:.1%})
+%% Automatically excluded: {excluded}
+%% 
+%% All papers were automatically verified for:
+%% - Title match (≥80% similarity required)
+%% - Author match (at least one author must match)
+%% - No "Unknown Authors" (strictly forbidden)
+%% - Domain relevance (abstract keywords checked)
+%% - Correct field (no chemistry/biology papers in CS bibliography)
+%% 
+%% Excluded papers logged in: output/verification_failures.log
+%% Full verification details in: output/verification_db.json
+%% ========== END VERIFICATION SUMMARY ==========
+""".format(
+        total=verification_db['total_papers'],
+        verified=verification_db['verified'],
+        rate=verification_db['verified'] / verification_db['total_papers'] * 100,
+        excluded=verification_db['failed']
+    )
+    
+    return summary
+
+def append_verification_to_introduction():
+    """Append verification summary to introduction.tex for user review"""
+    
+    summary = generate_verification_summary_for_introduction()
+    
+    # Append to introduction.tex
+    with open('output/introduction.tex', 'a') as f:
+        f.write("\n" + summary + "\n")
+    
+    # Also create visible version for PDF
+    visible_summary = f"""
+\\clearpage
+\\section*{{Reference Verification Summary}}
+\\begin{{small}}
+\\begin{{verbatim}}
+Total papers attempted: {verification_db['total_papers']}
+Successfully verified: {verification_db['verified']} ({rate:.1%})
+Automatically excluded: {verification_db['failed']}
+
+All papers were automatically verified for:
+- Title match (≥80% similarity required)
+- Author match (at least one author must match)
+- No "Unknown Authors" (strictly forbidden)
+- Domain relevance (abstract keywords checked)
+- Correct field (no unrelated papers)
+
+Verification details are available in output/verification_db.json
+\\end{{verbatim}}
+\\end{{small}}
+"""
+    
+    with open('output/introduction.tex', 'a') as f:
+        f.write(visible_summary)
+```
+
+## 🛑 CRITICAL REMINDERS
+
+1. **NEVER** skip content extraction after download
+2. **ALWAYS** calculate title similarity before accepting a paper
+3. **DELETE** papers that fail verification immediately
+4. **EXCLUDE** unverifiable citations from bibliography
+5. **REQUEST** user help when verification is uncertain
+
+## Quality Metrics
+
+Track these metrics for every paper:
+- Title similarity score (must be ≥ 0.8)
+- Author match (at least one author must match)
+- Domain relevance (abstract must contain expected keywords)
+- Verification timestamp
+- Source URL and checksum
+
+Only papers meeting ALL criteria should be included in the bibliography.
+
+## 📋 Storage Example Structures
+
+### Example paper_metadata.json Structure:
+```json
+{
+  "citation_key": {
+    "expected_title": "Title from citation",
+    "extracted_title": "Title from PDF",
+    "similarity_score": 0.95,
+    "first_author": "Extracted author",
+    "abstract_keywords": ["keyword1", "keyword2"],
+    "verification_timestamp": "2024-01-15T10:30:00",
+    "source_url": "https://...",
+    "sha256_checksum": "abc123...",
+    "verification_status": "PASSED/FAILED"
+  }
+}
+```
+
+### Example verification_db.json Structure:
+```json
+{
+  "total_papers": 80,
+  "verified": 75,
+  "failed": 5,
+  "verification_details": {
+    "citation_key": {
+      "expected": {...},
+      "actual": {...},
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true
+      }
+    }
+  }
+}
+```
+
+### Example Paper Abstracts Storage:
+```bash
+output/paper_abstracts/
+├── citation_key_1_abstract.txt
+├── citation_key_2_abstract.txt
+└── ...
+```
+
+## 📊 Common Verification Failures & Recovery Examples
+
+### 1. Wrong ArXiv ID
+- **Example**: Citation says "2301.12345" but paper is actually "2301.12346"
+- **Recovery**: Search by title instead of ID
+- **Prevention**: Always verify title after download
+
+### 2. Title Mismatch
+- **Example**: Citation has abbreviated title, PDF has full title
+- **Recovery**: Use fuzzy matching with 80% threshold
+- **Prevention**: Extract exact title from paper during initial search
+
+### 3. Field Mismatch
+- **Example**: Searching for "machine learning" but getting "machine translation"
+- **Recovery**: Check abstract for domain keywords
+- **Prevention**: Add domain-specific search terms
+
+### 4. Author Name Variations
+- **Example**: "J. Smith" vs "John Smith" vs "Smith, J."
+- **Recovery**: Match on last name + first initial
+- **Prevention**: Store all author name variations
+
+## 🔄 Recovery Procedures Example
+
+When content verification fails:
+
+### Immediate Actions
+```bash
+# Log the failure
+echo "[timestamp] FAILED: citation_key - reason" >> verification_failures.log
+
+# Move failed PDF to quarantine
+mkdir -p output/quarantine
+mv failed_paper.pdf output/quarantine/
+
+# Try alternative download
+# Use different search terms or sources
+```
+
+### Alternative Search Strategies
+- Search by exact title in quotes
+- Try author + year combination
+- Use Google Scholar for fuzzy matching
+- Check author's personal webpage
+
+### Automatic Failure Handling
+```
+When verification fails:
+- System automatically excludes the citation
+- Logs failure in verification_failures.log
+- Tries alternative sources if available
+- Continues with remaining papers
+- Reports all actions in introduction.pdf
+
+User reviews all decisions in final introduction.pdf
+```
+
+## Additional Deep Content Verification from CLAUDE.md
+
+### Paper Abstracts Storage
+Store all extracted abstracts in a dedicated directory for quick reference:
+```python
+# output/papers/abstracts/smith2024_ml.txt
+"""
+Title: Machine Learning Optimization Techniques
+Authors: John Smith, Jane Doe
+Abstract: This paper presents novel optimization techniques for machine learning models...
+[full abstract text]
+"""
+```
+
+### Verification Database Structure
+Track all verification results in a central database:
+```python
+# output/papers/verification_db.json
+{
+    "papers": {
+        "smith2024_ml": {
+            "filename": "smith2024_optimization.pdf",
+            "expected": {
+                "title": "Machine Learning Optimization",
+                "authors": "Smith, J., Doe, J.",
+                "year": 2024
+            },
+            "extracted": {
+                "title": "Machine Learning Optimization Techniques",
+                "authors": ["John Smith", "Jane Doe"],
+                "year": 2024,
+                "abstract_length": 250
+            },
+            "verification": {
+                "title_similarity": 0.95,
+                "author_match": 1.0,
+                "year_match": true,
+                "overall_status": "verified",
+                "timestamp": "2024-01-20T10:15:00"
+            }
+        }
+    },
+    "statistics": {
+        "total_papers": 80,
+        "verified": 75,
+        "failed": 5,
+        "success_rate": 0.9375
+    }
+}
+```
+
+### Automatic Relevance Verification
+System automatically checks if papers are relevant to the research domain:
+```python
+def check_domain_relevance(abstract_text, domain_keywords):
+    """
+    Check if paper is relevant to research domain
+    domain_keywords: list of keywords that indicate relevance
+    """
+    relevance_score = 0
+    abstract_lower = abstract_text.lower()
+    
+    # Check keyword presence
+    for keyword in domain_keywords:
+        if keyword.lower() in abstract_lower:
+            relevance_score += 1
+    
+    # Calculate relevance percentage
+    relevance_percentage = (relevance_score / len(domain_keywords)) * 100
+    
+    return {
+        "relevant": relevance_percentage > 30,  # At least 30% keywords present
+        "score": relevance_percentage,
+        "matched_keywords": [k for k in domain_keywords if k.lower() in abstract_lower]
+    }
+```
+
+### Kill Switch Conditions from CLAUDE.md
+
+**STOP IMMEDIATELY if ANY of these conditions occur:**
+
+1. **Unknown Authors Detection**
+   - If paper has "Unknown Authors" → DELETE immediately
+   - Log in verification_failures.log
+   - Search for alternative source
+   - If no alternative → EXCLUDE from research
+
+2. **Title Verification Failure**
+   - If title similarity < 50% → Likely wrong paper
+   - If extracted title contains "[Title]" or "Template" → DELETE
+
+3. **Batch Failure Thresholds**
+   - If >25% papers fail verification → STOP
+   - If >10% have "Unknown Authors" → STOP
+   - If >20% fail domain relevance → Wrong search strategy → STOP
+
+4. **Content Extraction Failures**
+   - If >30% PDFs cannot be read → Tool issue → STOP
+   - If extracted text < 100 words → Likely image PDF → Flag for OCR
+
+### Recovery Procedures for Failed Verification
+
+When content verification fails:
+
+1. **Log the failure**
+```python
+with open("output/papers/verification_failures.log", "a") as f:
+    f.write(f"[{datetime.now()}] FAILED: {filename} - Reason: {reason}\n")
+```
+
+2. **Quarantine the paper**
+```bash
+mv output/papers/failed_paper.pdf output/papers/quarantine/
+```
+
+3. **Attempt alternative search**
+```python
+# Try searching with extracted title instead of expected title
+alternative_search_query = f'"{extracted_title}" {extracted_authors[0]} filetype:pdf'
+```
+
+4. **Update bibliography**
+```python
+# Remove failed entry from ref.bib
+# Add note about failed verification
+```
+
+### Title Similarity Calculation
+```python
+def calculate_title_similarity(title1, title2):
+    """
+    Calculate similarity between two titles
+    Uses multiple methods for robustness
+    """
+    # Method 1: Direct sequence matching
+    direct_similarity = SequenceMatcher(None, title1.lower(), title2.lower()).ratio()
+    
+    # Method 2: Word-level matching
+    words1 = set(title1.lower().split())
+    words2 = set(title2.lower().split())
+    word_similarity = len(words1 & words2) / len(words1 | words2)
+    
+    # Method 3: Key terms matching (ignore common words)
+    common_words = {'the', 'a', 'an', 'of', 'in', 'on', 'for', 'and', 'or', 'to'}
+    key_words1 = words1 - common_words
+    key_words2 = words2 - common_words
+    if key_words1 and key_words2:
+        key_similarity = len(key_words1 & key_words2) / len(key_words1 | key_words2)
+    else:
+        key_similarity = 0
+    
+    # Weighted average
+    final_similarity = (direct_similarity * 0.4 + 
+                       word_similarity * 0.3 + 
+                       key_similarity * 0.3)
+    
+    return final_similarity
+```
+
+### Domain Relevance Checking
+```python
+def perform_domain_check(paper_data, research_domain):
+    """
+    Check if paper is relevant to research domain
+    """
+    domain_configs = {
+        "machine_learning": {
+            "keywords": ["machine learning", "neural network", "deep learning", 
+                        "artificial intelligence", "optimization", "training",
+                        "classification", "regression", "supervised", "unsupervised"],
+            "exclude": ["mechanical", "civil engineering", "biology"]
+        },
+        "sustainable_energy": {
+            "keywords": ["renewable", "sustainable", "solar", "wind", "energy",
+                        "efficiency", "grid", "storage", "carbon", "emission"],
+            "exclude": ["particle physics", "astronomy", "pure mathematics"]
+        }
+    }
+    
+    config = domain_configs.get(research_domain, {})
+    if not config:
+        return {"relevant": True, "reason": "No domain config"}
+    
+    # Check positive keywords
+    text = f"{paper_data.get('title', '')} {paper_data.get('abstract', '')}".lower()
+    matches = sum(1 for kw in config["keywords"] if kw in text)
+    
+    # Check exclusion keywords
+    exclusions = sum(1 for ex in config["exclude"] if ex in text)
+    
+    relevant = matches >= 2 and exclusions == 0
+    
+    return {
+        "relevant": relevant,
+        "keyword_matches": matches,
+        "exclusion_matches": exclusions,
+        "confidence": matches / len(config["keywords"])
+    }
+```

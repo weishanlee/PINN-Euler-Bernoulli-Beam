@@ -1,0 +1,69 @@
+Prompt for describing Figure:  
+
+## 🛑 Pre-Generation Checklist for Figures with Boxes
+
+**MANDATORY**: Before generating ANY figure with boxes, complete this checklist:
+- [ ] Count total elements to display
+- [ ] Calculate minimum canvas size needed (width = elements × 150px + spacing)
+- [ ] Plan layout with 20% spacing between elements
+- [ ] Determine if single row, grid, or hierarchical layout is best
+- [ ] Check if text labels will fit within planned box sizes
+- [ ] Allocate space for arrows/connectors between boxes
+- [ ] Verify no elements will be placed outside canvas bounds
+
+## CRITICAL: Box Overlap Validation for Diagrams
+
+**MANDATORY for diagrams with boxes**: All figures containing boxes (workflow diagrams, architecture diagrams, etc.) MUST implement the following validation:
+
+1. **No Box-to-Box Overlaps**: Boxes must not overlap with each other
+2. **No Text-Box Overlaps**: Text outside boxes must not overlap with boxes
+3. **Text-in-Box Fit**: Text inside boxes must fit with appropriate font size (8-14pt)
+
+### Required Implementation:
+```python
+# Use smart layout for automatic overlap prevention
+from utilityScripts.smart_box_layout import SmartBoxLayout
+layout = SmartBoxLayout()
+layout.add_box(x, y, width, height, label)
+layout.render("output/figures/diagram.png")
+
+# Or validate existing layouts
+from utilityScripts.box_overlap_checker import BoxValidator
+validator = BoxValidator()
+# ... add boxes ...
+results = validator.validate_all()
+assert len(results['box_overlaps']) == 0, "Box overlaps detected!"
+```
+
+See `prompts/prompts_figure_box_validation` for complete guidelines.
+
+### 🛑 MANDATORY Validation Command:
+
+After generating ANY figure with boxes, you MUST run:
+```bash
+cd output
+~/.venv/ml_31123121/bin/python ../utilityScripts/box_overlap_checker.py figures/{filename}.png
+
+# If validation fails, use smart layout:
+~/.venv/ml_31123121/bin/python ../utilityScripts/smart_box_layout.py figures/{filename}.png
+```
+
+**DO NOT proceed without validation passing!**
+
+For figures:
+You are an expert on writing papers.  Write at least 150 words in LaTeX format to explain the key features and insights conveyed by the figure. The explanation should highlight the most important aspects of the figure and how they contribute to understanding the data or results. Ensure that the description aligns with the figure's purpose and provides sufficient context for the audience to interpret it effectively.
+
+### Citation of Figures:
+- Cite each figure in the text using LaTeX commands, such as `\ref{fig:<label>}`, ensuring the references are clear and properly formatted.
+- To insert and refer to the figure, use the following LaTeX format:
+
+```latex
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 1.0\linewidth]{figures/<filename>.png}
+    \caption{<Insert a descriptive and concise caption summarizing the figure's content and purpose>}
+    \label{fig:<label>}
+\end{figure}
+
+### Special Request:
+- Do not include document class, package inclusions. Just focus on the figure itself. For example, you should not include `\documentclass{...}`, `\begin{documnet}`, `\usepackage{...}`, or `\end{document}`.

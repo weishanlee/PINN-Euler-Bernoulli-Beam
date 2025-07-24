@@ -1,0 +1,56 @@
+This is BibTeX, Version 0.99d (TeX Live 2022/dev/Debian)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: introduction_wrapper_v4.aux
+The style file: ieee.bst
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: introduction_refs.bib
+-- IEEEtran.bst version 1.14 (2015/08/26) by Michael Shell.
+-- http://www.michaelshell.org/tex/ieeetran/bibtex/
+-- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
+
+Done.
+You've used 32 entries,
+            4087 wiz_defined-function locations,
+            994 strings with 13732 characters,
+and the built_in function-call counts, 21848 in all, are:
+= -- 1905
+> -- 539
+< -- 129
++ -- 277
+- -- 114
+* -- 1007
+:= -- 3385
+add.period$ -- 64
+call.type$ -- 32
+change.case$ -- 32
+chr.to.int$ -- 231
+cite$ -- 32
+duplicate$ -- 1727
+empty$ -- 1629
+format.name$ -- 138
+if$ -- 5087
+int.to.chr$ -- 0
+int.to.str$ -- 32
+missing$ -- 288
+newline$ -- 119
+num.names$ -- 32
+pop$ -- 662
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 2
+skip$ -- 1767
+stack$ -- 0
+substring$ -- 742
+swap$ -- 1344
+text.length$ -- 52
+text.prefix$ -- 0
+top$ -- 5
+type$ -- 32
+warning$ -- 0
+while$ -- 78
+width$ -- 34
+write$ -- 330

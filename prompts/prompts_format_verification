@@ -1,0 +1,100 @@
+# Format Verification Checklist
+
+## Format Verification Before Section PDF Compilation
+
+Before compiling any section PDF, verify:
+
+### 1. Template Type Detection
+Determine which type of paper you're working on:
+- **Competition**: Check if problem/ contains competition PDF (MCM/ICM/HiMCM/IMMC)
+- **Journal**: Check for Elsevier/Springer/ASCE/AMCS document class
+
+### 2. Introduction Section Rules
+Apply the correct format based on template type:
+- **IF competition THEN subsections required**
+  - Must include: \subsection{Problem Background and Overview}
+  - Must include: \subsection{Literature Review}
+  - Must include: \subsection{Critics on Previous Works}
+  - Must include: \subsection{Restatement of the Problem}
+  - Must include: \subsection{Statement of Purpose and Our Strategy on the Problem}
+  
+- **IF journal THEN subsections forbidden**
+  - NO \subsection{} commands allowed
+  - Write as continuous narrative paragraphs
+  - Flow naturally from topic to topic
+
+### 3. Automatic Format Check
+```python
+def verify_introduction_format(template_type):
+    intro_content = open('introduction.tex').read()
+    has_subsections = '\\subsection{' in intro_content
+    
+    if template_type == 'journal' and has_subsections:
+        raise FormatError("❌ Journal papers must NOT have subsections in Introduction!")
+    elif template_type == 'competition' and not has_subsections:
+        raise FormatError("❌ Competition papers MUST have subsections in Introduction!")
+```
+
+### 4. Other Section Format Rules
+- **Methods**: Both competition and journal papers can have subsections
+- **Results**: Both competition and journal papers can have subsections
+- **Conclusions**: Usually no subsections for either type
+- **Summary/Abstract**: Never has subsections
+
+### 5. Visual Verification Guide
+
+**Competition Introduction - CORRECT**:
+```latex
+\section{Introduction}
+\subsection{Problem Background and Overview}
+The rapid growth of urban populations...
+
+\subsection{Literature Review}
+Recent studies have shown...
+```
+
+**Journal Introduction - CORRECT**:
+```latex
+\section{Introduction}
+The rapid growth of urban populations has created unprecedented challenges for traffic management. Recent studies have shown that traditional approaches...
+```
+
+**Journal Introduction - WRONG**:
+```latex
+\section{Introduction}
+\subsection{Background} % ❌ NO SUBSECTIONS IN JOURNAL INTRO!
+The rapid growth...
+```
+
+### 6. Format Verification Checklist
+
+Before proceeding with PDF compilation:
+- [ ] Template type correctly identified (competition/journal)
+- [ ] Introduction format matches template requirements
+- [ ] Subsection usage verified for current section
+- [ ] No format mixing between templates
+- [ ] Consistent formatting throughout document
+
+### 7. Kill Switch Provisions
+
+**STOP immediately if**:
+- Journal introduction contains ANY \subsection{} commands
+- Competition introduction lacks required subsections
+- Template type cannot be determined
+- Mixed formatting detected (journal style with competition subsections)
+
+When kill switch triggered:
+1. Display clear error message
+2. Show correct format example
+3. Request user clarification on template type
+4. Do not proceed until format is corrected
+
+## Quick Reference Table
+
+| Section | Competition Papers | Journal Papers |
+|---------|-------------------|----------------|
+| Introduction | MUST have subsections | Must NOT have subsections |
+| Methods | Can have subsections | Can have subsections |
+| Results | Can have subsections | Can have subsections |
+| Conclusions | Usually no subsections | Usually no subsections |
+| Abstract/Summary | Never has subsections | Never has subsections |

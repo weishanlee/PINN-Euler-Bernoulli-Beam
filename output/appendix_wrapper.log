@@ -1,0 +1,741 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.6.30)  18 JUL 2025 07:50
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**appendix_wrapper.tex
+(./appendix_wrapper.tex
+LaTeX2e <2021-11-15> patch level 1
+L3 programming layer <2022-01-21>
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size11.clo
+File: size11.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
+)
+\c@part=\count185
+\c@section=\count186
+\c@subsection=\count187
+\c@subsubsection=\count188
+\c@paragraph=\count189
+\c@subparagraph=\count190
+\c@figure=\count191
+\c@table=\count192
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\bibindent=\dimen138
+)
+(/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2020/01/02 v5.9 Page Geometry
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks16
+)
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty
+Package: iftex 2020/03/06 v1.0d TeX engine tests
+))
+\Gm@cnth=\count193
+\Gm@cntv=\count194
+\c@Gm@tempcnt=\count195
+\Gm@bindingoffset=\dimen139
+\Gm@wd@mp=\dimen140
+\Gm@odd@mp=\dimen141
+\Gm@even@mp=\dimen142
+\Gm@layoutwidth=\dimen143
+\Gm@layoutheight=\dimen144
+\Gm@layouthoffset=\dimen145
+\Gm@layoutvoffset=\dimen146
+\Gm@dimlist=\toks17
+)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2021/03/04 v1.4d Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 107.
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2020/10/05 v1.2a Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen147
+\Gin@req@width=\dimen148
+)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2021/10/15 v2.17l AMS math features
+\@mathmargin=\skip49
+
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2021/08/26 v2.01 AMS text
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks18
+\ex@=\dimen149
+))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen150
+)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 2021/08/26 v2.02 operator names
+)
+\inf@bad=\count196
+LaTeX Info: Redefining \frac on input line 234.
+\uproot@=\count197
+\leftroot@=\count198
+LaTeX Info: Redefining \overline on input line 399.
+\classnum@=\count199
+\DOTSCASE@=\count266
+LaTeX Info: Redefining \ldots on input line 496.
+LaTeX Info: Redefining \dots on input line 499.
+LaTeX Info: Redefining \cdots on input line 620.
+\Mathstrutbox@=\box50
+\strutbox@=\box51
+\big@size=\dimen151
+LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
+\macc@depth=\count267
+\c@MaxMatrixCols=\count268
+\dotsspace@=\muskip16
+\c@parentequation=\count269
+\dspbrk@lvl=\count270
+\tag@help=\toks19
+\row@=\count271
+\column@=\count272
+\maxfields@=\count273
+\andhelp@=\toks20
+\eqnshift@=\dimen152
+\alignsep@=\dimen153
+\tagshift@=\dimen154
+\tagwidth@=\dimen155
+\totwidth@=\dimen156
+\lineht@=\dimen157
+\@envbody=\toks21
+\multlinegap=\skip50
+\multlinetaggap=\skip51
+\mathdisplay@stack=\toks22
+LaTeX Info: Redefining \[ on input line 2938.
+LaTeX Info: Redefining \] on input line 2939.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+))
+(/usr/share/texlive/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count274
+\float@exts=\toks23
+\float@box=\box52
+\@float@everytoks=\toks24
+\@floatcapt=\box53
+)
+(/usr/share/texlive/texmf-dist/tex/latex/caption/subcaption.sty
+Package: subcaption 2020/10/07 v1.3j Sub-captions (AR)
+
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2020/10/26 v3.5g Customizing captions (AR)
+
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2020/10/21 v2.2e caption3 kernel (AR)
+\captionmargin=\dimen158
+\captionmargin@=\dimen159
+\captionwidth=\dimen160
+\caption@tempdima=\dimen161
+\caption@indent=\dimen162
+\caption@parindent=\dimen163
+\caption@hangindent=\dimen164
+Package caption Info: Standard document class detected.
+)
+\c@caption@flags=\count275
+\c@continuedfloat=\count276
+Package caption Info: float package is loaded.
+)
+\c@subfigure=\count277
+\c@subtable=\count278
+)
+(/usr/share/texlive/texmf-dist/tex/latex/setspace/setspace.sty
+Package: setspace 2011/12/19 v6.7a set line spacing
+)
+(/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+File: l3backend-pdftex.def 2022-01-12 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count279
+\l__pdf_internal_box=\box54
+)
+(./appendix_wrapper.aux)
+\openout1 = `appendix_wrapper.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: a4paper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(71.13188pt, 455.24411pt, 71.13188pt)
+* v-part:(T,H,B)=(71.13188pt, 702.78308pt, 71.13188pt)
+* \paperwidth=597.50787pt
+* \paperheight=845.04684pt
+* \textwidth=455.24411pt
+* \textheight=702.78308pt
+* \oddsidemargin=-1.1381pt
+* \evensidemargin=-1.1381pt
+* \topmargin=-38.1381pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=11.0pt
+* \footskip=30.0pt
+* \marginparwidth=50.0pt
+* \marginparsep=10.0pt
+* \columnsep=10.0pt
+* \skip\footins=10.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count280
+\scratchdimen=\dimen165
+\scratchbox=\box55
+\nofMPsegments=\count281
+\nofMParguments=\count282
+\everyMPshowfont=\toks25
+\MPscratchCnt=\count283
+\MPscratchDim=\dimen166
+\MPnumerator=\count284
+\makeMPintoPDFobject=\count285
+\everyMPtoPDFconversion=\toks26
+) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+85.
+
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: End \AtBeginDocument code.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 17.
+
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 17.
+
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+) (./appendix.tex
+<figures/3d_comparison_pinn_solution_5h.png, id=1, 683.1924pt x 552.1428pt>
+File: figures/3d_comparison_pinn_solution_5h.png Graphic file (type png)
+<use figures/3d_comparison_pinn_solution_5h.png>
+Package pdftex.def Info: figures/3d_comparison_pinn_solution_5h.png  used on in
+put line 13.
+(pdftex.def)             Requested size: 218.51521pt x 176.59663pt.
+<figures/3d_comparison_pinn_solution_15h.png, id=3, 677.1699pt x 552.1428pt>
+File: figures/3d_comparison_pinn_solution_15h.png Graphic file (type png)
+<use figures/3d_comparison_pinn_solution_15h.png>
+Package pdftex.def Info: figures/3d_comparison_pinn_solution_15h.png  used on i
+nput line 20.
+(pdftex.def)             Requested size: 218.51521pt x 178.1721pt.
+<figures/3d_comparison_pinn_solution_30h.png, id=4, 677.1699pt x 552.1428pt>
+File: figures/3d_comparison_pinn_solution_30h.png Graphic file (type png)
+<use figures/3d_comparison_pinn_solution_30h.png>
+Package pdftex.def Info: figures/3d_comparison_pinn_solution_30h.png  used on i
+nput line 32.
+(pdftex.def)             Requested size: 218.51521pt x 178.1721pt.
+<figures/3d_comparison_pinn_solution_45h.png, id=5, 683.1924pt x 552.1428pt>
+File: figures/3d_comparison_pinn_solution_45h.png Graphic file (type png)
+<use figures/3d_comparison_pinn_solution_45h.png>
+Package pdftex.def Info: figures/3d_comparison_pinn_solution_45h.png  used on i
+nput line 39.
+(pdftex.def)             Requested size: 218.51521pt x 176.59663pt.
+
+[1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./figures/3d_comparison_pi
+nn_solution_5h.png> <./figures/3d_comparison_pinn_solution_15h.png>]
+<figures/error_distribution_5h.png, id=17, 711.8595pt x 419.6478pt>
+File: figures/error_distribution_5h.png Graphic file (type png)
+<use figures/error_distribution_5h.png>
+Package pdftex.def Info: figures/error_distribution_5h.png  used on input line 
+53.
+(pdftex.def)             Requested size: 145.68144pt x 85.88107pt.
+<figures/error_distribution_15h.png, id=18, 711.8595pt x 419.6478pt>
+File: figures/error_distribution_15h.png Graphic file (type png)
+<use figures/error_distribution_15h.png>
+Package pdftex.def Info: figures/error_distribution_15h.png  used on input line
+ 59.
+(pdftex.def)             Requested size: 145.68144pt x 85.88107pt.
+<figures/error_distribution_30h.png, id=19, 711.8595pt x 419.6478pt>
+File: figures/error_distribution_30h.png Graphic file (type png)
+<use figures/error_distribution_30h.png>
+Package pdftex.def Info: figures/error_distribution_30h.png  used on input line
+ 65.
+(pdftex.def)             Requested size: 145.68144pt x 85.88107pt.
+<figures/training_losses_5h.png, id=20, 855.9177pt x 423.7431pt>
+File: figures/training_losses_5h.png Graphic file (type png)
+<use figures/training_losses_5h.png>
+Package pdftex.def Info: figures/training_losses_5h.png  used on input line 78.
+
+(pdftex.def)             Requested size: 218.51521pt x 108.17914pt.
+<figures/training_losses_15h.png, id=21, 855.9177pt x 423.7431pt>
+File: figures/training_losses_15h.png Graphic file (type png)
+<use figures/training_losses_15h.png>
+Package pdftex.def Info: figures/training_losses_15h.png  used on input line 84
+.
+(pdftex.def)             Requested size: 218.51521pt x 108.17914pt.
+<figures/validation_error_5h.png, id=22, 855.9177pt x 423.7431pt>
+File: figures/validation_error_5h.png Graphic file (type png)
+<use figures/validation_error_5h.png>
+Package pdftex.def Info: figures/validation_error_5h.png  used on input line 95
+.
+(pdftex.def)             Requested size: 218.51521pt x 108.17914pt.
+<figures/validation_error_15h.png, id=23, 855.9177pt x 423.7431pt>
+File: figures/validation_error_15h.png Graphic file (type png)
+<use figures/validation_error_15h.png>
+Package pdftex.def Info: figures/validation_error_15h.png  used on input line 1
+01.
+(pdftex.def)             Requested size: 218.51521pt x 108.17914pt.
+ [2 <./figures/3d_comparison_pinn_solution_30h.png> <./figures/3d_comparison_pi
+nn_solution_45h.png> <./figures/error_distribution_5h.png> <./figures/error_dis
+tribution_15h.png> <./figures/error_distribution_30h.png> <./figures/training_l
+osses_5h.png> <./figures/training_losses_15h.png>]
+<figures/euler_bernoulli_beam_5h.png, id=34, 856.8813pt x 568.2831pt>
+File: figures/euler_bernoulli_beam_5h.png Graphic file (type png)
+<use figures/euler_bernoulli_beam_5h.png>
+Package pdftex.def Info: figures/euler_bernoulli_beam_5h.png  used on input lin
+e 114.
+(pdftex.def)             Requested size: 218.51521pt x 144.9146pt.
+<figures/euler_bernoulli_beam_20h.png, id=35, 856.8813pt x 568.2831pt>
+File: figures/euler_bernoulli_beam_20h.png Graphic file (type png)
+<use figures/euler_bernoulli_beam_20h.png>
+Package pdftex.def Info: figures/euler_bernoulli_beam_20h.png  used on input li
+ne 120.
+(pdftex.def)             Requested size: 218.51521pt x 144.9146pt.
+<figures/euler_bernoulli_3d_5h.png, id=36, 556.9608pt x 568.2831pt>
+File: figures/euler_bernoulli_3d_5h.png Graphic file (type png)
+<use figures/euler_bernoulli_3d_5h.png>
+Package pdftex.def Info: figures/euler_bernoulli_3d_5h.png  used on input line 
+131.
+(pdftex.def)             Requested size: 218.51521pt x 222.95622pt.
+<figures/euler_bernoulli_3d_20h.png, id=37, 552.1428pt x 568.2831pt>
+File: figures/euler_bernoulli_3d_20h.png Graphic file (type png)
+<use figures/euler_bernoulli_3d_20h.png>
+Package pdftex.def Info: figures/euler_bernoulli_3d_20h.png  used on input line
+ 137.
+(pdftex.def)             Requested size: 218.51521pt x 224.89859pt.
+ [3 <./figures/validation_error_5h.png> <./figures/validation_error_15h.png> <.
+/figures/euler_bernoulli_beam_5h.png> <./figures/euler_bernoulli_beam_20h.png>]
+<figures/weight_factors_5h.png, id=45, 850.1361pt x 424.2249pt>
+File: figures/weight_factors_5h.png Graphic file (type png)
+<use figures/weight_factors_5h.png>
+Package pdftex.def Info: figures/weight_factors_5h.png  used on input line 150.
+
+(pdftex.def)             Requested size: 218.51521pt x 109.04007pt.
+<figures/weight_factors_15h.png, id=46, 850.377pt x 424.2249pt>
+File: figures/weight_factors_15h.png Graphic file (type png)
+<use figures/weight_factors_15h.png>
+Package pdftex.def Info: figures/weight_factors_15h.png  used on input line 156
+.
+(pdftex.def)             Requested size: 218.51521pt x 109.0077pt.
+<figures/space_slices_5h.png, id=47, 711.1368pt x 1045.2651pt>
+File: figures/space_slices_5h.png Graphic file (type png)
+<use figures/space_slices_5h.png>
+Package pdftex.def Info: figures/space_slices_5h.png  used on input line 169.
+(pdftex.def)             Requested size: 218.51521pt x 321.17389pt.
+<figures/space_slices_20h.png, id=48, 711.1368pt x 1045.2651pt>
+File: figures/space_slices_20h.png Graphic file (type png)
+<use figures/space_slices_20h.png>
+Package pdftex.def Info: figures/space_slices_20h.png  used on input line 175.
+(pdftex.def)             Requested size: 218.51521pt x 321.17389pt.
+ [4 <./figures/euler_bernoulli_3d_5h.png> <./figures/euler_bernoulli_3d_20h.png
+> <./figures/weight_factors_5h.png> <./figures/weight_factors_15h.png>]
+<figures/time_slices_5h.png, id=56, 710.8959pt x 1045.2651pt>
+File: figures/time_slices_5h.png Graphic file (type png)
+<use figures/time_slices_5h.png>
+Package pdftex.def Info: figures/time_slices_5h.png  used on input line 186.
+(pdftex.def)             Requested size: 218.51521pt x 321.28554pt.
+<figures/time_slices_20h.png, id=57, 711.1368pt x 1045.2651pt>
+File: figures/time_slices_20h.png Graphic file (type png)
+<use figures/time_slices_20h.png>
+Package pdftex.def Info: figures/time_slices_20h.png  used on input line 192.
+(pdftex.def)             Requested size: 218.51521pt x 321.17389pt.
+ [5 <./figures/space_slices_5h.png> <./figures/space_slices_20h.png>]
+<figures/comparison_5h.png, id=63, 1277.4927pt x 381.1038pt>
+File: figures/comparison_5h.png Graphic file (type png)
+<use figures/comparison_5h.png>
+Package pdftex.def Info: figures/comparison_5h.png  used on input line 205.
+(pdftex.def)             Requested size: 218.51521pt x 65.18803pt.
+<figures/comparison_20h.png, id=64, 1277.4927pt x 381.1038pt>
+File: figures/comparison_20h.png Graphic file (type png)
+<use figures/comparison_20h.png>
+Package pdftex.def Info: figures/comparison_20h.png  used on input line 211.
+(pdftex.def)             Requested size: 218.51521pt x 65.18803pt.
+ [6 <./figures/time_slices_5h.png> <./figures/time_slices_20h.png> <./figures/c
+omparison_5h.png> <./figures/comparison_20h.png>]
+<figures/3d_comparison_error_25h.png, id=72, 681.0243pt x 552.1428pt>
+File: figures/3d_comparison_error_25h.png Graphic file (type png)
+<use figures/3d_comparison_error_25h.png>
+Package pdftex.def Info: figures/3d_comparison_error_25h.png  used on input lin
+e 230.
+(pdftex.def)             Requested size: 145.68144pt x 118.11021pt.
+<figures/3d_comparison_error_30h.png, id=73, 681.0243pt x 552.1428pt>
+File: figures/3d_comparison_error_30h.png Graphic file (type png)
+<use figures/3d_comparison_error_30h.png>
+Package pdftex.def Info: figures/3d_comparison_error_30h.png  used on input lin
+e 236.
+(pdftex.def)             Requested size: 145.68144pt x 118.11021pt.
+<figures/3d_comparison_error_35h.png, id=74, 681.0243pt x 552.1428pt>
+File: figures/3d_comparison_error_35h.png Graphic file (type png)
+<use figures/3d_comparison_error_35h.png>
+Package pdftex.def Info: figures/3d_comparison_error_35h.png  used on input lin
+e 242.
+(pdftex.def)             Requested size: 145.68144pt x 118.11021pt.
+<figures/3d_comparison_error_40h.png, id=75, 681.0243pt x 552.1428pt>
+File: figures/3d_comparison_error_40h.png Graphic file (type png)
+<use figures/3d_comparison_error_40h.png>
+Package pdftex.def Info: figures/3d_comparison_error_40h.png  used on input lin
+e 253.
+(pdftex.def)             Requested size: 218.51521pt x 177.1611pt.
+<figures/3d_comparison_pinn_solution_20h.png, id=76, 683.1924pt x 552.1428pt>
+File: figures/3d_comparison_pinn_solution_20h.png Graphic file (type png)
+<use figures/3d_comparison_pinn_solution_20h.png>
+Package pdftex.def Info: figures/3d_comparison_pinn_solution_20h.png  used on i
+nput line 259.
+(pdftex.def)             Requested size: 218.51521pt x 176.59663pt.
+<figures/3d_comparison_pinn_solution_25h.png, id=77, 677.1699pt x 552.1428pt>
+File: figures/3d_comparison_pinn_solution_25h.png Graphic file (type png)
+<use figures/3d_comparison_pinn_solution_25h.png>
+Package pdftex.def Info: figures/3d_comparison_pinn_solution_25h.png  used on i
+nput line 272.
+(pdftex.def)             Requested size: 145.68144pt x 118.78421pt.
+<figures/3d_comparison_pinn_solution_35h.png, id=78, 677.1699pt x 552.1428pt>
+File: figures/3d_comparison_pinn_solution_35h.png Graphic file (type png)
+<use figures/3d_comparison_pinn_solution_35h.png>
+Package pdftex.def Info: figures/3d_comparison_pinn_solution_35h.png  used on i
+nput line 278.
+(pdftex.def)             Requested size: 145.68144pt x 118.78421pt.
+<figures/3d_comparison_pinn_solution_40h.png, id=79, 683.1924pt x 552.1428pt>
+File: figures/3d_comparison_pinn_solution_40h.png Graphic file (type png)
+<use figures/3d_comparison_pinn_solution_40h.png>
+Package pdftex.def Info: figures/3d_comparison_pinn_solution_40h.png  used on i
+nput line 284.
+(pdftex.def)             Requested size: 145.68144pt x 117.73108pt.
+
+[7 <./figures/3d_comparison_error_25h.png> <./figures/3d_comparison_error_30h.p
+ng> <./figures/3d_comparison_error_35h.png> <./figures/3d_comparison_error_40h.
+png> <./figures/3d_comparison_pinn_solution_20h.png>]
+<figures/3d_comparison_pinn_solution_50h.png, id=89, 683.1924pt x 552.1428pt>
+File: figures/3d_comparison_pinn_solution_50h.png Graphic file (type png)
+<use figures/3d_comparison_pinn_solution_50h.png>
+Package pdftex.def Info: figures/3d_comparison_pinn_solution_50h.png  used on i
+nput line 293.
+(pdftex.def)             Requested size: 273.14923pt x 220.7521pt.
+<figures/space_slices_15h.png, id=90, 711.1368pt x 1045.2651pt>
+File: figures/space_slices_15h.png Graphic file (type png)
+<use figures/space_slices_15h.png>
+Package pdftex.def Info: figures/space_slices_15h.png  used on input line 304.
+(pdftex.def)             Requested size: 145.68144pt x 214.12125pt.
+<figures/space_slices_25h.png, id=91, 711.1368pt x 1045.2651pt>
+File: figures/space_slices_25h.png Graphic file (type png)
+<use figures/space_slices_25h.png>
+Package pdftex.def Info: figures/space_slices_25h.png  used on input line 310.
+(pdftex.def)             Requested size: 145.68144pt x 214.12125pt.
+<figures/space_slices_30h.png, id=92, 711.1368pt x 1045.2651pt>
+File: figures/space_slices_30h.png Graphic file (type png)
+<use figures/space_slices_30h.png>
+Package pdftex.def Info: figures/space_slices_30h.png  used on input line 316.
+(pdftex.def)             Requested size: 145.68144pt x 214.12125pt.
+ [8 <./figures/3d_comparison_pinn_solution_25h.png> <./figures/3d_comparison_pi
+nn_solution_35h.png> <./figures/3d_comparison_pinn_solution_40h.png> <./figures
+/3d_comparison_pinn_solution_50h.png>]
+<figures/space_slices_35h.png, id=100, 711.1368pt x 1045.2651pt>
+File: figures/space_slices_35h.png Graphic file (type png)
+<use figures/space_slices_35h.png>
+Package pdftex.def Info: figures/space_slices_35h.png  used on input line 327.
+(pdftex.def)             Requested size: 145.68144pt x 214.12125pt.
+<figures/space_slices_40h.png, id=101, 711.1368pt x 1045.2651pt>
+File: figures/space_slices_40h.png Graphic file (type png)
+<use figures/space_slices_40h.png>
+Package pdftex.def Info: figures/space_slices_40h.png  used on input line 333.
+(pdftex.def)             Requested size: 145.68144pt x 214.12125pt.
+<figures/space_slices_45h.png, id=102, 711.1368pt x 1045.2651pt>
+File: figures/space_slices_45h.png Graphic file (type png)
+<use figures/space_slices_45h.png>
+Package pdftex.def Info: figures/space_slices_45h.png  used on input line 339.
+(pdftex.def)             Requested size: 145.68144pt x 214.12125pt.
+<figures/space_slices_50h.png, id=103, 711.1368pt x 1045.2651pt>
+File: figures/space_slices_50h.png Graphic file (type png)
+<use figures/space_slices_50h.png>
+Package pdftex.def Info: figures/space_slices_50h.png  used on input line 348.
+(pdftex.def)             Requested size: 273.14923pt x 401.47932pt.
+ [9 <./figures/space_slices_15h.png> <./figures/space_slices_25h.png> <./figure
+s/space_slices_30h.png> <./figures/space_slices_35h.png> <./figures/space_slice
+s_40h.png> <./figures/space_slices_45h.png>]
+<figures/time_slices_15h.png, id=113, 711.1368pt x 1045.2651pt>
+File: figures/time_slices_15h.png Graphic file (type png)
+<use figures/time_slices_15h.png>
+Package pdftex.def Info: figures/time_slices_15h.png  used on input line 359.
+(pdftex.def)             Requested size: 145.68144pt x 214.12125pt.
+<figures/time_slices_25h.png, id=114, 711.1368pt x 1045.2651pt>
+File: figures/time_slices_25h.png Graphic file (type png)
+<use figures/time_slices_25h.png>
+Package pdftex.def Info: figures/time_slices_25h.png  used on input line 365.
+(pdftex.def)             Requested size: 145.68144pt x 214.12125pt.
+<figures/time_slices_30h.png, id=115, 711.1368pt x 1045.2651pt>
+File: figures/time_slices_30h.png Graphic file (type png)
+<use figures/time_slices_30h.png>
+Package pdftex.def Info: figures/time_slices_30h.png  used on input line 371.
+(pdftex.def)             Requested size: 145.68144pt x 214.12125pt.
+ [10 <./figures/space_slices_50h.png>]
+<figures/time_slices_35h.png, id=120, 711.1368pt x 1045.2651pt>
+File: figures/time_slices_35h.png Graphic file (type png)
+<use figures/time_slices_35h.png>
+Package pdftex.def Info: figures/time_slices_35h.png  used on input line 382.
+(pdftex.def)             Requested size: 145.68144pt x 214.12125pt.
+<figures/time_slices_40h.png, id=121, 711.1368pt x 1045.2651pt>
+File: figures/time_slices_40h.png Graphic file (type png)
+<use figures/time_slices_40h.png>
+Package pdftex.def Info: figures/time_slices_40h.png  used on input line 388.
+(pdftex.def)             Requested size: 145.68144pt x 214.12125pt.
+<figures/time_slices_45h.png, id=122, 711.1368pt x 1045.2651pt>
+File: figures/time_slices_45h.png Graphic file (type png)
+<use figures/time_slices_45h.png>
+Package pdftex.def Info: figures/time_slices_45h.png  used on input line 394.
+(pdftex.def)             Requested size: 145.68144pt x 214.12125pt.
+<figures/time_slices_50h.png, id=123, 711.1368pt x 1045.2651pt>
+File: figures/time_slices_50h.png Graphic file (type png)
+<use figures/time_slices_50h.png>
+Package pdftex.def Info: figures/time_slices_50h.png  used on input line 403.
+(pdftex.def)             Requested size: 273.14923pt x 401.47932pt.
+ [11 <./figures/time_slices_15h.png> <./figures/time_slices_25h.png> <./figures
+/time_slices_30h.png> <./figures/time_slices_35h.png> <./figures/time_slices_40
+h.png> <./figures/time_slices_45h.png>]
+<figures/training_losses_20h.png, id=133, 855.9177pt x 423.7431pt>
+File: figures/training_losses_20h.png Graphic file (type png)
+<use figures/training_losses_20h.png>
+Package pdftex.def Info: figures/training_losses_20h.png  used on input line 41
+4.
+(pdftex.def)             Requested size: 145.68144pt x 72.11942pt.
+<figures/training_losses_25h.png, id=134, 855.9177pt x 423.7431pt>
+File: figures/training_losses_25h.png Graphic file (type png)
+<use figures/training_losses_25h.png>
+Package pdftex.def Info: figures/training_losses_25h.png  used on input line 42
+0.
+(pdftex.def)             Requested size: 145.68144pt x 72.11942pt.
+<figures/training_losses_30h.png, id=135, 855.9177pt x 423.7431pt>
+File: figures/training_losses_30h.png Graphic file (type png)
+<use figures/training_losses_30h.png>
+Package pdftex.def Info: figures/training_losses_30h.png  used on input line 42
+6.
+(pdftex.def)             Requested size: 145.68144pt x 72.11942pt.
+<figures/training_losses_35h.png, id=136, 855.9177pt x 423.7431pt>
+File: figures/training_losses_35h.png Graphic file (type png)
+<use figures/training_losses_35h.png>
+Package pdftex.def Info: figures/training_losses_35h.png  used on input line 43
+7.
+(pdftex.def)             Requested size: 145.68144pt x 72.11942pt.
+<figures/training_losses_40h.png, id=137, 855.9177pt x 423.7431pt>
+File: figures/training_losses_40h.png Graphic file (type png)
+<use figures/training_losses_40h.png>
+Package pdftex.def Info: figures/training_losses_40h.png  used on input line 44
+3.
+(pdftex.def)             Requested size: 145.68144pt x 72.11942pt.
+<figures/training_losses_45h.png, id=138, 855.9177pt x 423.7431pt>
+File: figures/training_losses_45h.png Graphic file (type png)
+<use figures/training_losses_45h.png>
+Package pdftex.def Info: figures/training_losses_45h.png  used on input line 44
+9.
+(pdftex.def)             Requested size: 145.68144pt x 72.11942pt.
+ [12 <./figures/time_slices_50h.png> <./figures/training_losses_20h.png> <./fig
+ures/training_losses_25h.png> <./figures/training_losses_30h.png>]
+<figures/training_losses_50h.png, id=146, 855.9177pt x 423.7431pt>
+File: figures/training_losses_50h.png Graphic file (type png)
+<use figures/training_losses_50h.png>
+Package pdftex.def Info: figures/training_losses_50h.png  used on input line 46
+0.
+(pdftex.def)             Requested size: 218.51521pt x 108.17914pt.
+<figures/training_losses.png, id=147, 816.1692pt x 567.0786pt>
+File: figures/training_losses.png Graphic file (type png)
+<use figures/training_losses.png>
+Package pdftex.def Info: figures/training_losses.png  used on input line 466.
+(pdftex.def)             Requested size: 218.51521pt x 151.82397pt.
+<figures/training_losses_final.png, id=148, 1000.2168pt x 422.5386pt>
+File: figures/training_losses_final.png Graphic file (type png)
+<use figures/training_losses_final.png>
+Package pdftex.def Info: figures/training_losses_final.png  used on input line 
+475.
+(pdftex.def)             Requested size: 364.19667pt x 153.85457pt.
+<figures/validation_error_20h.png, id=149, 855.9177pt x 423.0204pt>
+File: figures/validation_error_20h.png Graphic file (type png)
+<use figures/validation_error_20h.png>
+Package pdftex.def Info: figures/validation_error_20h.png  used on input line 4
+86.
+(pdftex.def)             Requested size: 145.68144pt x 71.99641pt.
+<figures/validation_error_25h.png, id=150, 855.9177pt x 423.0204pt>
+File: figures/validation_error_25h.png Graphic file (type png)
+<use figures/validation_error_25h.png>
+Package pdftex.def Info: figures/validation_error_25h.png  used on input line 4
+92.
+(pdftex.def)             Requested size: 145.68144pt x 71.99641pt.
+<figures/validation_error_30h.png, id=151, 855.9177pt x 423.2613pt>
+File: figures/validation_error_30h.png Graphic file (type png)
+<use figures/validation_error_30h.png>
+Package pdftex.def Info: figures/validation_error_30h.png  used on input line 4
+98.
+(pdftex.def)             Requested size: 145.68144pt x 72.03741pt.
+<figures/validation_error_35h.png, id=152, 855.9177pt x 423.2613pt>
+File: figures/validation_error_35h.png Graphic file (type png)
+<use figures/validation_error_35h.png>
+Package pdftex.def Info: figures/validation_error_35h.png  used on input line 5
+09.
+(pdftex.def)             Requested size: 145.68144pt x 72.03741pt.
+<figures/validation_error_40h.png, id=153, 855.9177pt x 423.0204pt>
+File: figures/validation_error_40h.png Graphic file (type png)
+<use figures/validation_error_40h.png>
+Package pdftex.def Info: figures/validation_error_40h.png  used on input line 5
+15.
+(pdftex.def)             Requested size: 145.68144pt x 71.99641pt.
+<figures/validation_error_45h.png, id=154, 855.9177pt x 423.7431pt>
+File: figures/validation_error_45h.png Graphic file (type png)
+<use figures/validation_error_45h.png>
+Package pdftex.def Info: figures/validation_error_45h.png  used on input line 5
+21.
+(pdftex.def)             Requested size: 145.68144pt x 72.11942pt.
+ [13 <./figures/training_losses_35h.png> <./figures/training_losses_40h.png> <.
+/figures/training_losses_45h.png> <./figures/training_losses_50h.png> <./figure
+s/training_losses.png> <./figures/training_losses_final.png> <./figures/validat
+ion_error_20h.png> <./figures/validation_error_25h.png> <./figures/validation_e
+rror_30h.png>]
+<figures/validation_error_50h.png, id=168, 855.9177pt x 423.2613pt>
+File: figures/validation_error_50h.png Graphic file (type png)
+<use figures/validation_error_50h.png>
+Package pdftex.def Info: figures/validation_error_50h.png  used on input line 5
+32.
+(pdftex.def)             Requested size: 218.51521pt x 108.05614pt.
+<figures/validation_error.png, id=169, 816.1692pt x 567.0786pt>
+File: figures/validation_error.png Graphic file (type png)
+<use figures/validation_error.png>
+Package pdftex.def Info: figures/validation_error.png  used on input line 538.
+(pdftex.def)             Requested size: 218.51521pt x 151.82397pt.
+<figures/validation_error_final.png, id=170, 1000.2168pt x 711.6186pt>
+File: figures/validation_error_final.png Graphic file (type png)
+<use figures/validation_error_final.png>
+Package pdftex.def Info: figures/validation_error_final.png  used on input line
+ 547.
+(pdftex.def)             Requested size: 364.19667pt x 259.11427pt.
+<figures/weight_factors_20h.png, id=171, 850.377pt x 424.2249pt>
+File: figures/weight_factors_20h.png Graphic file (type png)
+<use figures/weight_factors_20h.png>
+Package pdftex.def Info: figures/weight_factors_20h.png  used on input line 558
+.
+(pdftex.def)             Requested size: 145.68144pt x 72.67397pt.
+<figures/weight_factors_25h.png, id=172, 850.377pt x 424.2249pt>
+File: figures/weight_factors_25h.png Graphic file (type png)
+<use figures/weight_factors_25h.png>
+Package pdftex.def Info: figures/weight_factors_25h.png  used on input line 564
+.
+(pdftex.def)             Requested size: 145.68144pt x 72.67397pt.
+<figures/weight_factors_30h.png, id=173, 850.6179pt x 424.2249pt>
+File: figures/weight_factors_30h.png Graphic file (type png)
+<use figures/weight_factors_30h.png>
+Package pdftex.def Info: figures/weight_factors_30h.png  used on input line 570
+.
+(pdftex.def)             Requested size: 145.68144pt x 72.65454pt.
+ [14 <./figures/validation_error_35h.png> <./figures/validation_error_40h.png> 
+<./figures/validation_error_45h.png> <./figures/validation_error_50h.png> <./fi
+gures/validation_error.png> <./figures/validation_error_final.png>]
+<figures/weight_factors_35h.png, id=183, 850.6179pt x 424.2249pt>
+File: figures/weight_factors_35h.png Graphic file (type png)
+<use figures/weight_factors_35h.png>
+Package pdftex.def Info: figures/weight_factors_35h.png  used on input line 581
+.
+(pdftex.def)             Requested size: 145.68144pt x 72.65454pt.
+<figures/weight_factors_40h.png, id=184, 850.377pt x 424.2249pt>
+File: figures/weight_factors_40h.png Graphic file (type png)
+<use figures/weight_factors_40h.png>
+Package pdftex.def Info: figures/weight_factors_40h.png  used on input line 587
+.
+(pdftex.def)             Requested size: 145.68144pt x 72.67397pt.
+<figures/weight_factors_45h.png, id=185, 850.377pt x 424.2249pt>
+File: figures/weight_factors_45h.png Graphic file (type png)
+<use figures/weight_factors_45h.png>
+Package pdftex.def Info: figures/weight_factors_45h.png  used on input line 593
+.
+(pdftex.def)             Requested size: 145.68144pt x 72.67397pt.
+<figures/weight_factors_50h.png, id=186, 850.377pt x 424.2249pt>
+File: figures/weight_factors_50h.png Graphic file (type png)
+<use figures/weight_factors_50h.png>
+Package pdftex.def Info: figures/weight_factors_50h.png  used on input line 604
+.
+(pdftex.def)             Requested size: 218.51521pt x 109.0077pt.
+<figures/weight_factors.png, id=187, 1000.9395pt x 702.7053pt>
+File: figures/weight_factors.png Graphic file (type png)
+<use figures/weight_factors.png>
+Package pdftex.def Info: figures/weight_factors.png  used on input line 610.
+(pdftex.def)             Requested size: 218.51521pt x 153.40546pt.
+) [15 <./figures/weight_factors_20h.png> <./figures/weight_factors_25h.png> <./
+figures/weight_factors_30h.png> <./figures/weight_factors_35h.png> <./figures/w
+eight_factors_40h.png> <./figures/weight_factors_45h.png> <./figures/weight_fac
+tors_50h.png> <./figures/weight_factors.png>] (./appendix_wrapper.aux) ) 
+Here is how much of TeX's memory you used:
+ 5062 strings out of 480171
+ 92203 string characters out of 5894489
+ 363829 words of memory out of 5000000
+ 22914 multiletter control sequences out of 15000+600000
+ 475415 words of font info for 51 fonts, out of 8000000 for 9000
+ 59 hyphenation exceptions out of 8191
+ 67i,8n,77p,645b,477s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/s
+hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/t
+exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmr17.pfb>
+Output written on appendix_wrapper.pdf (15 pages, 33782609 bytes).
+PDF statistics:
+ 218 PDF objects out of 1000 (max. 8388607)
+ 48 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 500000)
+ 361 words of extra memory for PDF output out of 10000 (max. 10000000)
+

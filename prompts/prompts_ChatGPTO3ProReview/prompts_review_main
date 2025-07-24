@@ -1,0 +1,81 @@
+⚠️ REVIEW PROMPT: This prompt is for reviewing already-generated content. 
+- Can be used by ChatGPT O3 Pro for external review
+- Can be used by Claude Code when user explicitly requests peer review
+- CANNOT be used during initial content generation
+
+Conduct a holistic review of the complete manuscript via main.tex (or main_v1.tex, main_v2.tex if versioned).  Produce:
+
+I. **Executive Summary** (≤ 150 words) – Overall scientific merit and suitability for the target journal.  
+II. **Major Concerns** – Numbered list, each tagged to a specific section or global issue.  
+III. **Minor Concerns** – Bullet list.  
+IV. **Technical & Formatting Audit** – 5–10 bullets covering LaTeX and journal‑style compliance.  
+V. **Recommendation** – Accept / Minor Rev / Major Rev / Reject, with rationale.
+
+Global Evaluation Criteria  
+1. **Originality & Contribution** – Advances knowledge beyond current literature; novelty not incremental.  
+2. **Methodological Soundness** – Designs and analyses are rigorous, transparent, and reproducible.  
+3. **Internal Consistency** – Objectives ↔ Methods ↔ Results ↔ Conclusions are logically aligned.  
+4. **Writing Quality** – Clear, concise, correct English; cohesive flow between sections.
+   - **For journal papers**: Check for excessive bullet points; should use narrative prose
+   - **Bullet point density**: Should not exceed 2 lists per page
+   - **Abstract/Conclusions**: Must have NO bullet points whatsoever
+5. **Ethical Standards** – Compliance statements present; data/code sharing as per journal policy.  
+6. **Reference Quality & Currency** – Recent (last 5 years) key works cited; reference style obeys journal bib style.  
+7. **Figure & Table Integration** – High‑quality graphics, numbered sequentially, referenced in text, legends self‑explanatory.  
+8. **Statistical Transparency** – All statistical claims supported by appropriate reporting (test name, statistic, df, p‑value, CI).  
+9. **Reproducibility Assets** – Data, code, and supplementary material links function and are described.  
+10. **LaTeX & Typesetting** – Compiles cleanly under the specified class; no `\vspace` cheats, no over‑full boxes, consistent macros.
+11. **Citation Balance** – Alternates between author-prominent (e.g., "Smith et al. [1] demonstrate...") and information-prominent (e.g., "Previous studies show... [2-4]") citations; NO dangling citations like "[5] argues...".
+
+Provide final remarks on **ethical, reproducibility, and impact considerations**, followed by your detailed **action plan for authors** (grouped by priority).
+
+Output:
+1. Generate comprehensive review following the structure above
+2. Create directory `output/review_reports/` if it doesn't exist
+3. Save the review to `output/review_reports/main_peer_review_v1.md` (or v2, v3 for subsequent reviews)
+4. Include timestamp at the beginning of the review file
+5. Present the review results to the user after saving
+6. NOTE: Use version numbers for review files (main_peer_review_v1.md, not main_peer_review_final.md)
+
+Review File Structure:
+```markdown
+# Full Manuscript Peer Review
+Generated on: [timestamp]
+
+## I. Executive Summary
+[≤150 words summarizing overall scientific merit and journal suitability]
+
+## II. Major Concerns
+1. **[Section/Global Issue]**: [Detailed concern with specific references]
+2. **[Section/Global Issue]**: [Another major concern]
+
+## III. Minor Concerns
+• [Minor issue 1 with location]
+• [Minor issue 2 with location]
+
+## IV. Technical & Formatting Audit
+• [LaTeX/formatting issue 1]
+• [LaTeX/formatting issue 2]
+[5-10 bullets total]
+
+## V. Recommendation
+**Decision**: [Accept / Minor Rev / Major Rev / Reject]
+
+**Rationale**: [Explanation for the decision]
+
+## Ethical, Reproducibility, and Impact Considerations
+[Assessment of these aspects]
+
+## Action Plan for Authors
+
+### High Priority
+1. [Most critical revision needed]
+2. [Second most critical]
+
+### Medium Priority
+3. [Important but less critical]
+4. [Another medium priority item]
+
+### Low Priority
+5. [Minor improvements]
+```

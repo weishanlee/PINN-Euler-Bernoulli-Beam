@@ -1,0 +1,712 @@
+# Section-by-Section PDF Compilation Instructions
+
+## 🛑 When to Use These Instructions
+
+┌─────────────────────────────────────────────────────────────────┐
+│ ⚠️ MANDATORY TRIGGER POINTS - USE IMMEDIATELY! ⚠️                │
+└─────────────────────────────────────────────────────────────────┘
+
+**You MUST use these instructions IMMEDIATELY after completing:**
+1. ✅ After completing introduction.tex → **COMPILE introduction_v1.pdf NOW**
+2. ✅ After completing methods.tex → **COMPILE methods_v1.pdf NOW**
+3. ✅ After completing results.tex → **COMPILE results_v1.pdf NOW**
+4. ✅ After completing conclusions.tex → **COMPILE conclusions_v1.pdf NOW**
+5. ✅ After completing any appendix → **COMPILE appendix_v1.pdf NOW**
+6. ✅ After completing summary.tex (competition) → **COMPILE summary_v1.pdf NOW**
+7. ✅ After completing letter.tex (competition) → **COMPILE letter_v1.pdf NOW**
+8. ✅ After completing abstract.tex (journal) → **COMPILE abstract_v1.pdf NOW**
+
+**⚠️ YOU MUST COMPILE THE PDF IMMEDIATELY - DO NOT WAIT!**
+**⚠️ DO NOT PROCEED TO NEXT SECTION WITHOUT PDF COMPILATION!**
+
+## Overview
+This document provides instructions for compiling individual section PDFs with proper LaTeX wrappers and section-specific bibliographies. **FAILURE TO COMPILE SECTION PDFs IS A CRITICAL ERROR.**
+
+## Core Requirements
+
+1. **Each section PDF must**:
+   - Use SINGLE-COLUMN format (MANDATORY for ALL PDFs)
+   - Include only citations used in that specific section
+   - Be a complete, compilable LaTeX document
+   - Use readable font size and spacing
+   - **MANDATORY**: ALL PDFs must be single-column - NO two-column format allowed
+
+2. **File naming convention**:
+   - Content file: `{section}.tex` (e.g., `introduction.tex`)
+   - Wrapper file: `{section}_wrapper.tex` (e.g., `introduction_wrapper.tex`)
+   - Bibliography: `{section}_refs.bib` (e.g., `introduction_refs.bib`)
+   - Output PDF: `{section}_v{n}.pdf` (e.g., `introduction_v1.pdf`)
+
+## 🚨 CRITICAL: Bibliography Extraction Step
+
+**MANDATORY**: Extract section-specific citations using the automated script:
+```bash
+cd output
+~/.venv/ml_31123121/bin/python ../utilityScripts/extract_section_citations.py \
+  --section {section}.tex --master ref.bib --output {section}_refs.bib
+```
+
+**IMPORTANT**: Wrapper must use section-specific bibliography:
+```latex
+\bibliography{introduction_refs}  % NOT ref.bib!
+```
+
+## CRITICAL: Understand What's Being Asked
+
+### Default Behavior
+When user asks to "typeset" or "compile" a section WITHOUT specific format requirements:
+- Use MINIMAL formatting (no abstract, no authors)
+- Include ONLY the section content
+- Add bibliography if the section has citations
+
+### When to Include Frontmatter
+ONLY include abstract/authors/keywords when:
+1. User explicitly requests "full format"
+2. User specifically mentions "include abstract"
+3. User asks for "same as main.pdf" formatting
+
+### Clarification Protocol
+When unclear, ASK:
+"Would you like me to compile just the methods section content, or include full paper formatting with abstract and author information?"
+
+## Minimal Section Template
+```latex
+\documentclass[preprint,12pt]{elsarticle}
+\usepackage{amsmath,amssymb,graphicx,algorithm,algorithmic}
+\bibliographystyle{elsarticle-num}
+\journal{Preprint for review}
+
+\begin{document}
+% Set correct section number
+\setcounter{section}{1} % For methods section
+
+% Include only the section content
+\input{methods}
+
+% Bibliography only if citations exist
+\bibliography{methods_refs}
+\end{document}
+```
+
+### Default Template for Minimal Section Compilation
+**IMPORTANT**: When users simply ask to "typeset" or "compile" a section, use the minimal format by default:
+
+```latex
+\documentclass[preprint,12pt]{elsarticle}
+% Required packages only
+\bibliographystyle{elsarticle-num}
+\begin{document}
+\setcounter{section}{N} % Where N is the section number
+\input{sectionname}
+\bibliography{section_refs}
+\end{document}
+```
+
+Decision Tree:
+- User says "compile section" → Use minimal format
+- User says "compile section like introduction" → Ask for clarification
+- User says "compile section with full formatting" → Use full format
+
+## Wrapper Template Structure
+
+### For Competition Papers (MCM/ICM/HiMCM/IMMC)
+
+```latex
+% MANDATORY: ALL PDFs must use single-column format
+\documentclass[12pt,a4paper]{article} % Single-column format ONLY
+\usepackage{geometry}
+\geometry{a4paper, left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm}
+\usepackage{times} % or other readable font
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{float}
+% Add other necessary packages from template
+
+\begin{document}
+\title{[Competition Name] - [Section Name] Review\\
+\large (Single-Column Format - Mandatory)}
+\author{Review Version}
+\date{\today}
+\maketitle
+
+% Include the actual section content
+\input{introduction} % or methods, results, etc.
+
+% Section-specific bibliography
+\bibliographystyle{ieee}
+\bibliography{introduction_refs}
+
+\end{document}
+```
+
+### For Journal Papers
+
+```latex
+% MANDATORY: ALL PDFs must use single-column format
+\documentclass[12pt,a4paper]{article} % Single-column format ONLY
+\usepackage{geometry}
+\geometry{a4paper, left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm}
+\usepackage{times} % or other readable font
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{float}
+% Add other necessary packages from journal template
+
+\begin{document}
+\title{[Journal Name] - [Section Name] Review\\
+\large (Single-Column Format - Mandatory)}
+\author{Draft Version}
+\date{\today}
+\maketitle
+
+% Include the actual section content
+\input{introduction} % or methods, results, etc.
+
+% Section-specific bibliography
+\bibliographystyle{model5-names} % or journal-specific style
+\bibliography{introduction_refs}
+
+\end{document}
+```
+
+## Section-Specific Compilation Process
+
+### Step 1: Extract Section Citations
+
+**MANDATORY**: Use the automated extraction utility for bibliography management:
+
+```bash
+# Extract citations for a specific section (with version)
+cd output
+~/.venv/ml_31123121/bin/python ../utilityScripts/extract_section_citations.py \
+  --section introduction_v1.tex \
+  --master ref.bib \
+  --output introduction_refs_v1.bib
+
+# The extraction script will:
+# 1. Parse all \cite{} commands (including \citep, \citet variants)
+# 2. Handle multi-citation commands like \cite{key1,key2,key3}
+# 3. Extract complete BibTeX entries from master bibliography
+# 4. Report missing citations that need to be added
+# 5. Generate a detailed extraction report
+```
+
+**Example: Complete Bibliography Extraction Process**
+
+```bash
+# Extract citations for a specific section
+cd output
+~/.venv/ml_31123121/bin/python ../utilityScripts/extract_section_citations.py \
+  --section introduction.tex \
+  --master ref.bib \
+  --output introduction_refs.bib
+
+# The script will:
+# 1. Parse all \cite{} commands from the section
+# 2. Handle multi-citation commands like \cite{key1,key2,key3}
+# 3. Extract complete BibTeX entries from master bibliography
+# 4. Save only relevant entries to section-specific .bib file
+# 5. Report statistics (citations found, entries extracted)
+```
+
+**Common Bibliography Issues & Solutions:**
+
+1. **Missing Citations in Section PDF**:
+   - Verify citation exists in master `ref.bib`
+   - Re-run extraction script
+   - Check for typos in citation keys
+
+2. **Duplicate Entries**:
+   - The extraction script handles duplicates automatically
+   - Final merge also removes duplicates
+
+3. **Bibliography Style Consistency**:
+   - All sections use same style (IEEE for competitions)
+   - Style defined in wrapper templates
+
+4. **Final PDF Bibliography**:
+   ```bash
+   # Method 1: Use the automated merger utility (RECOMMENDED)
+   cd output
+   ~/.venv/ml_31123121/bin/python ../utilityScripts/merge_bibliographies.py \
+     --output ref_final.bib
+   
+   # Method 2: Manual merge
+   cat *_refs.bib | sort | uniq > ref_final.bib
+   
+   # Then update main.tex to use ref_final.bib:
+   # \bibliography{ref_final}  % NOT ref.bib
+   ```
+
+**Example output from extraction script:**
+```
+🔍 Starting citation extraction...
+📚 Found 42 unique citations in introduction.tex
+   Citations: smith2023, jones2022, brown2021, lee2023, wang2022, ... (37 more)
+📖 Extracted 40 bibliography entries
+✅ Created introduction_refs.bib with 40 entries
+
+⚠️  Missing entries for 2 citations:
+   - chen2024
+   - liu2023
+
+   These citations will cause LaTeX errors during compilation.
+   Please add them to the master bibliography or remove from the section.
+
+============================================================
+CITATION EXTRACTION REPORT
+============================================================
+Section file: introduction.tex
+Master bibliography: ref.bib
+Output bibliography: introduction_refs.bib
+
+Total citations found: 42
+Total entries extracted: 40
+Missing entries: 2
+
+Extraction rate: 95.2%
+
+✨ Citation extraction completed successfully!
+```
+
+### Step 2: Create Wrapper File
+
+**CRITICAL**: The wrapper MUST use the section-specific bibliography file, NOT the master ref.bib!
+
+```python
+# create_wrapper.py
+def create_wrapper(template_type, section_name, template_path):
+    """Create LaTeX wrapper for section compilation - MANDATORY SINGLE COLUMN FORMAT"""
+    
+    # MANDATORY: ALL PDFs must use single-column format
+    # CRITICAL: Use section-specific bibliography file!
+    wrapper_content = f"""
+% Auto-generated wrapper for {section_name} - MANDATORY SINGLE COLUMN FORMAT
+\\documentclass[12pt,a4paper]{{article}} % Single-column format ONLY
+\\usepackage{{geometry}}
+\\geometry{{a4paper, left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm}}
+\\usepackage{{times}}
+\\usepackage{{graphicx}}
+\\usepackage{{amsmath}}
+\\usepackage{{booktabs}}
+\\usepackage{{hyperref}}
+\\usepackage{{float}}
+
+% CRITICAL: Use section-specific bibliography!
+\\bibliographystyle{{ieee}}  % or appropriate style
+
+\\begin{{document}}
+\\title{{Section Review: {section_name.title()}\\\\
+\\large (Single-Column Format - Mandatory)}}
+\\author{{Draft Version}}
+\\date{{\\today}}
+\\maketitle
+
+\\input{{{section_name}}}
+
+% CRITICAL: Use section-specific bibliography file!
+\\bibliography{{{section_name}_refs}}  % NOT ref.bib!
+
+\\end{{document}}
+"""
+    
+    return wrapper_content
+```
+
+**Alternative using biblatex (if preferred):**
+```latex
+% For biblatex users
+\usepackage[backend=biber,style=ieee]{biblatex}
+\addbibresource{introduction_refs.bib}  % Section-specific!
+...
+\printbibliography
+```
+
+### Step 3: Compile Section PDF
+
+**IMPORTANT**: Always use the extraction utility before compiling:
+
+```bash
+#!/bin/bash
+# compile_section.sh
+
+SECTION=$1
+VERSION=$2
+
+echo "======================================"
+echo "Compiling ${SECTION}_v${VERSION}.pdf"
+echo "======================================"
+
+# Step 1: Extract section-specific citations
+echo "📚 Extracting citations for ${SECTION}..."
+~/.venv/ml_31123121/bin/python ../utilityScripts/extract_section_citations.py \
+  --section ${SECTION}.tex \
+  --master ref.bib \
+  --output ${SECTION}_refs.bib
+
+# Check if extraction was successful
+if [ $? -ne 0 ]; then
+    echo "❌ Citation extraction failed!"
+    exit 1
+fi
+
+# Step 2: Create wrapper if not exists
+if [ ! -f "${SECTION}_wrapper.tex" ]; then
+    echo "📄 Creating wrapper file..."
+    python create_wrapper.py ${SECTION}
+fi
+
+# Step 3: Compile LaTeX
+echo "🔨 Compiling LaTeX..."
+pdflatex -interaction=nonstopmode ${SECTION}_wrapper
+biber ${SECTION}_wrapper || bibtex ${SECTION}_wrapper
+pdflatex -interaction=nonstopmode ${SECTION}_wrapper
+pdflatex -interaction=nonstopmode ${SECTION}_wrapper
+
+# Step 4: Check for compilation errors
+if [ ! -f "${SECTION}_wrapper.pdf" ]; then
+    echo "❌ PDF compilation failed!"
+    echo "Check ${SECTION}_wrapper.log for errors"
+    exit 1
+fi
+
+# Step 5: Rename output
+mv ${SECTION}_wrapper.pdf ${SECTION}_v${VERSION}.pdf
+
+# Step 6: Clean auxiliary files
+rm -f ${SECTION}_wrapper.{aux,bbl,bcf,blg,log,out,run.xml}
+
+echo "✅ Successfully created ${SECTION}_v${VERSION}.pdf"
+echo "   Bibliography entries: $(grep -c '@' ${SECTION}_refs.bib)"
+```
+
+## Special Handling for Different Sections
+
+### Introduction
+- Include problem restatement for competitions
+- Ensure all literature review citations are included
+- May be longer than other sections
+
+### Methods
+- Include all algorithm blocks and pseudocode
+- Ensure mathematical notation is properly defined
+- Include symbol tables
+
+### Results
+- Must include all figures and tables
+- Ensure figure/table references work
+- May need landscape orientation for wide tables
+
+### Code Review (Special Case)
+- Don't create PDF for code review
+- Display .py files directly to user
+- Create summary of what each script does
+
+### Appendices
+- Combine all appendices into single PDF
+- Include AI usage report
+- Include code documentation if needed
+
+## Compilation Error Handling
+
+### Common Issues and Solutions
+
+1. **Missing citations**
+   ```bash
+   # Check which citations are missing
+   grep "Warning.*undefined references" ${SECTION}_wrapper.log
+   ```
+
+2. **Missing figures**
+   ```latex
+   % Add to wrapper preamble
+   \graphicspath{{figures/}{../figures/}{output/figures/}}
+   ```
+
+3. **Package conflicts**
+   ```latex
+   % Use same package load order as main template
+   % Check template documentation for known conflicts
+   ```
+
+4. **Bibliography style errors**
+   ```bash
+   # Try alternative compilation
+   pdflatex ${SECTION}_wrapper
+   bibtex ${SECTION}_wrapper  # instead of biber
+   pdflatex ${SECTION}_wrapper
+   pdflatex ${SECTION}_wrapper
+   ```
+
+## Version Management
+
+### Creating New Versions
+```bash
+# Check current version
+CURRENT_VERSION=$(ls ${SECTION}_v*.pdf 2>/dev/null | sed 's/.*_v\([0-9]*\).pdf/\1/' | sort -n | tail -1)
+NEXT_VERSION=$((CURRENT_VERSION + 1))
+
+# Compile new version
+./compile_section.sh ${SECTION} ${NEXT_VERSION}
+
+# Log the change
+echo "$(date '+%Y-%m-%d %H:%M') - ${SECTION}_v${NEXT_VERSION}.pdf created (${CHANGE_REASON})" >> version_log.txt
+```
+
+### Maintaining Version History
+- Never delete old versions during active development
+- Keep version_log.txt updated with change reasons
+- After approval, archive old versions to `archive/` folder
+
+## Integration with Review Process
+
+### Pre-compilation Checks
+1. Verify all cited papers exist in output/papers/
+2. Check that section content is complete
+3. Ensure no placeholder text remains
+
+### Post-compilation Checks
+1. PDF opens correctly
+2. All pages are readable
+3. Citations appear in bibliography
+4. Figures/tables display properly
+5. No LaTeX errors in log file
+
+### Preparing for User Review
+```python
+# prepare_review.py
+def prepare_section_review(section_name, version):
+    """Prepare section for user review"""
+    
+    pdf_file = f"{section_name}_v{version}.pdf"
+    
+    # Check PDF was created successfully
+    if not Path(pdf_file).exists():
+        return False, "PDF compilation failed"
+    
+    # Get compilation warnings
+    log_file = f"{section_name}_wrapper.log"
+    warnings = extract_warnings(log_file)
+    
+    # Prepare review summary
+    summary = f"""
+📄 Section PDF Ready for Review
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+File: {pdf_file}
+Size: {Path(pdf_file).stat().st_size / 1024:.1f} KB
+Pages: {count_pdf_pages(pdf_file)}
+Citations: {count_citations(f"{section_name}.tex")}
+Warnings: {len(warnings)}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"""
+    
+    if warnings:
+        summary += "\n⚠️ Compilation Warnings:\n"
+        for w in warnings[:5]:  # Show first 5
+            summary += f"  - {w}\n"
+    
+    return True, summary
+```
+
+### MANDATORY: Append Section Checklist
+After compiling each section PDF, you MUST append a comprehensive review checklist to BOTH the .tex file AND include it in the PDF compilation. This checklist appears at the end of the section content.
+
+```python
+def append_section_checklist(section_name, tex_file, specific_details):
+    """Append review checklist to section tex file"""
+    
+    checklist_template = f"""
+
+%% ========== SECTION REVIEW CHECKLIST ==========
+%% {section_name.title()} Section Checklist:
+%% 
+%% Review Items:
+{generate_review_items(section_name)}
+%% 
+%% Specific Questions:
+{generate_specific_questions(section_name, specific_details)}
+%% 
+%% Key Updates Made:
+{generate_key_updates(specific_details)}
+%% 
+%% Current Status:
+{generate_status_info(section_name, specific_details)}
+%% ========== END SECTION REVIEW CHECKLIST ==========
+"""
+    
+    # Append to tex file
+    with open(tex_file, 'a') as f:
+        f.write(checklist_template)
+    
+    # Also create a visible version for PDF
+    visible_checklist = checklist_template.replace('%%', '')
+    visible_checklist = f"""
+\\clearpage
+\\section*{{Review Checklist}}
+\\begin{{verbatim}}
+{visible_checklist}
+\\end{{verbatim}}
+"""
+    
+    # Append visible version
+    with open(tex_file, 'a') as f:
+        f.write(visible_checklist)
+```
+
+## Quick Reference Commands
+
+### Complete Workflow Example
+```bash
+# 1. Extract section-specific citations (MANDATORY!) - always use version numbers
+cd output
+~/.venv/ml_31123121/bin/python ../utilityScripts/extract_section_citations.py \
+  --section introduction_v1.tex --master ref.bib --output introduction_refs_v1.bib
+
+# 2. Create wrapper (if needed) that uses introduction_refs_v1.bib
+# Make sure wrapper uses \bibliography{introduction_refs_v1} NOT \bibliography{ref}!
+
+# 3. Compile the section PDF
+pdflatex introduction_v1_wrapper
+bibtex introduction_v1_wrapper  # or biber
+pdflatex introduction_v1_wrapper
+pdflatex introduction_v1_wrapper
+
+# 4. Output is already versioned
+mv introduction_v1_wrapper.pdf introduction_v1.pdf
+
+# 5. Check for errors
+grep -i "error\|warning.*undefined" introduction_wrapper.log
+
+# 6. View PDF and verify bibliography shows only section citations
+evince introduction_v1.pdf
+```
+
+### Using the Automated Script
+```bash
+# Simpler: use compile_section.sh which does all steps
+cd output
+./compile_section.sh introduction 1
+
+# Create next version after revisions
+./compile_section.sh introduction 2
+
+# Clean all auxiliary files
+rm -f *_wrapper.{aux,bbl,bcf,blg,log,out,run.xml}
+```
+
+### Verification Checklist
+- [ ] Section .tex file exists and is complete
+- [ ] Review checklist appended to .tex file
+- [ ] Citation extraction ran without errors
+- [ ] Section-specific .bib file created with correct entries
+- [ ] Wrapper uses section-specific bibliography (NOT master ref.bib)
+- [ ] PDF compiled without errors
+- [ ] Bibliography in PDF shows ONLY citations from this section
+- [ ] All figures and tables display correctly
+
+## Additional Examples from CLAUDE.md
+
+### Complete Bibliography Extraction Commands
+For each section, run the extraction command BEFORE creating the wrapper:
+
+```bash
+# Introduction section (v1)
+cd output
+~/.venv/ml_31123121/bin/python ../utilityScripts/extract_section_citations.py \
+  --section introduction_v1.tex --master ref.bib --output introduction_refs_v1.bib
+
+# Methods section (v1)
+~/.venv/ml_31123121/bin/python ../utilityScripts/extract_section_citations.py \
+  --section methods_v1.tex --master ref.bib --output methods_refs_v1.bib
+
+# Results section (v1)
+~/.venv/ml_31123121/bin/python ../utilityScripts/extract_section_citations.py \
+  --section resultsAndDiscussions_v1.tex --master ref.bib --output results_refs_v1.bib
+
+# Conclusions section (v1)
+~/.venv/ml_31123121/bin/python ../utilityScripts/extract_section_citations.py \
+  --section conclusions_v1.tex --master ref.bib --output conclusions_refs_v1.bib
+
+# For revised versions (v2, v3...):
+~/.venv/ml_31123121/bin/python ../utilityScripts/extract_section_citations.py \
+  --section introduction_v2.tex --master ref.bib --output introduction_refs_v2.bib
+```
+
+### Wrapper File Requirements from CLAUDE.md
+Each wrapper MUST include:
+
+1. **Section-specific bibliography file**
+```latex
+\bibliography{introduction_refs}  % NOT ref.bib!
+```
+
+2. **Single-column enforcement**
+```latex
+\documentclass[preprint,12pt]{elsarticle}  % Single-column
+% Never use \documentclass[twocolumn]{...}
+```
+
+3. **Proper section numbering**
+```latex
+\setcounter{section}{0}  % Introduction = 0 or 1 depending on template
+\setcounter{section}{1}  % Methods
+\setcounter{section}{2}  % Results
+\setcounter{section}{3}  % Conclusions
+```
+
+### Step-by-Step Compilation Process
+**CRITICAL**: This sequence MUST be followed for EVERY section:
+
+```bash
+# Step 1: Extract citations (with version)
+cd output
+~/.venv/ml_31123121/bin/python ../utilityScripts/extract_section_citations.py \
+  --section introduction_v1.tex --master ref.bib --output introduction_refs_v1.bib
+
+# Step 2: Create wrapper (introduction_v1_wrapper.tex)
+# [Create wrapper file with single-column format]
+
+# Step 3: Compile PDF
+pdflatex introduction_v1_wrapper
+bibtex introduction_v1_wrapper
+pdflatex introduction_v1_wrapper
+pdflatex introduction_v1_wrapper
+
+# Step 4: Output is already versioned
+mv introduction_v1_wrapper.pdf introduction_v1.pdf
+
+# Step 5: Verify bibliography
+# Open PDF and check that ONLY citations from introduction appear
+```
+
+### Section-Specific Bibliography Handling
+**IMPORTANT**: Each section's bibliography contains ONLY its citations:
+
+- `introduction_refs_v1.bib`: Only papers cited in introduction_v1.tex
+- `methods_refs_v1.bib`: Only papers cited in methods_v1.tex
+- `results_refs_v1.bib`: Only papers cited in resultsAndDiscussions_v1.tex
+- `conclusions_refs_v1.bib`: Only papers cited in conclusions_v1.tex
+- For v2, v3...: Use matching version numbers throughout
+
+**NEVER use the master ref.bib in section wrappers!**
+
+### Common Errors to Avoid
+1. ❌ Using `ref.bib` instead of section-specific bibliography
+2. ❌ Forgetting to extract citations before compilation
+3. ❌ Using two-column format in ANY PDF
+4. ❌ Proceeding to next section without compiling current section
+5. ❌ Not including review checklist in the tex file
+6. ❌ Not using version numbers (v1, v2, v3) in filenames
+7. ❌ Using descriptive names like _update, _revised, _final
+
+### Emergency Recovery
+If PDF compilation fails:
+1. Check LaTeX log for missing packages
+2. Verify citation extraction completed successfully
+3. Ensure all \cite{} commands have corresponding entries
+4. Check for figure/table path issues
+5. Add missing packages to wrapper preamble

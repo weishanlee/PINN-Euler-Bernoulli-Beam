@@ -1,0 +1,38 @@
+### Infographic Design Prompt
+
+(See the problem PDF or research outline in the `problem/` folder)
+
+You are a **professional knowledge-infographic designer**. Please carefully read the competition topic or research outline provided in the problem PDF file or research-outline file, and create an engaging and informative knowledge infographic in **PNG** format by following these steps:
+
+---
+
+#### 1. Analysis Stage
+- **Identify and extract** the core concepts, key points, and logical relationships between sub-topics from the competition topic.  
+- **Determine** the most suitable infographic type to represent this content (e.g., mind map, flowchart, concept map, comparison diagram).  
+- **Consider** the scoring requirements of both professors and peer reviewers.
+
+#### 2. Design Stage
+- **Create** a clear visual hierarchy, emphasizing the most important information.  
+- **Use** appropriate visual metaphors and symbols to make abstract concepts easier to understand.  
+- **Apply** a consistent color scheme (3–5 complementary colors) to enhance readability and aesthetics.  
+- **Balance** text with visual elements to ensure conciseness and completeness.  
+- **Use** visual grouping, contrast, and spatial relationships to convey connections between concepts.
+
+#### 3. Optimization Stage
+- **Simplify** complex information, removing unnecessary details.  
+- **Ensure** the infographic is self-contained and clearly communicates the complete message without requiring the original document.  
+- **Verify** that the infographic accurately reflects the core ideas of the competition topic.
+
+---
+
+#### 4. Output
+- **Save** the PNG file to the `output/figures/` folder.
+
+#### 5. Box Validation (If Using Boxes)
+If your infographic design includes boxes or rectangular elements:
+- **Run** `box_overlap_checker.py` to ensure no overlaps
+- **Use** `smart_box_layout.py` if automatic layout optimization is needed
+- **Ensure** text fits within box boundaries with readable font size (≥8pt)
+- See `prompts/prompts_figure_box_validation` for detailed guidelines
+
+Create this infographic in PNG format, ensuring that it communicates core information independently while being visually appealing. The infographic should be **conceptual**, not merely a rearrangement of textual content.

@@ -1,0 +1,63 @@
+# Language Restrictions for AI Detection Prevention
+
+## Prohibited Words List
+
+To prevent AI detection, avoid using the following words and phrases in academic papers:
+
+### Overused AI Indicators
+- Innovative
+- Meticulous
+- Intricate
+- Notable
+- Versatile
+- Noteworthy
+- Invaluable
+- Pivotal
+- Potent
+- Fresh
+- Ingenious
+
+### Adverbs to Avoid
+- Meticulously
+- Reportedly
+- Lucidly
+- Innovatively
+- Aptly
+- Methodically
+- Excellently
+- Compellingly
+- Impressively
+- Undoubtedly
+- Strategically
+
+### Additional AI-Characteristic Terms
+- Scholarly (when used as an adjective for approach/method)
+- Robust (when overused)
+- Comprehensive (when overused)
+- Cutting-edge
+- State-of-the-art (when overused)
+- Novel (when overused)
+- Significant (when overused without quantification)
+
+## Alternative Approaches
+
+Instead of using these words:
+1. Use specific, concrete descriptions
+2. Provide quantitative measures
+3. Use field-specific technical terminology
+4. Focus on factual statements rather than qualitative assessments
+5. Let results speak for themselves rather than using superlatives
+
+## Examples
+
+### Bad (AI-detected)
+"This innovative approach meticulously analyzes the intricate relationships..."
+
+### Good (Human-like)
+"This approach analyzes the relationships between variables using regression analysis..."
+
+### Bad (AI-detected)
+"The noteworthy results impressively demonstrate..."
+
+### Good (Human-like)
+"The results show a 23% improvement in accuracy compared to baseline methods..."

@@ -1,0 +1,79 @@
+⚠️ REVIEW PROMPT: This prompt is for reviewing already-generated content. 
+- Can be used by ChatGPT O3 Pro for external review
+- Can be used by Claude Code when user explicitly requests peer review
+- CANNOT be used during initial content generation
+
+**Peer‑Review Checklist – Bibliography (`ref.bib`)**
+
+⚑ **Purpose**  
+Ensure that every citation in `ref.bib` is genuine, correctly formatted, and discoverable through standard scholarly indexes (CrossRef, PubMed, Web of Science, arXiv, SSRN, or major conference digital libraries).
+
+────────────────────────────────────────────────────────────────────────
+⟡ *Verification Protocol*  
+Follow these steps **for each** `@article`, `@inproceedings`, `@book`, or other entry:
+
+1. **Existence check** (use Playwright MCP for genuine verification when available)  
+   • Search the exact *title + first author surname* in Google Scholar and at least one field‑specific index.  
+   • Record whether a matching record (same authors, year, venue) appears.  
+
+2. **Metadata fidelity**  
+   • Confirm: author list, year, journal / conference name, volume, pages, DOI, arXiv ID, and URL.  
+   • Flag discrepancies ≥ 1 field (e.g., wrong year or journal) for correction.  
+
+3. **Accessibility**  
+   • Verify that the DOI or persistent URL resolves (HTTP 200).  
+   • If pay‑walled, note “paywall” but do **not** flag as fake.  
+
+4. **Relevance**  
+   • Skim abstract (or PDF) to ensure the reference is *actually cited* and supports the statement made in the manuscript.  
+
+────────────────────────────────────────────────────────────────────────
+⟡ *Hallucination‑Detection Output* — **Write review opinions in a .md file**  
+
+> **This is a research bibliography. Please search the Internet for every reference to find out potential hallucination references.**  
+> **1. List fake references in English (one per line).**  
+> **2. For each fake reference, locate a genuine, thematically similar work and provide an in‑text citation suggestion in LaTeX form (e.g., `\citep{Smith2024}`) plus a fully formatted replacement BibTeX entry.**  
+> **3. Write review opinions in a .md file**
+
+**Example reporting format (replace with real findings)**  
+Fake references detected:
+– Doe, J. & Roe, R. (2019) “Deep Unicorn Networks.” Imaginary Journal of AI, 42(3), 1‑10.
+– Müller, L. (2020) “Quantum AI for Cats.” Proceedings of the 1st Symposium on Feline Computing, 99‑108.
+
+Proposed replacements:
+\citep{Smith2024,Johnson2023}
+
+@article{Smith2024,
+author = {Smith, A. and Lee, B.},
+title = {Deep Neural Networks for Real‑World Image Classification},
+journal = {IEEE Transactions on Pattern Analysis and Machine Intelligence},
+year = {2024},
+volume = {46},
+number = {5},
+pages = {1234--1247},
+doi = {10.1109/TPAMI.2024.00001}
+}
+
+@inproceedings{Johnson2023,
+author = {Johnson, C.},
+title = {Quantum Machine Learning: A Survey},
+booktitle = {Proceedings of NeurIPS 2023},
+year = {2023},
+pages = {1--15},
+url = {https://arxiv.org/abs/2301.01234}
+}
+
+────────────────────────────────────────────────────────────────────────
+⟡ *Formatting Audit*  
+
+- **Field completeness:** `author`, `title`, `year`, `journal`/`booktitle`, `volume|number` (if applicable), `pages`, `doi|url`.  
+- **LaTeX hygiene:** No unescaped special characters (`& % _ $ # { } ^ ~`).  
+- **Consistent casing:** Use sentence‑case or title‑case uniformly per journal guidelines.  
+- **Name ordering:** “Surname, Initial.” format for all authors; use `and` between multiple authors.  
+
+────────────────────────────────────────────────────────────────────────
+⟡ *Verdict Flags*  
+
+- ✔ **Accurate** – entry verified, no action.  
+- △ **Correctable** – exists but metadata errors; list required fixes.  
+- ✗ **Fake/Unverifiable** – list under *Fake references* and supply replacement.  

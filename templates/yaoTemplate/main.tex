@@ -1,0 +1,123 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{geometry}
+\geometry{
+  a4paper,
+  left   = 2.5cm,
+  right  = 2.5cm,
+  top    = 2.5cm,
+  bottom = 2.5cm
+}
+
+\usepackage{setspace}
+\usepackage{pdfpages}
+\usepackage{hyperref}
+\usepackage{tocloft}
+\usepackage{fancyhdr}   % <‑‑ new
+
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+
+\begin{document}
+
+% ---------- global header ----------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\scriptsize\textbf{Research Report}}
+\fancyhead[R]{\scriptsize\textbf{2025 S.T.~Yau High School Science Award (Asia)}}
+\renewcommand{\headrulewidth}{0pt}
+
+% ========== PAGE 1 (no page number) ==========
+\begin{center}
+  
+  {\bfseries 2025 S.T.~Yau High School Science Award (Asia)}\\
+  \vspace{1em}
+  {\bfseries Research Report}\\[1.2ex]
+\end{center}
+
+\vspace{2em}
+
+{\large\bfseries The Team}\par\medskip
+Registration Number:
+
+\bigskip
+Name of team member:
+
+School:
+
+Country:
+
+\bigskip\vspace{2em}
+Name of team member:
+
+School:
+
+Country:
+
+\bigskip\vspace{2em}
+Name of team member:
+
+School:
+
+Country:
+
+\bigskip\vspace{4em}
+Name of supervising teacher:
+
+Job Title:
+
+School:
+
+Country:
+
+\bigskip\vspace{2em}
+{\large\bfseries Title of Research Report}\par\medskip
+
+
+
+\vspace{4em}
+Date
+
+14 August 2025
+
+\newpage
+
+% ========== PAGES 2–3  (abstract) ==========
+\pagenumbering{roman}\setcounter{page}{1}
+\begin{center}
+    \textbf{Title of the project}\\
+    \vspace{0.5cm}
+    \textbf{Student A, Student B, Student C}
+\end{center}
+\input{abstract}
+\newpage
+\section*{Acknowledgement}
+% your text here
+
+% ========== PAGE 4  (scanned PDF) ==========
+\newpage
+\includepdf[pages=1]{commitment.pdf} % replace with actual file name if different
+
+% ========== MAIN CONTENT ==========
+\cleardoublepage
+\pagenumbering{arabic}\setcounter{page}{1}
+
+\tableofcontents
+\thispagestyle{plain}
+\newpage
+
+\input{introduction.tex}
+\input{methods.tex}
+\input{resultsAndDiscussions.tex}
+\input{conclusions.tex}
+
+% ---------- Bibliography ----------
+\bibliographystyle{unsrt}
+\bibliography{ref}
+
+% ---------- Appendices ----------
+\appendix
+\input{appendixAIReport.tex}
+\input{appendixCodes.tex}
+
+% ---------------------------------------------------------
+\end{document}
+

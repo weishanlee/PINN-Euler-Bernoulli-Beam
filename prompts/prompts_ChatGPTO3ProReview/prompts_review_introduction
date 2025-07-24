@@ -1,0 +1,56 @@
+⚠️ REVIEW PROMPT: This prompt is for reviewing already-generated content. 
+- Can be used by ChatGPT O3 Pro for external review
+- Can be used by Claude Code when user explicitly requests peer review
+- CANNOT be used during initial content generation
+
+Review ONLY introduction.tex under the following rules.  Structure feedback as:
+
+A. Strengths (bullet list)  
+B. Weaknesses & Required Revisions (bullet list labelled Major / Minor)  
+C. Recommendation: Accept / Minor Rev / Major Rev / Reject for this section
+
+Evaluation Criteria  
+1. **Context & Motivation** – Clearly explains the problem's importance with up‑to‑date, balanced literature review.  
+2. **Gap Identification** – Pinpoints exactly what is unknown or contested.  
+3. **Objective Statement** – Ends with a precise statement of aims/hypotheses matching the abstract and methods.  
+4. **Logical Flow** – Paragraph ordering leads the reader seamlessly from broad context to specific purpose.  
+5. **Citation Practice** – High‑quality, peer‑reviewed sources; no excessive self‑citation; correct BibTeX keys.  
+6. **Citation Balance** – Alternates between author-prominent (e.g., "Chen et al. [1] demonstrate...") and information-prominent (e.g., "Recent advances show... [2-4]") styles; NEVER uses dangling citations like "[5] demonstrates...".  
+7. **Original Contribution Claim** – Claims are proportional to evidence and not duplicated elsewhere.  
+8. **Language & Style** – Formal scientific tone, active voice where appropriate, free of grammatical errors.
+   - **For journal papers**: Should use narrative prose, not bullet-heavy lists
+   - **Check for**: Smooth paragraph transitions and connected flow
+9. **LaTeX & Formatting** – Sectioning commands comply with journal class; no over‑full hboxes; hyperlinks compile.
+   - **For journal papers**: NO subsections allowed in introduction
+
+Output:
+1. Generate comprehensive review following the criteria above
+2. Create directory `output/review_reports/` if it doesn't exist
+3. Save the review to `output/review_reports/introduction_peer_review.md`
+4. Include timestamp at the beginning of the review file
+5. Present the review results to the user after saving
+
+Review File Structure:
+```markdown
+# Introduction Section Peer Review
+Generated on: [timestamp]
+
+## A. Strengths
+• [List key strengths observed]
+
+## B. Weaknesses & Required Revisions
+
+### Major Issues
+• [Major issue 1 with specific line/paragraph reference]
+• [Major issue 2...]
+
+### Minor Issues
+• [Minor issue 1 with specific line/paragraph reference]
+• [Minor issue 2...]
+
+## C. Recommendation
+[Accept / Minor Rev / Major Rev / Reject] for this section
+
+## Detailed Evaluation by Criteria
+[Optional: Include detailed assessment of each criterion if needed]
+```

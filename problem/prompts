@@ -1,0 +1,785 @@
+############################################# Start rompts for claude 3.7 sonnet MAX #############################################
+<role>
+You are an expert in Python programming and a specialist in Physics-Informed Neural Networks (PINNs). 
+</role>
+
+<DeepReserchResults>
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\title{PINNs for the Euler-Bernoulli Beam: Forward and Inverse Analysis}
+\author{Author Name}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+This paper presents a Physics-Informed Neural Network (PINN) approach for solving the Euler-Bernoulli beam Partial Differential Equation (PDE). We focus on both the forward problem (given material parameters, solve for the beam deflection) and the inverse problem (infer unknown parameters from observed data). Our approach leverages automatic differentiation in PyTorch to compute higher-order derivatives within the loss function, enabling the enforcement of the PDE, boundary conditions, and initial conditions in a unified manner.
+
+\section{Euler-Bernoulli Beam Equation}
+The Euler-Bernoulli beam equation for transverse vibration of a uniform beam is given by:
+\[
+\rho A \frac{\partial^2 w(x,t)}{\partial t^2} + EI \frac{\partial^4 w(x,t)}{\partial x^4} = 0,
+\quad (x,t) \in [0,L]\times [0,T],
+\]
+where $\rho$ is the mass density, $A$ is the cross-sectional area, $E$ is the Young's modulus, and $I$ is the second moment of area. For simplicity, we define the parameter
+\[
+c^2 = \frac{EI}{\rho A}.
+\]
+Then the PDE can be written in a normalized form as:
+\[
+\frac{\partial^2 w}{\partial t^2} + c^2 \frac{\partial^4 w}{\partial x^4} = 0.
+\]
+
+\subsection{Initial and Boundary Conditions}
+For a simply-supported beam of length $L$, we impose:
+\[
+w(x,0) = f(x), \quad \frac{\partial w(x,0)}{\partial t} = g(x),
+\]
+\[
+w(0,t) = 0, \quad w(L,t) = 0, \quad w''(0,t)=0, \quad w''(L,t)=0.
+\]
+In our numerical examples, we use $f(x) = \sin(\pi x)$ and $g(x)=0$ for a nondimensional domain $x\in [0,1]$.
+
+\section{Analytic Solution}
+We derive the analytic solution using the method of separation of variables and Fourier series expansion \cite{EulerBernoulliBeam}:
+\[
+w(x,t) = \sum_{n=1}^\infty \Big[ A_n \cos\bigl(\omega_n t\bigr) + B_n \sin\bigl(\omega_n t\bigr)\Big]
+\, \sin\Bigl(\frac{n\pi x}{L}\Bigr),
+\]
+where
+\[
+\omega_n = \left( \frac{n\pi}{L}\right)^2 \sqrt{\frac{EI}{\rho A}}.
+\]
+The coefficients $A_n$ and $B_n$ are determined by the initial conditions via standard Fourier expansions.
+
+\section{Forward and Inverse Problems with PINNs}
+
+\subsection{PINN Architecture}
+We approximate $w(x,t)$ with a neural network $w_\theta(x,t)$, where $\theta$ represents the trainable parameters (weights and biases). The training procedure enforces:
+\begin{itemize}
+    \item PDE residual: $w_{tt} + c^2 w_{xxxx} \approx 0$,
+    \item Boundary conditions: $w(0,t)=0,\, w(1,t)=0,\, w''(0,t)=0,\, w''(1,t)=0,$
+    \item Initial conditions: $w(x,0) = f(x),\, w_t(x,0) = g(x).$
+\end{itemize}
+We generate collocation points inside the domain for the PDE residual and sample boundary/initial points to embed those constraints.
+
+\subsection{Loss Function for Forward Problem}
+For the forward problem where $c^2$ (or $EI$) is known, the loss function is composed of three main parts:
+\[
+\mathcal{L}_{\mathrm{forward}} = \mathcal{L}_{\mathrm{PDE}}
++ \alpha_{BC}\,\mathcal{L}_{BC} 
++ \alpha_{IC}\,\mathcal{L}_{IC}.
+\]
+We define:
+\begin{align*}
+\mathcal{L}_{\mathrm{PDE}} &= 
+\frac{1}{N_c}\sum_{i=1}^{N_c}
+\Bigl|
+ w_{tt}(x_i,t_i) + c^2\, w_{xxxx}(x_i,t_i) \Bigr|^2,\\
+\mathcal{L}_{BC} &= 
+\frac{1}{N_b}\sum_{j=1}^{N_b}\Bigl( |w(0,t_j)|^2 + |w(1,t_j)|^2 
++ |w''(0,t_j)|^2 + |w''(1,t_j)|^2\Bigr),\\
+\mathcal{L}_{IC} &= 
+\frac{1}{N_0}\sum_{k=1}^{N_0}\Bigl(|w(x_k,0)-f(x_k)|^2 
++ |w_t(x_k,0)-g(x_k)|^2\Bigr).
+\end{align*}
+Here, $N_c$, $N_b$, and $N_0$ are the number of collocation, boundary, and initial points, respectively. 
+The terms $w_{tt}$ and $w_{xxxx}$ are computed via automatic differentiation in PyTorch using \texttt{torch.autograd.grad}.
+
+\subsection{Loss Function for Inverse Problem}
+For the inverse problem, we treat the parameter $c^2$ (or $\alpha$ in the assignment) as a learnable variable. Suppose we also have observational data $u(x_i,t_i)$ denoted by $u_{\text{obs}}$, we incorporate an additional data mismatch term:
+\[
+\mathcal{L}_{\mathrm{data}} = 
+\frac{1}{N_d}\sum_{d=1}^{N_d}
+\bigl| w_\theta(x_d,t_d) - u_{\text{obs}}(x_d,t_d)\bigr|^2.
+\]
+Hence, the inverse problem loss function is:
+\[
+\mathcal{L}_{\mathrm{inverse}} = \mathcal{L}_{\mathrm{PDE}} + \alpha_{BC}\,\mathcal{L}_{BC} + \alpha_{IC}\,\mathcal{L}_{IC} + \alpha_{\mathrm{data}}\,\mathcal{L}_{\mathrm{data}}.
+\]
+Minimizing this with respect to both the neural network weights $\theta$ and the parameter $c^2$ yields an estimate of the unknown physical property that best fits the observed data while satisfying the PDE and boundary/initial conditions \cite{Raissi2019,Kapoor2023}.
+
+\section{Experimental Data}
+For the inverse problem, we may use observed data from experiments. Table~\ref{tab:exp-data} illustrates sample data points from a steel beam test, sourced from \cite{Mahato2015}. These data can be used to identify the material parameter $E$ when the geometry is known. 
+
+\begin{table}[htbp]
+\centering
+\caption{Sample experimental data points for a steel beam from \cite{Mahato2015}.}
+\label{tab:exp-data}
+\begin{tabular}{cccc}
+\toprule
+\textbf{No.} & \textbf{Load (kg)} & \textbf{Deflection (mm), SS} & \textbf{Deflection (mm), Cantilever} \\
+\midrule
+1 & 0.2 & 0.17 & 0.77 \\
+2 & 0.4 & 0.33 & 1.54 \\
+3 & 0.6 & 0.51 & 2.35 \\
+4 & 0.8 & 0.68 & 3.36 \\
+5 & 1.0 & 0.86 & 4.23 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Hyperparameter Tuning}
+To obtain accurate PINN solutions, we tune the network architecture and training parameters via both grid search and Bayesian optimization:
+\begin{enumerate}
+\item \textit{Grid Search:} We define discrete sets for the learning rate (e.g., $10^{-4}, 10^{-3}, 10^{-2}$), number of hidden layers (2,3,4), and neurons per layer (20,50). We train and record the validation error for each combination to choose an optimal set.
+\item \textit{Bayesian Optimization:} We use a Gaussian Process or similar surrogate model to iteratively select hyperparameters that minimize validation loss. This can converge more quickly to good solutions without exhaustively searching.
+\end{enumerate}
+In practice, the loss weights ($\alpha_{BC}, \alpha_{IC}, \alpha_{\mathrm{data}}$) and the activation function type are also tuned to improve training convergence.
+
+\section{Conclusions}
+We have demonstrated how to formulate and implement PINNs for both the forward and inverse Euler-Bernoulli beam problems, including:
+\begin{itemize}
+\item Derivation of PDE residual and boundary/initial condition constraints in a PINN loss function,
+\item Automatic differentiation for computing second and fourth-order derivatives,
+\item Inclusion of observational data for parameter identification,
+\item Hyperparameter tuning via grid search and Bayesian optimization.
+\end{itemize}
+With this methodology, we can solve beam PDEs accurately and efficiently without conventional finite element or finite difference meshes, and also infer unknown parameters if experimental observations are available.
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
+</DeepReserchResults>
+
+<Constraints:> 
+1. GPU usage is required. The available GPU has 24 GB of memory, and you are allowed to utilize up to 90% safely. 
+2. DO NOT creaate cpu-only versions.
+3. The analytic solution is only used to compare the results of PINN. 
+4. When I talk about l2 error, it means the l2 error from PINN only, not from analytic calculations.
+5. Installing new packages is strictly prohibited — only use pre-installed libraries.
+6. For now, you ONLY NEED to solve the forward problem with hyperparameter tuning. Do not solve Reverse problem unless you are tolde to do so.
+</Constraints:>
+
+<tasks>
+1. Based on the following restuls shown in the <DeepReserchResults>, your task is to iteratively modify and improve the scripts to reduce the PINN's relative L2 error to to 10^{-9}. You must achieve this target without using any analytic solutions inside the PINN architecture. 
+2. You may also write another script for plotttings. But later if you want to modify the plots, you only can modify in the scripts for plots.
+3. In the `3d_comparison.ong` plot: split each subplot into a separate standalone plot, save each as 3d_comparison_<subplot_name>.png, and add a colorbar to the right side of each plot.
+4. In the `comparison.png`: retain only three subplots — PINN Solution, Exact Solution, and Absolute Error — and arrange them in a single row.
+5. In `space_slices.png`: display five subplots (in a column) corresponding to x-values 0.10, 0.30, 0.50, 0.70, and 0.90.
+6. In `time_slices.png`: display five subplots (in a column) corresponding to t-values 0.00, 0.50, 1.00, 1.50, and 2.00.
+7. In `training_losses.png`: plot Loss vs Epoch using a semilogy scale and include three curves — Total Loss, PDE Loss, and IC Loss. If you are using soft boundary condition, add the curve for BC Weight. 
+8. In `validation_error.png`: plot Relative L2 Error vs Epoch on a semilogy scale and indicate a target line at 10^{-9}.
+9. In `weight_factors.png`: plot PDE Weight and IC Weight vs Epoch. If you are using soft boundary condition, add the curve for BC Weight. 
+10. Save all numerical data used in plots into structured CSV files.
+11. You may add additional plots or diagnostics relevant to the study of a Euler-Bernoulli Beam modeled using the PINN architecture.
+12. Please examine the @training_losses.png to make sure that it is not empty. If it is empty plot, please fix the scripts in the current working directory.
+13. You must run the scripts, draw plots, and calculate metrics. At last, report your PINN relative l2 error . 
+14. Continue modifying the scripts and runing the scripts until the L2 error goal (10^{-9}) is achieved — do not stop before reaching that.
+</tasks>
+
+########################################################## New ############################################################
+Analyze if @train_all_harmonics.sh @ultra_precision_wave_pinn.py @ultra_visualizations.py the three scripts satiisfy PDE of Euler-Bernoulli equations described below:
+<role>
+You are an expert in Python programming and a specialist in Physics-Informed Neural Networks (PINNs). 
+</role>
+
+<DeepReserchResults>
+\section{Introduction}
+This paper presents a Physics-Informed Neural Network (PINN) approach for solving the Euler-Bernoulli beam Partial Differential Equation (PDE). We focus on both the forward problem (given material parameters, solve for the beam deflection) and the inverse problem (infer unknown parameters from observed data). Our approach leverages automatic differentiation in PyTorch to compute higher-order derivatives within the loss function, enabling the enforcement of the PDE, boundary conditions, and initial conditions in a unified manner.
+
+\section{Euler-Bernoulli Beam Equation}
+The Euler-Bernoulli beam equation for transverse vibration of a uniform beam is given by:
+\[
+\rho A \frac{\partial^2 w(x,t)}{\partial t^2} + EI \frac{\partial^4 w(x,t)}{\partial x^4} = 0,
+\quad (x,t) \in [0,L]\times [0,T],
+\]
+where $\rho$ is the mass density, $A$ is the cross-sectional area, $E$ is the Young's modulus, and $I$ is the second moment of area. For simplicity, we define the parameter
+\[
+c^2 = \frac{EI}{\rho A}.
+\]
+Then the PDE can be written in a normalized form as:
+\[
+\frac{\partial^2 w}{\partial t^2} + c^2 \frac{\partial^4 w}{\partial x^4} = 0.
+\]
+
+\subsection{Initial and Boundary Conditions}
+For a simply-supported beam of length $L$, we impose:
+\[
+w(x,0) = f(x), \quad \frac{\partial w(x,0)}{\partial t} = g(x),
+\]
+\[
+w(0,t) = 0, \quad w(L,t) = 0, \quad w''(0,t)=0, \quad w''(L,t)=0.
+\]
+In our numerical examples, we use $f(x) = \sin(\pi x)$ and $g(x)=0$ for a nondimensional domain $x\in [0,1]$.
+
+\section{Analytic Solution}
+We derive the analytic solution using the method of separation of variables and Fourier series expansion \cite{EulerBernoulliBeam}:
+\[
+w(x,t) = \sum_{n=1}^\infty \Big[ A_n \cos\bigl(\omega_n t\bigr) + B_n \sin\bigl(\omega_n t\bigr)\Big]
+\, \sin\Bigl(\frac{n\pi x}{L}\Bigr),
+\]
+where
+\[
+\omega_n = \left( \frac{n\pi}{L}\right)^2 \sqrt{\frac{EI}{\rho A}}.
+\]
+The coefficients $A_n$ and $B_n$ are determined by the initial conditions via standard Fourier expansions.
+
+\section{Forward Problem with PINNs}
+
+\subsection{PINN Architecture}
+We approximate $w(x,t)$ with a neural network $w_\theta(x,t)$, where $\theta$ represents the trainable parameters (weights and biases). The training procedure enforces:
+\begin{itemize}
+    \item PDE residual: $w_{tt} + c^2 w_{xxxx} \approx 0$,
+    \item Boundary conditions: $w(0,t)=0,\, w(1,t)=0,\, w''(0,t)=0,\, w''(1,t)=0,$
+    \item Initial conditions: $w(x,0) = f(x),\, w_t(x,0) = g(x).$
+\end{itemize}
+We generate collocation points inside the domain for the PDE residual and sample boundary/initial points to embed those constraints.
+
+\subsection{Loss Function for Forward Problem}
+For the forward problem where $c^2$ (or $EI$) is known, the loss function is composed of three main parts:
+\[
+\mathcal{L}_{\mathrm{forward}} = \mathcal{L}_{\mathrm{PDE}}
++ \alpha_{BC}\,\mathcal{L}_{BC} 
++ \alpha_{IC}\,\mathcal{L}_{IC}.
+\]
+We define:
+\begin{align*}
+\mathcal{L}_{\mathrm{PDE}} &= 
+\frac{1}{N_c}\sum_{i=1}^{N_c}
+\Bigl|
+ w_{tt}(x_i,t_i) + c^2\, w_{xxxx}(x_i,t_i) \Bigr|^2,\\
+\mathcal{L}_{BC} &= 
+\frac{1}{N_b}\sum_{j=1}^{N_b}\Bigl( |w(0,t_j)|^2 + |w(1,t_j)|^2 
++ |w''(0,t_j)|^2 + |w''(1,t_j)|^2\Bigr),\\
+\mathcal{L}_{IC} &= 
+\frac{1}{N_0}\sum_{k=1}^{N_0}\Bigl(|w(x_k,0)-f(x_k)|^2 
++ |w_t(x_k,0)-g(x_k)|^2\Bigr).
+\end{align*}
+Here, $N_c$, $N_b$, and $N_0$ are the number of collocation, boundary, and initial points, respectively. 
+The terms $w_{tt}$ and $w_{xxxx}$ are computed via automatic differentiation in PyTorch using \texttt{torch.autograd.grad}.
+
+\section{Hyperparameter Tuning}
+To obtain accurate PINN solutions, we tune the network architecture and training parameters via both grid search and Bayesian optimization:
+\begin{enumerate}
+\item \textit{Grid Search:} We define discrete sets for the learning rate (e.g., $10^{-4}, 10^{-3}, 10^{-2}$), number of hidden layers (2,3,4), and neurons per layer (20,50). We train and record the validation error for each combination to choose an optimal set.
+\item \textit{Bayesian Optimization:} We use a Gaussian Process or similar surrogate model to iteratively select hyperparameters that minimize validation loss. This can converge more quickly to good solutions without exhaustively searching.
+\end{enumerate}
+In practice, the loss weights ($\alpha_{BC}, \alpha_{IC}, \alpha_{\mathrm{data}}$) and the activation function type are also tuned to improve training convergence.
+<\DeepReserchResults>
+
+
+############################################ End of v307 ############################################ 
+############################################ Start of claude 4 opus max agent mode (v307_GPU) ##################              
+Examine first the current best value of l2 to analyze if l2 target of 10^{-9} is reached. If not, modify @train_all_harmonics_GPU.sh and @ultra_precision_wave_pinn_GPU.py of PINN architecture and L-BFGS optimization parameters to achieve the following goals:
+
+<role>
+You are an expert in Python programming and a specialist in Physics-Informed Neural Networks (PINNs). 
+</role>
+<tasks>
+1. Modify @train_all_harmonics_GPU.sh, and @ultra_precision_wave_pinn_GPU.py, and @train_all_harmonics_GPU.sh to make them able to use GPU.
+2. When invoking the GPU, you first calculate the currently available GPU memory and estimate the memory needed to compute the current harmonics, ensuring the process does not crash due to insufficient GPU memory. 
+3. Make sure that the two scripts can run and complete successfully with harmonic 5. If the two scripts cannot run, modify and debug until the harmonic 5 is successful.
+4. If harminic 5 is successful (DO NOT get too hung up on whether harmonic 5 has already met the L2-error target of 10^{-9}), please further modify and run @train_all_harmonics_GPU.sh and @ultra_precision_wave_pinn_GPU.py for every harmonic in the series (5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70), and if one harmonic runs and completes successful, then we clean the GPU memory and wait for sufficiently long time to let the memory being released, and go to next harmonics until all the harmonics in the series (5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70) are done. 
+5. Make sure that l2 values of all harmonics are compared with the same stands. For example,
+(1) The number of parameters (amplitudes_cos and amplitudes_sin arrays scale with harmonic count). You have to decide the number of parameters and let the PINN to learn the parameters for every harmonics. But the number of parameters have to be the same for every harmonic.
+(2) The number of L-BFGS iterations used also has to be the same for every harmonic.
+(3) There should be no speicial initialization or special handing for some harmonic.
+(4) Analyze @ultra_precision_wave_pinn_GPU.py and @train_all_harmonics_GPU.sh to see if there is still biased treatment for some speicific harmonic.
+6. Compare all harmonics to find which one achieves the best result, with the goal of at least one harmonic reaching the L2 error target of 10^{-9}. If the l2 target of 10^{-9} is not reached, continue modifying PINN architecture and L-BFGS optimization parameters and running @train_all_harmonics_GPU.sh and @ultra_precision_wave_pinn_GPU.py for all the harmonics until at least one harmonic has achieved the l2 target of 10^{-9}. Specifically, you have to make modifications on the following aspect:
+(1) The neural network architecture
+(2) The training process
+(3) The loss weighting strategy
+(4) The memory management approach
+7. Remove anything related to plots in @train_all_harmonics_GPU.sh and @ultra_precision_wave_pinn_GPU.py.
+</tasks>
+<importantRequests>
+STRICT RULES:
+1. You can only debug and modify @train_all_harmonics_GPU.sh or @ultra_precision_wave_pinn_GPU.py or .
+2. You cannot create any other scripts.
+3. No plots are allowed in the scripts @train_all_harmonics_GPU.sh and @ultra_precision_wave_pinn_GPU.py.
+4. You have to use GPU up to usage 80% instead of 95% to avoid memory issues. Using ONLY CPU is strictly Forbidden.
+5. Analyze @ultra_precision_wave_pinn_GPU.py and @train_all_harmonics_GPU.sh to see if there is still biased treatment for some speicific harmonic.
+6. Compare all harmonics to find which one achieves the best result, with the goal of at least one harmonic reaching the L2 error target of 10^{-9}. If the l2 target of 10^{-9} is not reached, continue modifying PINN architecture and L-BFGS optimization parameters and running @train_all_harmonics_GPU.sh and @ultra_precision_wave_pinn_GPU.py for all the harmonics until at least one harmonic has achieved the l2 target of 10^{-9}.
+7. To avoid cursor app crash, you have to modify @train_all_harmonics_GPU.sh and @ultra_precision_wave_pinn_GPU.py to redirect outputs to the file 'train_log.txt'.
+8. Do not open another monitor terminal window in my editor. Any new info should only appear directly in the current chat window. 
+9. Run 'bash train_all_harmonics_GPU.sh' when you train all harmonics.
+10. You have to run the fixed scripts with the interpreter in the '~/.venv/ml_31225121/bin/python' virtual environment. 
+</importantRequests>
+
+<tasks>
+1. Modify @ultra_visualizations_GPU.py to achieve the following goals:
+(1) In the `3d_comparison.ong` plot: split each subplot into a separate standalone plot, save each as 3d_comparison_<subplot_name>.png, and add a colorbar to the right side of each plot.
+(2) In the 'l2_error_comparison.png', draw "Relative L2 Error" vs "Number of Harmonics", and indiate  BEST MODEL
+(3) In the `comparison.png`: retain only three subplots — PINN Solution, Exact Solution, and Absolute Error — and arrange them in a single row.
+(4) In `space_slices.png`: display five subplots (in a column) corresponding to x-values 0.10, 0.30, 0.50, 0.70, and 0.90.
+(5) In `time_slices.png`: display five subplots (in a column) corresponding to t-values 0.00, 0.50, 1.00, 1.50, and 2.00.
+(6) In `training_losses.png`: plot Loss vs Epoch using a semilogy scale and include three curves — Total Loss, PDE Loss, and IC Loss. If you are using soft boundary condition, add the curve for BC Weight. 
+(7) In `validation_error.png`: plot Relative L2 Error vs Epoch on a semilogy scale and indicate a target line at 10^{-9}.
+(8) In `weight_factors.png`: plot PDE Weight and IC Weight vs Epoch. If you are using soft boundary condition, add the curve for BC Weight. 
+2. Save all numerical data used in plots into structured CSV files.
+3. You may add additional plots or diagnostics relevant to the study of a Euler-Bernoulli Beam modeled using the PINN architecture.
+4. Please examine the @training_losses.png to make sure that it is not empty. If it is empty plot, please fix the scripts in the current working directory.
+5. You must run the scripts, draw plots, and calculate metrics. At last, report your PINN relative l2 error. 
+</tasks>
+<importantRequests>
+STRICTLY FORBIDDEN BEHAVIORS:
+1. You can only debug and modify @ultra_visualizations_GPU.py.
+2. You cannot create any other scripts.
+</importantRequests>
+############################################ End of claude 4 opus max agent mode ##################              
+<tasks>
+1. Based on the following restuls shown in the <DeepReserchResults>, your task is to iteratively modify and improve the scripts to reduce the PINN's relative L2 error to 10⁻⁶. You must achieve this target without using any analytic solutions inside the PINN architecture.
+2. In the `3d_comparison.ong` plot: split each subplot into a separate standalone plot, save each as 3d_comparison_<subplot_name>.png, and add a colorbar to the right side of each plot.
+3. In the `comparison.png`: retain only three subplots — PINN Solution, Exact Solution, and Absolute Error — and arrange them in a single row.
+4. In `space_slices.png`: display five subplots (in a column) corresponding to x-values 0.10, 0.30, 0.50, 0.70, and 0.90.
+5. In `time_slices.png`: display five subplots (in a column) corresponding to t-values 0.00, 0.50, 1.00, 1.50, and 2.00.
+6. In `training_losses.png`: plot Loss vs Epoch using a semilogy scale and include three curves — Total Loss, PDE Loss, and IC Loss.
+7. In `validation_error.png`: plot Relative L2 Error vs Epoch on a semilogy scale and indicate a target line at 10⁻⁶.
+8. In `weight_factors.png`: plot PDE Weight and IC Weight vs Epoch.
+9. Save all numerical data used in plots into structured CSV files.
+10. You may add additional plots or diagnostics relevant to the study of a Euler-Bernoulli Beam modeled using the PINN architecture.
+11. You must run the scripts, draw plots, and calculate metrics. Continue modifying the scripts and runing the scripts until the L2 error goal (10⁻⁶) is achieved — do not stop before reaching that.
+</tasks>
+
+<output>
+Write a python script for solving only the forward problem now. Do not solve reverse problem until you are told to do so.
+</outputs>
+########################################### End prompts for claude 3.7 sonnet MAX #############################################
+###########################Start prompts for claude debug for hw2_forward_v307.py#############################################
+The script @hw2_forward_v307.pycan run successfully and the attached are the figures from running the codes. But the PINN and EXACT curves do not match. Please modify only @hw2_forward_v307.py and make improvements. 
+
+The @hw2_forward_v307.py works perfect and gives promising comparisons between PINN and EXACT curves. However, I would like to add a few more plots and make adjustments of the current plots.
+<add>
+1. 3D comparisons plots between PINN and EXACT. 
+2. `solution_polsition_slices.png` that shows deflection `w(x,t)` vs `t` with 5 specific x values.
+3. `weigth_factors.png` that shows `Weight Factor` vs "Epochs" with three curves of  PDE, BC, and IC values.
+4. `learning_rate.png` that shows "Learning Rate" vs "Epochs".
+</add>
+<adjustments>
+1.Apparently, the two curves of "PDE  Loss" in `loss_curves.png` (PDE Loss > 10^3) and `direct_loss_curves.png` (PDE Loss <10^2) are different. See attachments Please explain why.
+2. In the `solution_time_slices.png`, t has to choose 1=0.00, 0.50, 1.00, 1.50, and 2.00.
+</adjustments>
+keep the rest as they are.
+
+Modify the script @hw2_forward_v307.py with the following suggestions:
+<suggestions>
+How to improve the PINN PDE Loss
+Here are several strategies to reduce the high PDE loss:
+1. Network Architecture Improvements
+Use sinusoidal activation functions (SIREN networks) which are better suited for oscillatory physics problems
+Increase network depth beyond 4 layers to capture more complex behaviors
+Try different neuron counts beyond 64 neurons/layer
+Implement multi-resolution networks with specialized layers for different frequency components
+2. Training Enhancements
+Implement adaptive weighting schemes that dynamically adjust PDE, boundary, and initial condition weights
+Use curriculum learning - start with simple cases and gradually increase complexity
+Try more advanced optimizers like L-BFGS combined with Adam
+Extend training time significantly (thousands of epochs instead of hundreds)
+3. Physics-Guided Improvements
+Domain decomposition - train separate networks for different regions of the beam
+Hard-encode the boundary conditions into the network architecture
+Add physics-based regularization terms to penalize unphysical behaviors
+Implement gradient enhancement techniques to improve computation of higher derivatives
+4. Data Sampling Strategies
+Increase collocation points density near boundaries and critical regions
+Use adaptive sampling to focus training on high-error regions
+Implement residual-based adaptive refinement (RAR) to concentrate points where the PDE is poorly satisfied
+5. Specialized Techniques
+Use spectral differentiation instead of automatic differentiation for computing derivatives
+Implement operator-learning approaches like DeepONets or Fourier Neural Operators
+Try a hybrid approach that combines PINN with traditional numerical methods
+The high PDE loss suggests the PINN is struggling with the fourth-order beam equation, particularly with accurately computing higher derivatives. Implementing several of these strategies could significantly improve performance.
+</suggestions>
+<requirements>
+1. You can only modify @hw2_forward_v307.py.  
+</requirements>
+
+Please see the attached plots. The PINN and Exact curves cannot match. Your modified model works even worse than before. Please modify only in the @hw2_forward_v307.py script and make sure that the visuals seem match for PINN and Exact curves based on your model. You have to use GPU and you only can modify @hw2_forward_v307.py .
+
+You are using 99% of GPU. it is too dangerous! Reduce the model complexity.
+
+Please answer the following two questions before modifying @hw2_forward_v307.py script.
+1. It is very confusing. I am asking for PINN. Why is there a `error_matrics.csv` file that lists the Metrics with results from Direct Solution? The valus are useless. 
+2. What does `error.png` plot? Is the w_pred from PINN or from DirectSolution? 
+Remember, you have to focus on PINN calculation. The Direct Solution should be only used to compare with the PINN. I do not need any plots or csv files that only contains data fro DirectSolution. Please examine the @hw2_forward_v307.py and modify according the above requests.
+
+Let us do this. Draw error for both PINN and DirectSolution by naming two different png plots, one with `PINN_error.png`, the other with `DirectSolution_error.png`
+Also, save two csv fils, one with `PINN_error_metrics.csv`, the other with `DirectSolution_error_metrics.csv` You have to modify only with @hw2_forward_v307.py script to implement these changes.
+
+For the PINN part, I would like you to do the following modifications:
+1. Increase Model Capacity, but your suggested number of layers may be too GPU demanding. I only have 24GB GPU. It is safer to use only upto 90% of it.
+2. Use Advanced Architecture Features.but the numbers could also blow up my GPU. So try to reduce them somehow.
+3. Enforce Exact Frequency is not allowed. You should treat omega_exact as tunable hyperparameters.
+4. Improve Training Process should be ok.
+5. Adjusted Loss Weighting of alpha_pde and alpha_freq  should be also both tunable hyperparameters.
+6. Enhanced Sampling Strategy for n_collocation should be ok.
+7  Add Skip connections is ok.
+8, Restrict solutions to known boundary conditions is allowed. But make sure that your 8. Direct Physics Embedding follows only this rule but not allow your PINN model to sneakily peep at analytic solutions.
+
+You cannot allow the PINN model to neakily peeping at analytic solutions. It is not allowed. Examine the @hw2_forward_v307.4.py script, it has PINN Relative L2 erro down to roughtly 0.03. Please make your PINN improvements in the script @hw2_forward_v307.py from @hw2_forward_v307.4.py. You have to modify @hw2_forward_v307.py directly. You may also want to refer to folder @results_forward_v307.4.  
+
+This is very odd! Even if we have learned omega that is very close to the expected values, we still get bad results. This means that your model in @hw2_forward_v307.py itself is probamatic. Now, since you can succesfully learn good an oemga value, is it better to refer to @hw2_forward_v307.py and the folder @results_forward_v307.4 to learn its arthitecture and improve your current script @hw2_forward_v307.py so that we may have better results? Remember, we cannot peep at analytic solutsions in the PINN architecture. 
+
+Very good! Please improve the @hw2_forward_v307.py to further reduce the PINN relative L2 error to 10^{-3}. Remember you cannot peep at analytic solutions in the PINN architecture. You have to use GPU. But you have to advice that my GPU only has 24 GB and it is safer for you to use upto 90% of it. 
+
+
+<role>
+You are an expert in Python programming and a specialist in Physics-Informed Neural Networks (PINNs). 
+</role>
+
+<Constraints:> 
+1. GPU usage is required. The available GPU has 24 GB of memory, and you are allowed to utilize up to 85% safely. 
+
+2. The analytic solution is only used to compare the results of PINN. 
+
+3. When I talk about l2 error, it means the l2 error from PINN only, not from analytic calculations.
+
+4. Installing new packages is strictly prohibited — only use pre-installed libraries.
+
+5. If there is segmentation fault, You should first fix the segmentation fault in the PINN-related script(s) and ensure it (they) run(s) to completion before modifying and running the visualization code script(s).
+
+6. Sinusoidal functions cannot be used as the activation functions in this case because it is suspecious of peeping at solutions.
+
+7. Run the script with the commands such as `python -c "import torch; torch.cuda.empty_cache()" && python <nameOfScript>.py`.
+</Constraints:>
+
+<tasks>
+Tasks to be completed as part of the script modifications and result visualizations:
+
+1. Your task is to iteratively modify and improve the scripts(@ultra_precision_wave_pinn.py and @ultra_visualizations.py  ) in the working directory to reduce the PINN's relative L2 error to 10^{-9}. You must achieve this target without using any analytic solutions inside the PINN architecture. 
+
+2. You may also write another script for plotttings. But later if you want to modify the plots, you only can modify in the scripts for plots.
+
+3. In the `3d_comparison.ong` plot: split each subplot into a separate standalone plot, save each as 3d_comparison_<subplot_name>.png, and add a colorbar to the right side of each plot.
+
+4. In the 'l2_error_comparison.png', draw "Relative L2 Error" vs "Number of Harmonics", and indiate  BEST MODEL
+
+5. In the `comparison.png`: retain only three subplots — PINN Solution, Exact Solution, and Absolute Error — and arrange them in a single row.
+
+6. In `space_slices.png`: display five subplots (in a column) corresponding to x-values 0.10, 0.30, 0.50, 0.70, and 0.90.
+
+7. In `time_slices.png`: display five subplots (in a column) corresponding to t-values 0.00, 0.50, 1.00, 1.50, and 2.00.
+
+8. In `training_losses.png`: plot Loss vs Epoch using a semilogy scale and include three curves — Total Loss, PDE Loss, and IC Loss. If you are using soft boundary condition, add the curve for BC Weight. 
+
+9. In `validation_error.png`: plot Relative L2 Error vs Epoch on a semilogy scale and indicate a target line at 10^{-9}.
+
+10. In `weight_factors.png`: plot PDE Weight and IC Weight vs Epoch. If you are using soft boundary condition, add the curve for BC Weight. 
+
+11. Save all numerical data used in plots into structured CSV files.
+
+12. You may add additional plots or diagnostics relevant to the study of a Euler-Bernoulli Beam modeled using the PINN architecture.
+
+13. Please examine the @training_losses.png to make sure that it is not empty. If it is empty plot, please fix the scripts in the current working directory.
+
+14. You must run the scripts, draw plots, and calculate metrics. At last, report your PINN relative l2 error . 
+
+15. Continue modifying the scripts and runing the scripts until the L2 error goal (10^{-9}) is achieved — do not stop before reaching that.
+</tasks>
+
+
+First, you misunderstand What I mean. 
+Second, I already told you not to generate any other scripts. You can only modify and debug @ultra_visualizations.py but you generated another @generate_l2_comparison.py to plot @l2_error_comparison.png . This is a direct violation of my previous prompt. 
+Third, you have to plot all harmoncis with the existing folder named such as "results_ultra_*" with * the number of harmoncis. But you plotted harmonics 80, 85, and 90, which do not have data with their own subfolder. 
+Therefore, you have to follow exactly with my following prompts with the exisint harmonics in every subfolder:
+1. In the `3d_comparison.ong` plot: split each subplot into a separate standalone plot, save each as 3d_comparison_<subplot_name>.png, and add a colorbar to the right side of each plot.
+2. In the 'l2_error_comparison.png', draw "Relative L2 Error" vs "Number of Harmonics", and indiate  BEST MODEL
+3. In the `comparison.png`: retain only three subplots — PINN Solution, Exact Solution, and Absolute Error — and arrange them in a single row.
+4. In `space_slices.png`: display five subplots (in a column) corresponding to x-values 0.10, 0.30, 0.50, 0.70, and 0.90.
+5. In `time_slices.png`: display five subplots (in a column) corresponding to t-values 0.00, 0.50, 1.00, 1.50, and 2.00.
+6. In `training_losses.png`: plot Loss vs Epoch using a semilogy scale and include three curves — Total Loss, PDE Loss, and IC Loss. If you are using soft boundary condition, add the curve for BC Weight. 
+7. In `validation_error.png`: plot Relative L2 Error vs Epoch on a semilogy scale and indicate a target line at 10^{-9}.
+8. In `weight_factors.png`: plot PDE Weight and IC Weight vs Epoch. If you are using soft boundary condition, add the curve for BC Weight. 
+9. Save all numerical data used in plots into structured CSV files.
+10. You may add additional plots or diagnostics relevant to the study of a Euler-Bernoulli Beam modeled using the PINN architecture.
+STRICTLY FORBIDDEN BEHAVIORS:
+1. You can only debug and modify @ultra_visualizations.py 
+2. You cannot create any other scripts.
+
+<tasks>
+1. Analyze all scripts in the working directory and discuss the functions of every scripts. 
+2. If any of the script is redundant, please remove it. 
+3. Remove all subfolders in the working directory.
+3. Show me the order to run the remaining scripts, and run those remaining scripts with the order you just recommend to make sure that you can reproduce the results. 
+</tasks>
+<Constraints>
+You cannot generate or modify any single part of any remaining script (you can only delete redundant scripts) when you try to reproduce the results.
+</constraints>
+
+I would like to make the last round of overall run from the very start, making sure that all data and plots are reproducible.
+1. Delete all subfoders and the txt file in the working directory.
+2. Run @train_all_harmonics.sh (it should run @ultra_precision_wave_pinn.py). 
+3. Should there be segmentation fault during training, after completely running @train_all_harmonics.sh for the round, restart to run @train_all_harmonics.sh again to make sure that all designated numbers of harmonics are trained succesfully. 
+4. After making sure that all the designated numbers of harmonics are trained successfully by running @train_all_harmonics.sh, run @ultra_visualizations.py for visualization.
+5. If there is segmentation fault, restart to run @ultra_visualizations.py. Repeat the step until all the plots are drawn succesfully without segmentation fault.
+5. Make comments on the results. 
+6. Explain that the methods of harmonics are legal and it has nothing to to with peeping at the analytic solutions in priori. Argue that the PINN results in our calculations are compeletely obtained by training or PINN architecture. Explain the relationships of harmonics with our PINN architecture.
+7. Important: Modifying any part of any script in the working directory is strictly forbidden because we want to reproduce the results.
+
+
+
+Modify and run @train_all_harmonics.sh for every harmonic, and if one harmonic runs successful, then we clean the GPU memory and wait for sufficiently long time to let the memory being released, and go to next harmonics until all the harmonics are done. Please modify @train_all_harmonics.sh and @ultra_precision_wave_pinn.py. But you cannot change any part of PINN architecture or L_-BFGS optimization parameters. Modifying PINN architecture or L-BFGS optimization parameters is strictly forbidden.
+
+You have to modify @train_all_harmonics.sh @ultra_visualizations.py @ultra_precision_wave_pinn.py and run the code to see their functionality. But you cannot change any poart of PINN architecture or L_-BFGS optimization parameters. Modifying PINN architecture or L-BFGS optimization parameters is strictly forbidden.
+
+Please modify @ultra_precision_wave_pinn.py @ultra_visualizations.py @train_all_harmonics.sh so that you can do all the calculatios and plots with harmonics  5 10 15 20 25 30 35 40 45 50 55 60 65 70 75. But you cannot change any poart of PINN architecture or l_-BFGS optimization parameters. Modifying PINN architecture or L-BFGS optimization parameters is strictly forbidden. 
+
+Maybe we can try to run @train_all_harmonics.sh for every harmonic, with harmonics  5 10 15 20 25 30 35 40 45 50 55 60 65 70 75, and if one harmonic runs successful, then we clean the GPU memory and wait for longer time to let the memory released, and go to next harmonics until all the harmonics are done. Please modify @train_all_harmonics.sh and @ultra_precision_wave_pinn.py to achieve the above goals. But you cannot change any poart of PINN architecture or L_-BFGS optimization parameters. Modifying PINN architecture or L-BFGS optimization parameters is strictly forbidden.
+
+Modify @train_all_harmonics.sh and @ultra_precision_wave_pinn.py to only one single harmonics (maybe 5) to make sure that the training for the harmonic is successful. Find out the reason if it fails and debug @ultra_visualizations.py and @train_all_harmonics.sh. But you cannot change any poart of PINN architecture or l_-BFGS optimization parameters. Modifying PINN architecture or L-BFGS optimization parameters is strictly forbidden.
+
+I would like you to modify codes in @ultra_visualizations.py to redraw the following plots:
+1. For plots `training_losses_*h.png` ('*' means number of harmonics), you should put various homonics curves in a single plot (the new plot may be nmaed as `training_losses.phg`). There chould be too many curves. In that case, please suggest other types of plots to comapre training losses among various numbers of harmonics. 
+2. Do the same logucs for `validation_error_*h.png` (the new name of plot being `validation_error.png` ) and `weight_factors_*h.png` (the new name of plot being `weight_factors.png`).
+3. You can only modify the script @ultra_visualizations.py and rerun the script for new plots.
+
+
+Segmentation fault:
+@train_all_harmonics.sh
+train_all_harmonics.sh: line 25: 49634 Illegal instruction     (core dumped) python ultra_precision_wave_pinn.py --harmonics $h
+
+train_all_harmonics.sh: line 25: 49779 Segmentation fault      (core dumped) python ultra_precision_wave_pinn.py --harmonics $h
+
+train_all_harmonics.sh: line 25: 50073 Segmentation fault      (core dumped) python -c "import torch; torch.cuda.empty_cache(); import gc; gc.collect(); gc.collect(); gc.collect()"
+
+
+Ok. I see the issue now. We cannot train all the harmonics altogether within a single script. So let us chnage our strategy. First we modify @ultra_precision_wave_pinn.py so that it has exactly the same PINN architecturue, Training Duration and Intensity,  Higher Resolution Training, Advanced Weight Adaptation, Architectural Impact as the script @ultra_precision_wave_pinn_v307.17.py. Then we only train one  and single one harmonic (e.g. 30). Then after it finishes, we save all data in its own subfolder `results_ultra_30`. Then we release the GPU memory. Then we go to next harmonic 40, 50, 60 , 70 and go around the same proceess for all the harmonics. But each time we only train with the single harmonic and save its data in its own subfolder. Then after harmonic 30, 40, 50, 60, and 70 are all done, we run @ultra_visualizations.py for comparing plots. Please modify @ultra_visualizations.py and @ultra_precision_wave_pinn.py to implemet the above ideas.
+
+No No! It could be too aggressive to calculate so many mnubmers of harmonics at once. Let us modify as follows:
+Very good! Now, I would like to make the final request on the project. Please DO NOT modify the PINN architecture and L-BFGS, you have to make calculate more results of harmonics from 5 to 90 (with increment 5 ) with exactly the same procedure as before, Please remember that you already plotted some harmonics, therefore your codes, @ultra_precision_wave_pinn.py, @ultra_visualizations.py, and @train_all_harmonics.sh,  should be able to identify those harmonics thare are already succesfully caclulated and plotted, and show "Harmonic $h already completed successfully. Skipping..." (I notice that you already did this in @train_all_harmonics.sh  ). Then skip the harmotics and go to next number of harmonics. 
+
+###########################End prompts for claude debug for hw2_forward_v307.py#############################################
+###########################Start prompts for deep research#############################################
+<role>
+You are a python expert and physics-informed neural network specialist.
+</role>
+<tasks>
+1. Follow the instructions to accomplish the homework. 
+\section*{Assignment Description}
+
+Given the Euler beam equation and its initial and boundary conditions below, derive the loss function for solving this PDE using PINNs, and implement it using PyTorch.
+
+\textbf{Euler Beam Equation:}
+\[
+\frac{\partial^2 u(x,t)}{\partial t^2} + \alpha^2 \frac{\partial^4 u(x,t)}{\partial x^4} = 0, \quad (x,t) \in [0,1] \times [0,1]
+\]
+where $\alpha$ is a parameter related to the material properties.
+
+\textbf{Initial Conditions:}
+\[
+u(x,0) = \sin(\pi x), \quad \frac{\partial u(x,0)}{\partial t} = 0, \quad x \in [0,1]\]
+
+\textbf{Boundary Conditions:}
+\[u(0,t) = u(1,t) = 0, \quad \frac{\partial^2 u(0,t)}{\partial x^2} = \frac{\partial^2 u(1,t)}{\partial x^2} = 0, \quad t \in [0,1]\]
+
+\section*{Forward Problem: Euler Beam PINNs}
+
+Based on the provided Euler beam equation, initial conditions, and boundary conditions, derive the PINN loss function.
+
+\textbf{Steps:}
+\begin{enumerate}
+    \item Construct a neural network taking spatial coordinates $x$ and time $t$ as inputs and outputting displacement $u_\theta(x,t)$.
+    \item Derive the loss function, comprising:
+    \begin{itemize}
+        \item PDE residual computed using neural network predictions $u_\theta(x,t)$.
+        \item Embedding boundary and initial conditions to enforce physical laws.
+    \end{itemize}
+    \item Compute higher-order derivatives of $u_\theta(x,t)$ using PyTorch's \texttt{torch.autograd.grad} function to build PDE residuals.
+\end{enumerate}
+
+\section*{Inverse Problem: Euler Beam PINNs}
+
+Infer the parameter $\alpha$ (related to material properties) from observational data using PINNs.
+
+\textbf{Steps:}
+\begin{enumerate}
+    \item Define a comprehensive loss function, including PDE residuals, boundary conditions, initial conditions, and data mismatch terms (e.g., observed displacements $u(x,t)$).
+    \item Treat $\alpha$ as a learnable parameter in the neural network for inference.
+    \item Use \texttt{torch.autograd.grad} to compute gradients within the loss function, optimizing the neural network to estimate $\alpha$.
+\end{enumerate}
+
+\textbf{Data Residual:}
+\[
+L_{\text{Data}} = \frac{1}{N_d}\sum_{i=1}^{N_d} |u_\theta(x_i,t_i) - u(x_i,t_i)|^2
+\]
+
+\section*{Assignment Submission Requirements}
+
+\begin{itemize}
+    \item Submit the implemented PyTorch code for the loss functions derived for both the forward and inverse problems.
+    \item The code must utilize PyTorch's \texttt{torch.autograd.grad} for computing higher-order derivatives involved in the loss function.
+    \item Include a brief explanation describing the derivation steps of your loss functions.
+\end{itemize}
+
+2. Derive analytic solutions of Euler Beam PDE, including a full step-by-step derivation.
+3. Provide full implementation of the PINN model in PyTorch, include a complete training loop and hyperparameter tuning, with codes in python written in a single code cell. Do not write the python codes directly into the research paper itself. Just mention in the paper that you have provided a full code in a separated code section.
+3. Provide the implementation of the loss functions derived for both the forward and inverse problems. 
+4. For the reverse problem, please search for the Internet to find out the experimental data points, all data sources are allowed. Typeset the data points within a latex table.
+5. Write references within .bib format.
+</tasks>
+<output>
+Write your paper, except the python codes that are given separately in another code cell as mentioned above, in latex codes in a block.
+</output>
+###########################END prompts for deep research END#############################################
+###########################Start prompts for o1 pro################################################
+<role>
+You are a python expert and physics-informed neural network specialist.
+</role>
+
+<tasks>
+1. Based on the following restuls shown in the <DeepReserchResults>. you have to write two python codes in separate code cells for the forward problems and reversed problems, respecctively.
+2. Write the neurons starting from the input layer, hidden layer and the output layer to be like `[2, 16, 64, 32, 1 ]. Make the list `[...]` which decides the layers and number of neurons tunable.
+3. Compare results of Exact (by solving the PDE directly) and PINN for t=0.0, 0.5, 1.0, 1.5, and 2.0.
+4. Save each figure. Comment out `plt.show()`. Add `plt.close()` after each `plt.savefig(...)`.
+5. Save each table.
+</tasks>
+
+<DeepReserchResults>
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\title{PINNs for the Euler-Bernoulli Beam: Forward and Inverse Analysis}
+\author{Author Name}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+This paper presents a Physics-Informed Neural Network (PINN) approach for solving the Euler-Bernoulli beam Partial Differential Equation (PDE). We focus on both the forward problem (given material parameters, solve for the beam deflection) and the inverse problem (infer unknown parameters from observed data). Our approach leverages automatic differentiation in PyTorch to compute higher-order derivatives within the loss function, enabling the enforcement of the PDE, boundary conditions, and initial conditions in a unified manner.
+
+\section{Euler-Bernoulli Beam Equation}
+The Euler-Bernoulli beam equation for transverse vibration of a uniform beam is given by:
+\[
+\rho A \frac{\partial^2 w(x,t)}{\partial t^2} + EI \frac{\partial^4 w(x,t)}{\partial x^4} = 0,
+\quad (x,t) \in [0,L]\times [0,T],
+\]
+where $\rho$ is the mass density, $A$ is the cross-sectional area, $E$ is the Young's modulus, and $I$ is the second moment of area. For simplicity, we define the parameter
+\[
+c^2 = \frac{EI}{\rho A}.
+\]
+Then the PDE can be written in a normalized form as:
+\[
+\frac{\partial^2 w}{\partial t^2} + c^2 \frac{\partial^4 w}{\partial x^4} = 0.
+\]
+
+\subsection{Initial and Boundary Conditions}
+For a simply-supported beam of length $L$, we impose:
+\[
+w(x,0) = f(x), \quad \frac{\partial w(x,0)}{\partial t} = g(x),
+\]
+\[
+w(0,t) = 0, \quad w(L,t) = 0, \quad w''(0,t)=0, \quad w''(L,t)=0.
+\]
+In our numerical examples, we use $f(x) = \sin(\pi x)$ and $g(x)=0$ for a nondimensional domain $x\in [0,1]$.
+
+\section{Analytic Solution}
+We derive the analytic solution using the method of separation of variables and Fourier series expansion \cite{EulerBernoulliBeam}:
+\[
+w(x,t) = \sum_{n=1}^\infty \Big[ A_n \cos\bigl(\omega_n t\bigr) + B_n \sin\bigl(\omega_n t\bigr)\Big]
+\, \sin\Bigl(\frac{n\pi x}{L}\Bigr),
+\]
+where
+\[
+\omega_n = \left( \frac{n\pi}{L}\right)^2 \sqrt{\frac{EI}{\rho A}}.
+\]
+The coefficients $A_n$ and $B_n$ are determined by the initial conditions via standard Fourier expansions.
+
+\section{Forward and Inverse Problems with PINNs}
+
+\subsection{PINN Architecture}
+We approximate $w(x,t)$ with a neural network $w_\theta(x,t)$, where $\theta$ represents the trainable parameters (weights and biases). The training procedure enforces:
+\begin{itemize}
+    \item PDE residual: $w_{tt} + c^2 w_{xxxx} \approx 0$,
+    \item Boundary conditions: $w(0,t)=0,\, w(1,t)=0,\, w''(0,t)=0,\, w''(1,t)=0,$
+    \item Initial conditions: $w(x,0) = f(x),\, w_t(x,0) = g(x).$
+\end{itemize}
+We generate collocation points inside the domain for the PDE residual and sample boundary/initial points to embed those constraints.
+
+\subsection{Loss Function for Forward Problem}
+For the forward problem where $c^2$ (or $EI$) is known, the loss function is composed of three main parts:
+\[
+\mathcal{L}_{\mathrm{forward}} = \mathcal{L}_{\mathrm{PDE}}
++ \alpha_{BC}\,\mathcal{L}_{BC} 
++ \alpha_{IC}\,\mathcal{L}_{IC}.
+\]
+We define:
+\begin{align*}
+\mathcal{L}_{\mathrm{PDE}} &= 
+\frac{1}{N_c}\sum_{i=1}^{N_c}
+\Bigl|
+ w_{tt}(x_i,t_i) + c^2\, w_{xxxx}(x_i,t_i) \Bigr|^2,\\
+\mathcal{L}_{BC} &= 
+\frac{1}{N_b}\sum_{j=1}^{N_b}\Bigl( |w(0,t_j)|^2 + |w(1,t_j)|^2 
++ |w''(0,t_j)|^2 + |w''(1,t_j)|^2\Bigr),\\
+\mathcal{L}_{IC} &= 
+\frac{1}{N_0}\sum_{k=1}^{N_0}\Bigl(|w(x_k,0)-f(x_k)|^2 
++ |w_t(x_k,0)-g(x_k)|^2\Bigr).
+\end{align*}
+Here, $N_c$, $N_b$, and $N_0$ are the number of collocation, boundary, and initial points, respectively. 
+The terms $w_{tt}$ and $w_{xxxx}$ are computed via automatic differentiation in PyTorch using \texttt{torch.autograd.grad}.
+
+\subsection{Loss Function for Inverse Problem}
+For the inverse problem, we treat the parameter $c^2$ (or $\alpha$ in the assignment) as a learnable variable. Suppose we also have observational data $u(x_i,t_i)$ denoted by $u_{\text{obs}}$, we incorporate an additional data mismatch term:
+\[
+\mathcal{L}_{\mathrm{data}} = 
+\frac{1}{N_d}\sum_{d=1}^{N_d}
+\bigl| w_\theta(x_d,t_d) - u_{\text{obs}}(x_d,t_d)\bigr|^2.
+\]
+Hence, the inverse problem loss function is:
+\[
+\mathcal{L}_{\mathrm{inverse}} = \mathcal{L}_{\mathrm{PDE}} + \alpha_{BC}\,\mathcal{L}_{BC} + \alpha_{IC}\,\mathcal{L}_{IC} + \alpha_{\mathrm{data}}\,\mathcal{L}_{\mathrm{data}}.
+\]
+Minimizing this with respect to both the neural network weights $\theta$ and the parameter $c^2$ yields an estimate of the unknown physical property that best fits the observed data while satisfying the PDE and boundary/initial conditions \cite{Raissi2019,Kapoor2023}.
+
+\section{Experimental Data}
+For the inverse problem, we may use observed data from experiments. Table~\ref{tab:exp-data} illustrates sample data points from a steel beam test, sourced from \cite{Mahato2015}. These data can be used to identify the material parameter $E$ when the geometry is known. 
+
+\begin{table}[htbp]
+\centering
+\caption{Sample experimental data points for a steel beam from \cite{Mahato2015}.}
+\label{tab:exp-data}
+\begin{tabular}{cccc}
+\toprule
+\textbf{No.} & \textbf{Load (kg)} & \textbf{Deflection (mm), SS} & \textbf{Deflection (mm), Cantilever} \\
+\midrule
+1 & 0.2 & 0.17 & 0.77 \\
+2 & 0.4 & 0.33 & 1.54 \\
+3 & 0.6 & 0.51 & 2.35 \\
+4 & 0.8 & 0.68 & 3.36 \\
+5 & 1.0 & 0.86 & 4.23 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Hyperparameter Tuning}
+To obtain accurate PINN solutions, we tune the network architecture and training parameters via both grid search and Bayesian optimization:
+\begin{enumerate}
+\item \textit{Grid Search:} We define discrete sets for the learning rate (e.g., $10^{-4}, 10^{-3}, 10^{-2}$), number of hidden layers (2,3,4), and neurons per layer (20,50). We train and record the validation error for each combination to choose an optimal set.
+\item \textit{Bayesian Optimization:} We use a Gaussian Process or similar surrogate model to iteratively select hyperparameters that minimize validation loss. This can converge more quickly to good solutions without exhaustively searching.
+\end{enumerate}
+In practice, the loss weights ($\alpha_{BC}, \alpha_{IC}, \alpha_{\mathrm{data}}$) and the activation function type are also tuned to improve training convergence.
+
+\section{Conclusions}
+We have demonstrated how to formulate and implement PINNs for both the forward and inverse Euler-Bernoulli beam problems, including:
+\begin{itemize}
+\item Derivation of PDE residual and boundary/initial condition constraints in a PINN loss function,
+\item Automatic differentiation for computing second and fourth-order derivatives,
+\item Inclusion of observational data for parameter identification,
+\item Hyperparameter tuning via grid search and Bayesian optimization.
+\end{itemize}
+With this methodology, we can solve beam PDEs accurately and efficiently without conventional finite element or finite difference meshes, and also infer unknown parameters if experimental observations are available.
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
+</DeepReserchResults>
+
+<output>
+Write codes for forward problem and reverse problem in separate code cells.
+</outputs>
+###########################End prompts for o1 pro################################################
+

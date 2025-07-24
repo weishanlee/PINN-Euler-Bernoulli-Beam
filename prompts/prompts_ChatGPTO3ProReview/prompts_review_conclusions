@@ -1,0 +1,31 @@
+⚠️ REVIEW PROMPT: This prompt is for reviewing already-generated content. 
+- Can be used by ChatGPT O3 Pro for external review
+- Can be used by Claude Code when user explicitly requests peer review
+- CANNOT be used during initial content generation
+
+Evaluate conclusions.tex focusing on **alignment, impact, and forward‑looking value**.
+
+Checklist (answer Yes/No + short comment)  
+1. Summarises the main findings WITHOUT repeating entire results.  
+2. States the study’s unique contribution in one clear sentence.  
+3. Discusses practical or theoretical implications.  
+4. Acknowledges limitations or caveats succinctly.  
+5. Offers realistic future‑work directions linked to the findings.  
+6. Avoids introducing new data, references, or hypotheses.  
+7. Tone remains balanced—no overstated claims.  
+8. Ends with a take‑home message suited to journal readership.  
+9. LaTeX compiles and adheres to length limits (≤ 10 % of main text).
+
+Also check: If any citations are included, ensure they alternate between author-prominent and information-prominent styles.
+
+**CRITICAL for Journal Papers**:
+- Conclusions MUST be written as 2-3 flowing paragraphs
+- NO bullet points or lists allowed (especially for "future work")
+- Check for smooth narrative flow and logical progression
+- Transform any listed items into connected prose
+
+Close with a bulleted list of **required edits** (if any) and an **acceptability verdict** for this section.
+
+Output:
+Write review opinions in a .md file
+

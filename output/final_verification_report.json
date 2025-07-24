@@ -1,0 +1,27 @@
+{
+  "timestamp": "2025-07-17T22:46:25.083985",
+  "checks_performed": [
+    "deep_content_verification",
+    "section_existence",
+    "forbidden_words",
+    "code_functionality",
+    "figures_and_data",
+    "word_limits"
+  ],
+  "errors": [
+    "CRITICAL: No web scraping verification report found",
+    "11 papers have title similarity < 80%",
+    "Citation 'Blondeletal2008' not found in ref.bib",
+    "Citation '<label>' not found in ref.bib",
+    "Citations without PDFs (not in verified list): wang2024transfer, mcclenny2020self, pang2020fPINNs, psaros2023uncertainty, raissi2017physics1, cuomo2022scientific, hwang2024dual, lu2021deepxde, karniadakis2021physics, han1999dynamics, zakian2023physics, wang2024nas, chen2022high, chen2024teng, haghighat2022physics, lin2022two, wong2022learning, hu2024hutchinson, chen2021physics, borrel2023physics, liu1989limited, raissi2017physics2, mcclenny2023self, jagtap2020conservative, krishnapriyan2021characterizing, lee2024anti, raissi2019physics, kapoor2023physics, jagtap2020extended, cho2023separable, li2020fourier, kingma2014adam, kharazmi2021hp, liu2024machine, antonion2024pikans, arzani2023theory, wang2021understanding, almajid2021physics, penwarden2023unified",
+    "Check check_citation_integrity failed: cannot access local variable 'verified_undownloadable' where it is not associated with a value",
+    "Forbidden words in elsarticle-template-num_overleaf.tex: Intricate, Potent",
+    "Failed scripts: ultra_precision_wave_pinn_GPU.py: [Errno 2] No such file or directory: '~/.venv/ml_31226124/bin/python', find_duplicates.py: [Errno 2] No such file or directory: '~/.venv/ml_31226124/bin/python', ultra_visualizations_GPU.py: [Errno 2] No such file or directory: '~/.venv/ml_31226124/bin/python', identify_missing_figures.py: [Errno 2] No such file or directory: '~/.venv/ml_31226124/bin/python', redraw_architecture_diagram.py: [Errno 2] No such file or directory: '~/.venv/ml_31226124/bin/python', generate_architecture_diagram_v6.py: [Errno 2] No such file or directory: '~/.venv/ml_31226124/bin/python', remove_duplicates.py: [Errno 2] No such file or directory: '~/.venv/ml_31226124/bin/python', run_with_monitoring.py: [Errno 2] No such file or directory: '~/.venv/ml_31226124/bin/python'",
+    "Missing figures: lbfgs-optimization-diagram.png, pinn-architecture-final.png"
+  ],
+  "warnings": [
+    "Undocumented data: error_statistics_15h.csv, error_statistics_20h.csv, error_statistics_40h.csv, error_statistics_50h.csv, error_statistics_35h.csv, error_statistics_45h.csv, error_statistics_30h.csv, error_statistics_10h.csv, error_statistics_5h.csv, error_statistics_25h.csv, harmonics_comparison_summary.csv",
+    "Abstract word count 380 > 350"
+  ],
+  "status": "FAILED"
+}

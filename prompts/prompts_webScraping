@@ -1,0 +1,834 @@
+# Web Scraping Guidelines for Research Papers and Data
+
+## 🚨 CRITICAL IMPORTANCE
+This is the FOUNDATION of all subsequent work. If papers/data are not genuine, the ENTIRE project fails. Every source MUST be verified through multiple independent methods.
+
+## 🚦 Pre-Verification Sanity Checks
+
+**CRITICAL**: Before marking ANY paper as verified, the system MUST perform these sanity checks:
+
+### 1. Forbidden Pattern Detection
+```python
+FORBIDDEN_AUTHOR_PATTERNS = [
+    "Unknown Author", "Unknown Authors", "Authors Unknown", 
+    "Anonymous", "Not Available", "N/A", "TBD", 
+    "To Be Determined", "[Author Name]", "Author"
+]
+
+FORBIDDEN_TITLE_PATTERNS = [
+    "Draft version", "arXiv:", "Untitled", 
+    "Microsoft Word", "Template", "[Title]",
+    "Paper Title", "Your Title Here"
+]
+
+# Kill switch: If ANY forbidden pattern detected → DELETE paper immediately
+```
+
+### 2. Batch Validation Rules
+- If >10% of papers have "Unknown Authors" → STOP entire process
+- If >20% have similar titles → Likely extraction error → STOP
+- If >30% fail domain check → Wrong search terms → STOP
+- If >15% have empty abstracts → PDF extraction failure → STOP
+
+### 3. Suspicious Pattern Detection
+```python
+# RED FLAGS that trigger manual review:
+- Multiple papers with identical abstracts
+- Papers where title length < 10 characters
+- Author names that are single letters or numbers
+- Titles containing only technical report numbers
+- Papers where extracted text < 100 words
+```
+
+### 4. Circuit Breakers
+**AUTOMATIC HALT CONDITIONS**:
+- 5 consecutive "Unknown Authors" → Stop and review extraction
+- 10 consecutive verification failures → Stop web scraping
+- Same error pattern 3+ times → Log and switch extraction method
+- Total failure rate >25% → Abort and request human intervention
+
+## 🔍 Overview
+This guide provides detailed instructions for collecting research papers and datasets using web scraping tools. All materials MUST be genuinely fetched from the Internet - no hallucinated content allowed.
+
+## 📚 Research Paper Collection
+
+### Requirements
+- **Minimum 50 arXiv papers** (preprints from arxiv.org)
+- **Minimum 30 peer-reviewed papers** (journals, conferences, or books)
+- **Diversity rule**: Maximum 20% of references from any single journal
+
+### Search Strategy
+
+1. **Build Effective Search Queries**
+   ```
+   Example queries:
+   - "machine learning optimization filetype:pdf site:arxiv.org"
+   - "sustainable energy modeling filetype:pdf journal"
+   - "[specific algorithm name] implementation filetype:pdf"
+   ```
+
+2. **Use Multiple Search Approaches**
+   - Google Scholar searches
+   - Direct arXiv API queries
+   - Publisher websites (IEEE, ACM, Elsevier, etc.)
+   - Academic databases
+
+3. **Verification Process**
+   - Always include `filetype:pdf` in searches
+   - Verify HTTP 200 response for each link
+   - Check Content-Type is `application/pdf`
+   - Download and save to `output/papers/`
+   - If PDF is inaccessible, remove from bibliography
+   - Double check downloaded PDFs match with corresponding reference papers in bibliography
+
+### MANDATORY: Immediate Content Extraction and Verification
+
+**⚠️ CRITICAL: Extract content from EVERY PDF immediately after download**
+
+For each downloaded paper, you MUST:
+
+1. **Extract Paper Metadata IMMEDIATELY**
+   ```python
+   # Required extractions:
+   extracted_data = {
+       "title": extract_title_from_pdf(pdf_path),
+       "authors": extract_authors_from_pdf(pdf_path),
+       "abstract": extract_abstract_from_pdf(pdf_path),
+       "year": extract_year_from_pdf(pdf_path),
+       "arxiv_id": extract_arxiv_id_if_present(pdf_path)
+   }
+   ```
+
+2. **Verify Content Matches Citation**
+   ```python
+   # Check for Unknown Authors FIRST
+   if any(term in str(extracted_data.get("authors", "")).lower() 
+          for term in ["unknown author", "unknown authors", "authors unknown", "anonymous"]):
+       # DELETE immediately - Unknown Authors strictly forbidden
+       os.remove(pdf_path)
+       log_verification_failure(citation_key, "Unknown Authors detected", 0)
+       # Do NOT include in bibliography under ANY circumstances
+       return  # Skip all further processing
+   
+   # Calculate title similarity
+   similarity = calculate_similarity(expected_title, extracted_title)
+   
+   # KILL SWITCH: If similarity < 0.8
+   if similarity < 0.8:
+       # DELETE the PDF immediately
+       os.remove(pdf_path)
+       # Log failure
+       log_verification_failure(citation_key, "Title mismatch", similarity)
+       # Try alternative search
+       search_alternative_sources(citation_key)
+       # If all alternatives fail, EXCLUDE from bibliography
+   ```
+
+3. **Check Domain Relevance**
+   ```python
+   # Extract keywords from abstract
+   relevance_score = check_domain_relevance(abstract, problem_keywords)
+   
+   # KILL SWITCH: If wrong domain
+   if relevance_score < 0.3:
+       # DELETE immediately - wrong field
+       os.remove(pdf_path)
+       log_verification_failure(citation_key, "Wrong domain", relevance_score)
+       # EXCLUDE from bibliography
+   ```
+
+4. **Store Verification Data**
+   ```python
+   # Save to paper_metadata.json
+   metadata[citation_key] = {
+       "expected": expected_data,
+       "extracted": extracted_data,
+       "similarity_score": similarity,
+       "verification_status": "PASSED" if all_checks_pass else "FAILED",
+       "timestamp": datetime.now().isoformat()
+   }
+   ```
+
+5. **Automated Failure Handling**
+   - System automatically excludes failed papers
+   - No user intervention during process
+   - All decisions logged for final review
+   - Process continues with remaining papers
+
+### CRITICAL: Extraction Validation Loop
+
+After extracting metadata from EACH paper:
+
+1. **Immediate Validation**
+   ```python
+   def validate_extraction(title, authors, year):
+       """Validate extracted metadata against forbidden patterns"""
+       
+       # Check for forbidden author patterns
+       forbidden_authors = [
+           "Unknown Author", "Author, Unknown", "Authors Unknown",
+           "V. Author", "A. Author", "Anonymous", "Not Available",
+           "N/A", "TBD", "[Author Name]", "Author"
+       ]
+       
+       forbidden_title_patterns = [
+           "Draft version", "arXiv:", "Untitled",
+           "Microsoft Word", "Template", "[Title]",
+           "Paper Title", "Your Title Here",
+           r"^\d{4}-\d{2}-\d{2}$",  # Just dates
+           r"^Page \d+$"            # Page numbers
+       ]
+       
+       # Check authors
+       if any(auth in str(authors) for auth in forbidden_authors):
+           return False, "Forbidden author pattern detected"
+       
+       # Check if authors are single letters
+       if any(len(auth.strip()) <= 2 for auth in authors if isinstance(auth, str)):
+           return False, "Single letter author name detected"
+       
+       # Check title
+       if len(title) < 10:
+           return False, "Title too short"
+       
+       for pattern in forbidden_title_patterns:
+           if isinstance(pattern, str) and pattern in title:
+               return False, f"Forbidden title pattern: {pattern}"
+           elif hasattr(pattern, 'match') and pattern.match(title):
+               return False, f"Title matches forbidden regex: {pattern}"
+       
+       return True, "Valid"
+   ```
+
+2. **Batch Validation**
+   ```python
+   # After every 10 papers, check for repeating patterns
+   def validate_batch(last_10_papers):
+       """Check for suspicious patterns in batch"""
+       
+       # Count author occurrences
+       author_counts = Counter()
+       for paper in last_10_papers:
+           for author in paper.get('authors', []):
+               author_counts[author] += 1
+       
+       # Check for suspicious repetition
+       for author, count in author_counts.items():
+           if count > 5:  # Same author in >50% of last 10 papers
+               return False, f"Author '{author}' appears in {count}/10 papers"
+       
+       # Check for identical titles (different versions)
+       titles = [p.get('title', '').lower() for p in last_10_papers]
+       if len(set(titles)) < len(titles) * 0.7:  # >30% duplicate titles
+           return False, "Too many duplicate titles"
+       
+       # Check for systematic extraction failures
+       unknown_count = sum(1 for p in last_10_papers 
+                          if 'unknown' in str(p.get('authors', '')).lower())
+       if unknown_count > 2:  # >20% have unknown authors
+           return False, f"{unknown_count}/10 papers have unknown authors"
+       
+       return True, "Batch validated"
+   ```
+
+3. **Circuit Breaker Implementation**
+   ```python
+   # Global counters for circuit breakers
+   consecutive_failures = 0
+   total_failures = 0
+   total_attempts = 0
+   
+   def check_circuit_breakers():
+       """Check if we should stop the entire process"""
+       global consecutive_failures, total_failures, total_attempts
+       
+       # Check consecutive failures
+       if consecutive_failures >= 5:
+           raise SystemExit("CIRCUIT BREAKER: 5 consecutive failures - check extraction method")
+       
+       # Check overall failure rate
+       if total_attempts > 10 and (total_failures / total_attempts) > 0.25:
+           raise SystemExit("CIRCUIT BREAKER: >25% failure rate - systematic problem detected")
+       
+       # Check for specific error patterns
+       if check_error_pattern_repetition():
+           raise SystemExit("CIRCUIT BREAKER: Same error pattern repeated 3+ times")
+   ```
+
+4. **Real-Time Monitoring Dashboard**
+   ```python
+   def update_verification_dashboard():
+       """Update real-time verification stats"""
+       dashboard = {
+           "timestamp": datetime.now().isoformat(),
+           "total_attempts": total_attempts,
+           "successful": total_attempts - total_failures,
+           "failed": total_failures,
+           "failure_rate": f"{(total_failures/total_attempts*100):.1f}%" if total_attempts > 0 else "0%",
+           "last_10_success_rate": calculate_recent_success_rate(),
+           "warnings": detect_suspicious_patterns()
+       }
+       
+       # Save dashboard
+       with open("output/verification_dashboard.json", "w") as f:
+           json.dump(dashboard, f, indent=2)
+       
+       # Print summary
+       print(f"\n[VERIFICATION] Success: {dashboard['successful']}/{dashboard['total_attempts']} "
+             f"({100-float(dashboard['failure_rate'][:-1]):.1f}% success rate)")
+   ```
+
+### File Organization
+```
+output/papers/
+├── arxiv_papers/
+│   ├── 2024_smith_ml_optimization.pdf
+│   ├── 2023_jones_neural_networks.pdf
+│   └── ...
+├── journal_papers/
+│   ├── ieee_2024_renewable_energy.pdf
+│   ├── nature_2023_climate_model.pdf
+│   └── ...
+└── paper_sources.txt  # Document where each paper was found
+```
+
+## 📊 Dataset Collection
+
+### Requirements
+- Find datasets relevant to the problem
+- Prefer CSV format for compatibility
+- Document all data sources thoroughly
+
+### Search Process
+
+1. **Identify Data Needs**
+   - What variables are required?
+   - What time period?
+   - What geographic scope?
+
+2. **Search Data Repositories**
+   - Government databases (.gov sites)
+   - Academic data repositories
+   - Kaggle, UCI ML Repository
+   - World Bank, UN databases
+   - Research paper supplementary materials
+
+3. **Data Documentation**
+   For each dataset, create a corresponding `.txt` file:
+   ```
+   Example: energy_consumption.csv → energy_consumption.txt
+   
+   Content of energy_consumption.txt:
+   Source: US Energy Information Administration
+   URL: https://www.eia.gov/data/
+   Date accessed: 2024-01-15
+   Description: Monthly energy consumption by state, 2020-2023
+   License: Public domain
+   ```
+
+### File Organization
+```
+output/data/
+├── raw_data/
+│   ├── energy_consumption.csv
+│   ├── energy_consumption.txt
+│   ├── population_data.csv
+│   ├── population_data.txt
+│   └── ...
+└── data_sources_summary.txt  # Overview of all datasets
+```
+
+## ⚠️ Critical Rules
+
+### No Hallucination Policy
+- **NEVER** cite papers from memory or pre-training
+- **ALWAYS** verify each source is real and accessible
+- **REMOVE** any references that cannot be downloaded
+
+### Primary Verification Steps
+1. Search for paper/data with explicit query
+2. Click link and verify it loads correctly
+3. Check file type and size are reasonable (PDF > 50KB, CSV > 1KB)
+4. Download and save locally with timestamp
+5. Calculate SHA-256 checksum
+6. If any step fails, find alternative source
+
+### MANDATORY Double-Check Verification
+**For EVERY downloaded file, perform these additional checks:**
+
+1. **Re-download Verification**
+   ```python
+   # Use different tool/method than initial download
+   # Example: If used wget first, use Playwright for verification
+   import hashlib
+   
+   def verify_download(url, original_checksum):
+       # Re-download file
+       new_file = download_with_different_method(url)
+       
+       # Calculate new checksum
+       new_checksum = hashlib.sha256(new_file.read()).hexdigest()
+       
+       # Compare checksums
+       if new_checksum != original_checksum:
+           log_error(f"CHECKSUM MISMATCH: {url}")
+           return False
+       return True
+   ```
+
+2. **Content Verification**
+   ```python
+   def verify_pdf_content(filepath):
+       # Extract first page text
+       # Verify title matches expected
+       # Check page count > 1
+       # Verify year is reasonable
+       # Check language is English (or expected)
+   ```
+
+3. **Create Verification Log**
+   ```
+   # verification_log.txt format:
+   [2024-01-15 10:30:45] paper1.pdf | arxiv.org | SHA256: abc123... | VERIFIED
+   [2024-01-15 10:31:02] paper2.pdf | ieee.org | SHA256: def456... | VERIFIED
+   [2024-01-15 10:31:15] paper3.pdf | FAILED - Checksum mismatch | DELETED
+   ```
+
+4. **Generate Verification Report**
+   Create `output/verification_report.md`:
+   ```markdown
+   # Web Scraping Verification Report
+   
+   ## Summary
+   - Total papers attempted: 85
+   - Successfully verified: 80
+   - Failed verification: 5
+   - Final count: 80 (50 arXiv, 30 journals)
+   
+   ## Verified Sources
+   1. [Title] - arxiv.org/abs/xxxx - SHA256: xxxx
+   2. [Title] - doi.org/xxxx - SHA256: xxxx
+   ...
+   
+   ## Failed Downloads (removed from bibliography)
+   1. [URL] - Reason: 404 Not Found
+   2. [URL] - Reason: Checksum mismatch on re-download
+   ```
+
+### Initial Download Verification Examples
+
+1. **Initial Download Verification**
+   ```bash
+   # For each downloaded paper/dataset:
+   - Verify HTTP 200 response
+   - Check file size > 10KB
+   - Confirm correct MIME type (application/pdf, text/csv)
+   - Save SHA-256 checksum
+   ```
+
+2. **Secondary Verification (Double-Check)**
+   ```bash
+   # Re-download using different method (Playwright if first used wget)
+   - Compare SHA-256 checksums
+   - If mismatch: DELETE and find alternative source
+   - Log all verification results in verification_log.txt
+   ```
+
+3. **Content Validation**
+   - Open PDF/CSV and verify it contains expected content
+   - Extract title/abstract to confirm relevance
+   - For datasets: Check column headers match expected variables
+
+4. **Bibliography Cross-Check**
+   - Every entry in ref.bib MUST have corresponding PDF in output/papers/
+   - Remove any citations without verified PDFs
+   - Generate verification_report.md listing all verified sources
+
+### Quality Checks
+- Papers should be recent (prefer last 5-10 years)
+- Prioritize high-impact journals and conferences
+- Ensure geographic and methodological diversity
+- Balance theoretical and applied papers
+
+## 🛠️ Tools to Use
+
+### Primary Tools
+- **Playwright MCP**: For browser-based searches and downloads
+- **Web_scraper tool**: For direct URL fetching
+- **Google Search**: With specific operators (filetype:, site:, etc.)
+
+### Useful Search Operators
+- `filetype:pdf` - Find only PDF files
+- `site:arxiv.org` - Search within specific domain
+- `intitle:"keyword"` - Keyword must be in title
+- `after:2020` - Published after 2020
+- `-keyword` - Exclude results with keyword
+
+## 📋 Pre-Completion Checklist
+
+**DO NOT proceed until ALL items are checked:**
+- [ ] Downloaded 50+ arXiv papers
+- [ ] Downloaded 30+ peer-reviewed papers
+- [ ] No journal exceeds 20% of references
+- [ ] All PDFs verified with initial download
+- [ ] Content extracted from EVERY PDF immediately after download
+- [ ] NO papers with "Unknown Authors" in bibliography
+- [ ] Title similarity verified (≥80%) for all papers
+- [ ] Domain relevance checked for all papers
+- [ ] All PDFs passed double-check verification
+- [ ] paper_metadata.json created with all extractions
+- [ ] verification_db.json shows >95% success rate
+- [ ] Verification log created and complete
+- [ ] Verification report generated
+- [ ] All failed downloads removed from ref.bib
+- [ ] All papers with "Unknown Authors" excluded
+- [ ] All unverified papers automatically excluded
+- [ ] All datasets documented with sources
+- [ ] Dataset checksums verified
+- [ ] Bibliography file (ref.bib) contains ONLY verified sources
+- [ ] File organization follows structure above
+- [ ] Total verification success rate > 95%
+- [ ] Double checked that downloaded PDFs match with corresponding reference papers in bibliography
+- [ ] Created list of undownloadable papers with verification status
+- [ ] All verification failures logged in verification_failures.log
+
+### Undownloadable Papers Verification Protocol
+For papers that cannot be downloaded:
+1. **Use Playwright to investigate journal/conference website**
+   - Navigate to publisher/conference website
+   - Search for paper title and authors
+   - Verify paper exists on official website
+   - Take screenshot of paper webpage
+
+2. **Create undownloadable_papers_list.md**
+   ```markdown
+   # Papers Without Available PDFs
+   
+   ## Verified as Genuine (Include in Bibliography)
+   1. **Title**: [Paper Title]
+      - **Authors**: [Author List]
+      - **Journal/Conference**: [Name]
+      - **Year**: [Publication Year]
+      - **Verification URL**: [Publisher Website URL]
+      - **Status**: ✅ Verified Genuine
+      - **Notes**: Paper exists on publisher site but PDF behind paywall
+   
+   ## Uncertain/Cannot Verify (Exclude from Bibliography)
+   1. **Title**: [Paper Title]
+      - **Reason**: Cannot find on publisher website
+      - **Status**: ❌ Cannot Verify
+   ```
+
+## 🛑 STOP POINT
+**If verification success rate < 95%, DO NOT CONTINUE. Find more reliable sources.**
+
+## 📊 Final Verification Script
+
+Create and run this script before proceeding:
+
+```python
+# final_verification.py
+import os
+import hashlib
+from pathlib import Path
+
+def final_verification_check():
+    """
+    Final comprehensive check of all downloaded materials
+    """
+    papers_dir = Path("output/papers")
+    data_dir = Path("output/data")
+    
+    # Check paper count
+    arxiv_count = len(list(papers_dir.glob("arxiv_papers/*.pdf")))
+    journal_count = len(list(papers_dir.glob("journal_papers/*.pdf")))
+    
+    print(f"ArXiv papers: {arxiv_count} (minimum: 50)")
+    print(f"Journal papers: {journal_count} (minimum: 30)")
+    
+    if arxiv_count < 50 or journal_count < 30:
+        print("❌ FAIL: Insufficient papers")
+        return False
+    
+    # Verify all PDFs are readable
+    failed_files = []
+    for pdf in papers_dir.rglob("*.pdf"):
+        if pdf.stat().st_size < 50000:  # 50KB minimum
+            failed_files.append(pdf)
+    
+    if failed_files:
+        print(f"❌ FAIL: {len(failed_files)} files too small")
+        return False
+    
+    # Check verification report exists
+    if not Path("output/verification_report.md").exists():
+        print("❌ FAIL: No verification report found")
+        return False
+    
+    print("✅ All checks passed - Safe to proceed")
+    return True
+
+if __name__ == "__main__":
+    if not final_verification_check():
+        print("\n⚠️ DO NOT PROCEED - Fix issues first!")
+        exit(1)
+```
+
+## 🔄 Multi-Stage Verification Pipeline from CLAUDE.md
+
+**MANDATORY**: Implement a 3-stage verification pipeline for EVERY paper.
+
+### Stage 1: Pre-Download Verification
+```python
+def pre_download_verification(search_result):
+    """Verify paper metadata before downloading"""
+    checks = {
+        "has_valid_title": len(search_result.get("title", "")) > 10,
+        "has_authors": search_result.get("authors") and "Unknown" not in str(search_result.get("authors")),
+        "has_year": search_result.get("year") and 1900 < int(search_result.get("year", 0)) < 2025,
+        "has_valid_url": search_result.get("url") and search_result["url"].startswith(("http://", "https://"))
+    }
+    
+    if not all(checks.values()):
+        return False, f"Pre-download checks failed: {[k for k,v in checks.items() if not v]}"
+    
+    return True, "Pre-download verification passed"
+```
+
+### Stage 2: Post-Download Content Extraction
+```python
+def post_download_extraction(pdf_path):
+    """Extract and verify content after download"""
+    try:
+        # Extract text content
+        with open(pdf_path, 'rb') as file:
+            reader = PyPDF2.PdfReader(file)
+            text = ""
+            for page in reader.pages[:5]:  # First 5 pages
+                text += page.extract_text()
+        
+        # Extract metadata
+        extracted = {
+            "title": extract_title(text),
+            "authors": extract_authors(text),
+            "abstract": extract_abstract(text),
+            "content_length": len(text),
+            "page_count": len(reader.pages)
+        }
+        
+        # Validation
+        if extracted["content_length"] < 1000:
+            return False, "Content too short - likely corrupted PDF"
+        
+        if "Unknown" in extracted["authors"]:
+            return False, "Unknown authors detected"
+            
+        return True, extracted
+        
+    except Exception as e:
+        return False, f"Extraction failed: {str(e)}"
+```
+
+### Stage 3: Cross-Reference Validation
+```python
+def cross_reference_validation(extracted_data, bibliography_entry):
+    """Validate extracted content matches bibliography"""
+    
+    # Title similarity check
+    title_similarity = calculate_similarity(
+        extracted_data["title"], 
+        bibliography_entry["title"]
+    )
+    
+    if title_similarity < 0.8:
+        return False, f"Title mismatch: {title_similarity:.2f} similarity"
+    
+    # Author verification
+    bib_authors = set(bibliography_entry["authors"].lower().split())
+    extracted_authors = set(extracted_data["authors"].lower().split())
+    author_overlap = len(bib_authors & extracted_authors) / len(bib_authors)
+    
+    if author_overlap < 0.5:
+        return False, f"Author mismatch: {author_overlap:.2f} overlap"
+    
+    return True, "Cross-reference validation passed"
+```
+
+## 📊 Verification Report Generation from CLAUDE.md
+
+**MANDATORY**: Generate comprehensive verification reports throughout the process.
+
+### Real-Time Verification Dashboard
+```python
+# Create output/verification_dashboard.json
+{
+    "timestamp": "2024-01-20T10:30:00",
+    "statistics": {
+        "total_papers_searched": 150,
+        "successfully_downloaded": 120,
+        "verification_passed": 95,
+        "verification_failed": 25,
+        "success_rate": 0.792,
+        "failure_reasons": {
+            "unknown_authors": 8,
+            "title_mismatch": 6,
+            "content_extraction_failed": 5,
+            "domain_irrelevant": 4,
+            "duplicate": 2
+        }
+    },
+    "warnings": [
+        "High failure rate for IEEE papers (40%)",
+        "ArXiv ID mismatches detected in 5 papers"
+    ],
+    "recommendations": [
+        "Review IEEE extraction method",
+        "Update ArXiv ID parser"
+    ]
+}
+```
+
+### Per-Paper Verification Log
+```python
+# Append to output/papers/verification_log.jsonl
+{
+    "paper_id": "2024_smith_ml_optimization",
+    "filename": "smith2024_optimization.pdf",
+    "verification_stages": {
+        "pre_download": {"status": "passed", "timestamp": "2024-01-20T10:15:00"},
+        "download": {"status": "success", "size_mb": 2.4, "timestamp": "2024-01-20T10:15:05"},
+        "content_extraction": {
+            "status": "passed",
+            "extracted_title": "Machine Learning Optimization Techniques",
+            "extracted_authors": ["John Smith", "Jane Doe"],
+            "abstract_length": 250,
+            "timestamp": "2024-01-20T10:15:10"
+        },
+        "cross_reference": {
+            "status": "passed",
+            "title_similarity": 0.95,
+            "author_match": 1.0,
+            "timestamp": "2024-01-20T10:15:15"
+        }
+    },
+    "final_status": "verified"
+}
+```
+
+### Human-Readable Summary Report
+```markdown
+# Web Scraping Verification Report
+Generated: 2024-01-20 10:45:00
+
+## Summary Statistics
+- Total Papers Attempted: 150
+- Successfully Verified: 95 (63.3%)
+- Failed Verification: 25 (16.7%)
+- Pending Manual Review: 30 (20.0%)
+
+## Failure Analysis
+1. Unknown Authors: 8 papers
+   - Mostly from older conference proceedings
+   - Recommendation: Manual author lookup
+
+2. Title Mismatches: 6 papers
+   - PDF titles differ from search results
+   - Recommendation: Use extracted titles
+
+3. Content Extraction Failed: 5 papers
+   - Scanned PDFs without text layer
+   - Recommendation: OCR processing needed
+
+## Quality Metrics
+- Average Title Similarity: 0.92
+- Average Download Size: 1.8 MB
+- Processing Time: 45 minutes
+- Papers per Minute: 3.33
+
+## Next Steps
+1. Review 30 papers in pending_review/
+2. Re-process 5 scanned PDFs with OCR
+3. Update bibliography with corrected titles
+```
+
+### Critical Alerts File
+```python
+# output/CRITICAL_ALERTS.txt
+[2024-01-20 10:20:15] CRITICAL: Unknown Authors detected in ieee_2023_paper.pdf - REMOVED
+[2024-01-20 10:25:30] CRITICAL: Duplicate paper detected - smith2024.pdf matches doe2024.pdf
+[2024-01-20 10:30:45] CRITICAL: Batch validation failure - 15% unknown authors, exceeds 10% threshold
+[2024-01-20 10:35:00] CRITICAL: Circuit breaker triggered - 5 consecutive verification failures
+```
+
+## Additional Undownloadable Papers Protocol from CLAUDE.md
+
+When papers cannot be downloaded, follow this enhanced protocol:
+
+### Enhanced Verification for Undownloadable Papers
+```python
+def verify_undownloadable_paper(paper_info):
+    """Verify papers that cannot be downloaded"""
+    
+    # Step 1: Use Playwright to visit journal/conference website
+    from playwright.sync_api import sync_playwright
+    
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+        
+        # Navigate to paper URL
+        page.goto(paper_info["url"])
+        
+        # Extract visible information
+        visible_title = page.locator("h1.paper-title").text_content()
+        visible_authors = page.locator(".author-list").text_content()
+        visible_abstract = page.locator(".abstract").text_content()
+        
+        # Take screenshot for manual verification
+        page.screenshot(path=f"output/papers/screenshots/{paper_info['id']}.png")
+        
+        browser.close()
+    
+    # Step 2: Create verification record
+    verification = {
+        "paper_id": paper_info["id"],
+        "status": "undownloadable_but_verified",
+        "verification_method": "playwright_extraction",
+        "extracted_data": {
+            "title": visible_title,
+            "authors": visible_authors,
+            "abstract": visible_abstract[:200] + "..."
+        },
+        "screenshot": f"screenshots/{paper_info['id']}.png",
+        "human_review_required": True
+    }
+    
+    # Step 3: Add to undownloadable papers list
+    with open("output/papers/undownloadable_papers.json", "a") as f:
+        json.dump(verification, f)
+        f.write("\n")
+    
+    return verification
+```
+
+### Undownloadable Papers Report Format
+```json
+{
+    "report_date": "2024-01-20",
+    "total_undownloadable": 15,
+    "verified_genuine": 12,
+    "uncertain": 3,
+    "papers": [
+        {
+            "title": "Advanced Neural Network Architectures",
+            "authors": ["Smith, J.", "Doe, A."],
+            "journal": "IEEE Trans. Neural Networks",
+            "year": 2024,
+            "verification_status": "genuine",
+            "verification_url": "https://ieeexplore.ieee.org/document/123456",
+            "reason_undownloadable": "Paywall - institutional access required",
+            "alternative_actions": ["Request through library", "Contact authors"]
+        }
+    ]
+}
+```

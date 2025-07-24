@@ -1,0 +1,155 @@
+# Code Timeout Protocol
+
+## Purpose
+This document provides MANDATORY procedures for handling code execution timeouts. A timeout is NOT a problem to solve - it's a clear signal to handoff execution to the user.
+
+## Immediate Actions on Timeout
+
+### When You See "Command timed out"
+1. **STOP** - Do not proceed with execution
+2. **RECOGNIZE** - This is a handoff trigger, not an error to fix
+3. **HANDOFF** - Immediately prepare execution instructions for user
+
+### What NOT to Do
+**NEVER attempt these "solutions":**
+- ❌ Create v2/v3 with reduced epochs
+- ❌ Decrease batch size to run faster
+- ❌ Simplify the algorithm
+- ❌ Reduce dataset size
+- ❌ Remove features or functionality
+- ❌ Try "quick test" versions
+
+### What TO Do Instead
+✅ Keep the full, complete version of the code
+✅ Document runtime estimates
+✅ Provide clear execution instructions
+✅ Include progress monitoring
+✅ Add checkpointing for long runs
+
+## Timeout Recognition Patterns
+
+### Clear Timeout Indicators
+- "Command timed out after 120000 milliseconds"
+- "Bash command exceeded time limit"
+- Script stops without completion after 2 minutes
+- No output after starting intensive computation
+
+### Preemptive Recognition
+Before even running, check for:
+- `model.fit()` or `trainer.train()`
+- `for epoch in range(n_epochs):`
+- Nested loops with large iterations
+- Large matrix operations
+- Batch processing of big datasets
+
+## Handoff Procedure
+
+### Step 1: Acknowledge Timeout
+```
+I see the script requires more than 2 minutes to execute. This indicates we need to hand off execution to you for running on your local system.
+```
+
+### Step 2: Prepare Full Script
+- Include ALL functionality (don't simplify)
+- Add progress bars and logging
+- Include checkpointing if appropriate
+- Test imports and syntax only
+
+### Step 3: Create Execution Instructions
+Follow `prompts_code_execution_instructions` to create:
+- Clear step-by-step instructions
+- Runtime estimates
+- Required package list
+- Expected outputs
+
+### Step 4: Handoff Message
+```
+The code is ready for execution on your system. Due to the computational requirements (estimated X hours), I've prepared detailed execution instructions above.
+
+Please run the scripts in the specified order and let me know when complete so we can proceed with analyzing the results.
+```
+
+## Common Scenarios
+
+### Machine Learning Training
+**Trigger**: Any ML model training
+**Action**: Immediate handoff, even for 1 epoch
+**Never**: Reduce epochs to avoid timeout
+
+**Examples**:
+- Neural network training (even 1 epoch often >5 minutes)
+- Random Forest with >100 trees
+- Gradient boosting algorithms
+- Deep learning models (CNN, RNN, Transformer)
+- Reinforcement learning training
+
+### Large Data Processing
+**Trigger**: Processing >10,000 data points
+**Action**: Handoff with chunking code included
+**Never**: Process only subset of data
+
+**Examples**:
+- Large matrix operations (>5000×5000)
+- Image processing on batches
+- Time series analysis on long sequences
+- Feature engineering on large datasets
+
+### Optimization Algorithms
+**Trigger**: Iterative optimization >100 iterations
+**Action**: Handoff with convergence monitoring
+**Never**: Reduce iterations arbitrarily
+
+**Examples**:
+- Monte Carlo simulations
+- Genetic algorithms
+- Particle swarm optimization
+- Simulated annealing
+- Bayesian optimization
+
+### Web Scraping
+**Trigger**: Scraping >100 pages
+**Action**: Handoff with resumption capability
+**Never**: Scrape fewer pages than required
+
+**Examples**:
+- Scraping research papers from multiple sources
+- Collecting time series data from APIs
+- Downloading large datasets
+- Crawling website hierarchies
+
+## Version Control Protocol
+
+### If Timeout Occurs on v1
+- Do NOT create v2 to "fix" timeout
+- Handoff v1 to user as-is
+- Version numbers for user-requested changes only
+
+### If User Reports Issues
+- Then and only then create v2
+- Address specific user-reported problems
+- Not for timeout avoidance
+
+## Internal Checklist
+
+When you encounter a timeout:
+- [ ] Did I stop immediately? (not try to continue)
+- [ ] Did I recognize this as handoff trigger? (not error)
+- [ ] Did I keep full functionality? (not simplify)
+- [ ] Did I prepare execution instructions?
+- [ ] Did I estimate runtime accurately?
+- [ ] Did I avoid creating "fixed" versions?
+
+## Key Principle
+
+**A timeout is a SIGNAL, not a PROBLEM**
+
+The 2-minute bash timeout is a feature designed to trigger handoff for computationally intensive tasks. Respect this design by immediately transitioning to user execution mode.
+
+## Integration with Workflow
+
+This protocol integrates with:
+- `prompts_code_execution_instructions` - For handoff procedures
+- `prompts_methods` - Code development phase
+- Methods section Post-Check - Verification step
+
+Remember: Your role changes from executor to instructor when a timeout occurs. Guide the user to successful execution rather than trying to execute yourself.

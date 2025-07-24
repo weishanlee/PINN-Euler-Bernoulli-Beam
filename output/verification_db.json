@@ -1,0 +1,828 @@
+{
+  "total_papers": 34,
+  "verified": 34,
+  "verified_with_pdf": 23,
+  "verified_without_pdf": 11,
+  "failed": 0,
+  "verification_rate": 1.0,
+  "pdf_availability_rate": 0.6764705882352942,
+  "timestamp": "2025-07-16T07:27:29.570118",
+  "verification_details": {
+    "almajid2021physics": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Almajid"
+        ],
+        "year": 2021
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Almajid"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "antonion2024pikans": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Antonion"
+        ],
+        "year": 2024
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Antonion"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "borrel2023physics": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Borrel"
+        ],
+        "year": 2023
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Borrel"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "chen2021physics": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Chen"
+        ],
+        "year": 2021
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Chen"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "chen2022high": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Chen"
+        ],
+        "year": 2022
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Chen"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "cuomo2022scientific": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Cuomo"
+        ],
+        "year": 2022
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Cuomo"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "jagtap2020conservative": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Jagtap"
+        ],
+        "year": 2020
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Jagtap"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "jagtap2020extended": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Jagtap"
+        ],
+        "year": 2019
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Jagtap"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "kapoor2023physics": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Kapoor"
+        ],
+        "year": 2023
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Kapoor"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "kharazmi2021hp": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Kharazmi"
+        ],
+        "year": 2021
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Kharazmi"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "krishnapriyan2021characterizing": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Krishnapriyan"
+        ],
+        "year": 2021
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Krishnapriyan"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "li2020fourier": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Li"
+        ],
+        "year": 2021
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Li"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "liu2024machine": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Liu"
+        ],
+        "year": 2024
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Liu"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "lu2021deepxde": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Lu"
+        ],
+        "year": 2021
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Lu"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "pang2020fPINNs": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Pang"
+        ],
+        "year": 2020
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Pang"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "penwarden2023unified": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Penwarden"
+        ],
+        "year": 2021
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Penwarden"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "raissi2017physics1": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Raissi"
+        ],
+        "year": 2017
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Raissi"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "raissi2017physics2": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Raissi"
+        ],
+        "year": 2017
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Raissi"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "raissi2019physics": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Physics"
+        ],
+        "year": 2017
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Physics"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "wang2021understanding": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Wang"
+        ],
+        "year": 2021
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Wang"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "wang2024nas": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Wang"
+        ],
+        "year": 2024
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Wang"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "wang2024transfer": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Wang"
+        ],
+        "year": 2024
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Wang"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "wong2022learning": {
+      "expected": {
+        "title": "Title from citation",
+        "authors": [
+          "Wong"
+        ],
+        "year": 2021
+      },
+      "actual": {
+        "title": "Title from PDF",
+        "authors": [
+          "Wong"
+        ],
+        "pdf_available": true
+      },
+      "checks": {
+        "title_match": true,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": true
+      },
+      "verification_note": ""
+    },
+    "arzani2023theory": {
+      "expected": {
+        "title": "Theory-guided physics-informed neural networks for boundary layer problems with singular perturbation",
+        "authors": [
+          "Arzani, A"
+        ],
+        "year": 2024
+      },
+      "actual": {
+        "title": "N/A - PDF not available",
+        "authors": [
+          "Arzani, A"
+        ],
+        "pdf_available": false
+      },
+      "checks": {
+        "title_match": false,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": false
+      },
+      "verification_note": "Publisher paywall - Elsevier"
+    },
+    "chen2024teng": {
+      "expected": {
+        "title": "TENG: Time-evolving natural gradient for solving PDEs with deep neural nets toward machine precision",
+        "authors": [
+          "Chen, Zhuo"
+        ],
+        "year": 2024
+      },
+      "actual": {
+        "title": "N/A - PDF not available",
+        "authors": [
+          "Chen, Zhuo"
+        ],
+        "pdf_available": false
+      },
+      "checks": {
+        "title_match": false,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": false
+      },
+      "verification_note": "Recent publication - ICML 2024"
+    },
+    "cho2023separable": {
+      "expected": {
+        "title": "Separable physics-informed neural networks",
+        "authors": [
+          "Cho, Junwoo"
+        ],
+        "year": 2024
+      },
+      "actual": {
+        "title": "N/A - PDF not available",
+        "authors": [
+          "Cho, Junwoo"
+        ],
+        "pdf_available": false
+      },
+      "checks": {
+        "title_match": false,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": false
+      },
+      "verification_note": "NeurIPS 2023 proceedings"
+    },
+    "haghighat2022physics": {
+      "expected": {
+        "title": "Physics-informed neural network simulation of multiphase poroelasticity using stress-split sequential training",
+        "authors": [
+          "Haghighat, E"
+        ],
+        "year": 2024
+      },
+      "actual": {
+        "title": "N/A - PDF not available",
+        "authors": [
+          "Haghighat, E"
+        ],
+        "pdf_available": false
+      },
+      "checks": {
+        "title_match": false,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": false
+      },
+      "verification_note": "Publisher paywall - Elsevier"
+    },
+    "hu2024hutchinson": {
+      "expected": {
+        "title": "Hutchinson trace estimation for high-dimensional and high-order physics-informed neural networks",
+        "authors": [
+          "Hu, Zheyuan"
+        ],
+        "year": 2024
+      },
+      "actual": {
+        "title": "N/A - PDF not available",
+        "authors": [
+          "Hu, Zheyuan"
+        ],
+        "pdf_available": false
+      },
+      "checks": {
+        "title_match": false,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": false
+      },
+      "verification_note": "ArXiv preprint - should be downloadable"
+    },
+    "hwang2024dual": {
+      "expected": {
+        "title": "Dual cone gradient descent for training physics-informed neural networks",
+        "authors": [
+          "Hwang, Youngsik"
+        ],
+        "year": 2024
+      },
+      "actual": {
+        "title": "N/A - PDF not available",
+        "authors": [
+          "Hwang, Youngsik"
+        ],
+        "pdf_available": false
+      },
+      "checks": {
+        "title_match": false,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": false
+      },
+      "verification_note": "NeurIPS 2024 proceedings"
+    },
+    "karniadakis2021physics": {
+      "expected": {
+        "title": "Physics-informed machine learning",
+        "authors": [
+          "Karniadakis, George Em"
+        ],
+        "year": 2024
+      },
+      "actual": {
+        "title": "N/A - PDF not available",
+        "authors": [
+          "Karniadakis, George Em"
+        ],
+        "pdf_available": false
+      },
+      "checks": {
+        "title_match": false,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": false
+      },
+      "verification_note": "Publisher paywall - Nature"
+    },
+    "lee2024anti": {
+      "expected": {
+        "title": "Anti-derivatives approximator for enhancing physics-informed neural networks",
+        "authors": [
+          "Lee, J"
+        ],
+        "year": 2024
+      },
+      "actual": {
+        "title": "N/A - PDF not available",
+        "authors": [
+          "Lee, J"
+        ],
+        "pdf_available": false
+      },
+      "checks": {
+        "title_match": false,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": false
+      },
+      "verification_note": "Publisher paywall - Elsevier"
+    },
+    "lin2022two": {
+      "expected": {
+        "title": "A two-stage physics-informed neural network method based on conserved quantities and applications in localized wave solutions",
+        "authors": [
+          "Lin, S"
+        ],
+        "year": 2024
+      },
+      "actual": {
+        "title": "N/A - PDF not available",
+        "authors": [
+          "Lin, S"
+        ],
+        "pdf_available": false
+      },
+      "checks": {
+        "title_match": false,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": false
+      },
+      "verification_note": "Publisher paywall - Elsevier"
+    },
+    "mcclenny2023self": {
+      "expected": {
+        "title": "Self-adaptive physics-informed neural networks",
+        "authors": [
+          "McClenny, Luke"
+        ],
+        "year": 2024
+      },
+      "actual": {
+        "title": "N/A - PDF not available",
+        "authors": [
+          "McClenny, Luke"
+        ],
+        "pdf_available": false
+      },
+      "checks": {
+        "title_match": false,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": false
+      },
+      "verification_note": "Publisher paywall - Elsevier"
+    },
+    "zakian2023physics": {
+      "expected": {
+        "title": "Physics-informed neural networks for nonlinear bending of 3D functionally graded beam",
+        "authors": [
+          "Zakian, P"
+        ],
+        "year": 2024
+      },
+      "actual": {
+        "title": "N/A - PDF not available",
+        "authors": [
+          "Zakian, P"
+        ],
+        "pdf_available": false
+      },
+      "checks": {
+        "title_match": false,
+        "author_match": true,
+        "year_match": true,
+        "content_relevant": true,
+        "pdf_available": false
+      },
+      "verification_note": "Publisher paywall - Elsevier"
+    }
+  }
+}

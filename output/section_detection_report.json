@@ -1,0 +1,45 @@
+{
+  "timestamp": "2025-07-17 07:50:09",
+  "paper_type": "journal",
+  "output_directory": ".",
+  "detected_sections": {
+    "abstract": {
+      "latest_file": "abstract.tex",
+      "version": 0,
+      "modified": "2025-07-17 01:22:49"
+    },
+    "introduction": {
+      "latest_file": "introduction.tex",
+      "version": 0,
+      "modified": "2025-07-17 00:22:23"
+    },
+    "methods": {
+      "latest_file": "methods.tex",
+      "version": 0,
+      "modified": "2025-07-17 00:39:11"
+    },
+    "resultsAndDiscussions": {
+      "latest_file": "resultsAndDiscussions.tex",
+      "version": 0,
+      "modified": "2025-07-17 00:58:37"
+    },
+    "conclusions": {
+      "latest_file": "conclusions.tex",
+      "version": 0,
+      "modified": "2025-07-17 01:10:33"
+    },
+    "appendixAIReport": {
+      "latest_file": "appendixAIReport.tex",
+      "version": 0,
+      "modified": "2025-07-17 01:25:22"
+    }
+  },
+  "latex_inputs": {
+    "abstract": "\\input{abstract}",
+    "introduction": "\\input{introduction}",
+    "methods": "\\input{methods}",
+    "resultsAndDiscussions": "\\input{resultsAndDiscussions}",
+    "conclusions": "\\input{conclusions}",
+    "appendixAIReport": "\\input{appendixAIReport}"
+  }
+}

@@ -1,0 +1,98 @@
+\begin{thebibliography}{}
+
+\bibitem[Brunton and Kutz, 2024]{brunton2024machine}
+Brunton, S.~L. and Kutz, J.~N. (2024).
+\newblock Promising directions of machine learning for partial differential
+  equations.
+\newblock {\em Nature Computational Science}, 4(7):483--494.
+
+\bibitem[Han et~al., 1999]{han1999dynamics}
+Han, S.~M., Benaroya, H., and Wei, T. (1999).
+\newblock {\em Dynamics of transversely vibrating beams using four engineering
+  theories}.
+\newblock Academic Press.
+
+\bibitem[Hu et~al., 2024]{hu2024hutchinson}
+Hu, Z., Shi, K., Shi, H., and Lai, Z. (2024).
+\newblock Hutchinson trace estimation for high-dimensional and high-order
+  physics-informed neural networks.
+\newblock {\em arXiv preprint arXiv:2312.14499}.
+
+\bibitem[Jagtap et~al., 2020]{jagtap2020conservative}
+Jagtap, A.~D., Kawaguchi, K., and Karniadakis, G.~E. (2020).
+\newblock Conservative physics-informed neural networks on discrete domains for
+  conservation laws: Applications to forward and inverse problems.
+\newblock {\em Computer Methods in Applied Mechanics and Engineering},
+  365:113028.
+
+\bibitem[Kapoor et~al., 2023]{kapoor2023physics}
+Kapoor, T., Wang, H., N{\'u}{\~n}ez, A., and Dollevoet, R. (2023).
+\newblock Physics-informed neural networks for solving forward and inverse
+  problems in complex beam systems.
+\newblock {\em arXiv preprint arXiv:2303.01055}.
+
+\bibitem[Kingma and Ba, 2015]{kingma2014adam}
+Kingma, D.~P. and Ba, J. (2015).
+\newblock Adam: A method for stochastic optimization.
+\newblock In {\em International Conference on Learning Representations}.
+
+\bibitem[Krishnapriyan et~al., 2021]{krishnapriyan2021characterizing}
+Krishnapriyan, A., Gholami, A., Zhe, S., Kirby, R., and Mahoney, M.~W. (2021).
+\newblock Characterizing possible failure modes in physics-informed neural
+  networks.
+\newblock {\em Advances in Neural Information Processing Systems},
+  34:26548--26560.
+
+\bibitem[Liu and Nocedal, 1989]{liu1989limited}
+Liu, D.~C. and Nocedal, J. (1989).
+\newblock On the limited memory bfgs method for large scale optimization.
+\newblock {\em Mathematical programming}, 45(1-3):503--528.
+
+\bibitem[McClenny and Braga-Neto, 2020]{mcclenny2020self}
+McClenny, L. and Braga-Neto, U. (2020).
+\newblock Self-adaptive physics-informed neural networks using a soft attention
+  mechanism.
+\newblock {\em arXiv preprint arXiv:2009.04544}.
+
+\bibitem[McClenny and Braga-Neto, 2023]{mcclenny2023self}
+McClenny, L. and Braga-Neto, U. (2023).
+\newblock Self-adaptive physics-informed neural networks.
+\newblock {\em Journal of Computational Physics}, 474:111722.
+
+\bibitem[Penwarden et~al., 2023]{penwarden2023unified}
+Penwarden, M., Jagtap, A., Zhe, S., and Karniadakis, G. (2023).
+\newblock A unified scalable framework for causal sweeping strategies for
+  physics-informed neural networks (pinns) and their temporal decompositions.
+\newblock {\em Journal of Computational Physics}, 493:112464.
+
+\bibitem[Psaros et~al., 2023]{psaros2023uncertainty}
+Psaros, A.~F., Meng, X., Zou, Z., Guo, L., and Karniadakis, G.~E. (2023).
+\newblock Uncertainty quantification in scientific machine learning: Methods,
+  metrics, and comparisons.
+\newblock {\em Journal of Computational Physics}, 477:111902.
+
+\bibitem[Raissi et~al., 2019]{raissi2019physics}
+Raissi, M., Perdikaris, P., and Karniadakis, G.~E. (2019).
+\newblock Physics-informed neural networks: A deep learning framework for
+  solving forward and inverse problems involving nonlinear partial differential
+  equations.
+\newblock {\em Journal of Computational Physics}, 378:686--707.
+
+\bibitem[Vahab et~al., 2022]{vahab2022physics}
+Vahab, M., Haghighat, E., Khaleghi, M., and Khalili, N. (2022).
+\newblock A physics-informed neural network approach to solution and
+  identification of biharmonic equations of elasticity.
+\newblock {\em Journal of Engineering Mechanics}, 148(2):04021139.
+
+\bibitem[Wang et~al., 2021]{wang2021understanding}
+Wang, S., Teng, Y., and Perdikaris, P. (2021).
+\newblock Understanding and mitigating gradient flow pathologies in
+  physics-informed neural networks.
+\newblock {\em SIAM Journal on Scientific Computing}, 43(5):A3055--A3081.
+
+\bibitem[Wong et~al., 2024]{wong2022learning}
+Wong, J.~C., Ooi, C., Gupta, A., and Ong, Y.-S. (2024).
+\newblock Learning in sinusoidal spaces with physics-informed neural networks.
+\newblock {\em IEEE Transactions on Artificial Intelligence}, 5(6):2547--2557.
+
+\end{thebibliography}

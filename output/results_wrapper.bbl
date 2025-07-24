@@ -1,0 +1,18 @@
+\begin{thebibliography}{1}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\expandafter\ifx\csname href\endcsname\relax
+  \def\href#1#2{#2} \def\path#1{#1}\fi
+
+\bibitem{raissi2019physics}
+M.~Raissi, P.~Perdikaris, G.~E. Karniadakis, Physics-informed neural networks:
+  A deep learning framework for solving forward and inverse problems involving
+  nonlinear partial differential equations, Journal of Computational Physics
+  378 (2019) 686--707.
+
+\bibitem{hwang2024dual}
+Y.~Hwang, D.-Y. Lim, Dual cone gradient descent for training physics-informed
+  neural networks, Advances in Neural Information Processing Systems 37 (2024).
+
+\end{thebibliography}

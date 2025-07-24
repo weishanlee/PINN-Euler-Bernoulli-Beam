@@ -1,0 +1,490 @@
+# Version Selection Protocol
+
+## 🎯 Purpose
+This document defines the protocol for selecting the BEST version of each section when multiple versions exist, prioritizing content completeness over modification time.
+
+## 📋 Core Principle
+**Content completeness is the PRIMARY criterion, NOT modification time!**
+
+## 🔍 Version Selection Process
+
+When multiple versions of a section exist, follow this protocol:
+
+### 1. **List All Versions with Key Metrics**
+
+For each section with multiple versions, collect:
+- **File size** (bytes)
+- **Number of citations** (`\cite{}` commands)
+- **Presence of key content**:
+  - Figures: `\includegraphics` count
+  - Tables: `\begin{table}` or `\begin{tabular}` count
+  - Equations: `\begin{equation}`, `$$`, or `\[` count
+  - References: `\ref{}` and `\label{}` count
+- **Modification time** (only as tiebreaker)
+
+Example analysis output:
+```
+methods.tex:
+  - Size: 45,678 bytes
+  - Citations: 42
+  - Figures: 8
+  - Tables: 3
+  - Equations: 15
+  - Modified: 2024-01-14 10:30:22
+
+methods_v2.tex:
+  - Size: 48,234 bytes
+  - Citations: 45
+  - Figures: 8
+  - Tables: 3
+  - Equations: 17
+  - Modified: 2024-01-15 09:15:30
+
+methods_v3.tex:
+  - Size: 35,123 bytes  ⚠️ SIGNIFICANT REDUCTION
+  - Citations: 28      ⚠️ LOST 17 CITATIONS
+  - Figures: 6        ⚠️ MISSING 2 FIGURES
+  - Tables: 3
+  - Equations: 15
+  - Modified: 2024-01-15 14:30:22  ← Latest but INCOMPLETE!
+```
+
+### 2. **Content Comparison**
+
+Perform detailed comparison between versions:
+
+#### A. Citation Analysis
+```bash
+# Compare citations between versions
+echo "=== Citation Comparison ==="
+for file in methods*.tex; do
+    echo "$file: $(grep -o '\\cite{[^}]*}' "$file" | sort -u | wc -l) unique citations"
+done
+
+# Find citations lost between versions
+comm -23 <(grep -o '\\cite{[^}]*}' methods_v2.tex | sort -u) \
+         <(grep -o '\\cite{[^}]*}' methods_v3.tex | sort -u) > lost_citations.txt
+```
+
+#### B. Subsection Check
+```bash
+# Check for missing subsections
+echo "=== Subsection Comparison ==="
+for file in methods*.tex; do
+    echo "$file subsections:"
+    grep -E "\\\\(sub)?section\{" "$file" | sed 's/^/  /'
+done
+```
+
+#### C. Mathematical Content
+```bash
+# Verify mathematical equations are present
+echo "=== Equation Comparison ==="
+for file in methods*.tex; do
+    equations=$(grep -c -E "\\\\begin\{equation\}|\\\\\\[|\\\$\\\$" "$file")
+    echo "$file: $equations equation blocks"
+done
+```
+
+#### D. Figure/Table References
+```bash
+# Ensure all figures/tables are referenced
+echo "=== Figure/Table References ==="
+for file in methods*.tex; do
+    figs=$(grep -c "\\\\ref{fig:" "$file")
+    tabs=$(grep -c "\\\\ref{tab:" "$file")
+    echo "$file: $figs figure refs, $tabs table refs"
+done
+```
+
+### 3. **Selection Criteria (in order of priority)**
+
+Apply these criteria in order:
+
+1. **Content Completeness Score** (40% weight)
+   - All required citations present
+   - All figures/tables included
+   - All equations preserved
+   - All subsections intact
+
+2. **Review Approval Status** (30% weight)
+   - Check version_log.txt for approval records
+   - Approved versions preferred over unapproved
+
+3. **Explicit Version Naming** (20% weight)
+   - `_final` > `_approved` > `_v[N]` > `_revised` > `_modified`
+
+4. **Modification Time** (10% weight - ONLY as tiebreaker)
+   - Use only when content metrics are identical
+
+### 4. **Decision Documentation**
+
+Create `assembly_decisions.log` documenting each selection:
+
+```
+=== Version Selection Report ===
+Generated: 2024-01-15 15:00:00
+
+INTRODUCTION SECTION:
+Selected: introduction_v2.tex
+Reason: Most complete content (52 citations vs 35 in v3)
+- v2: 52 citations, 12KB, approved by user
+- v3: 35 citations, 8KB, latest but missing literature review section
+Decision: Content completeness outweighs newer timestamp
+
+METHODS SECTION:
+Selected: methods_v2.tex
+Reason: v3 lost 17 citations and 2 figures
+- v1: 42 citations, 8 figures
+- v2: 45 citations, 8 figures, user approved
+- v3: 28 citations, 6 figures, content regression detected
+Decision: v2 has most complete content despite v3 being newer
+
+RESULTS SECTION:
+Selected: resultsAndDiscussions_v3.tex
+Reason: Latest version with all content preserved
+- v1: 15 citations, 12 figures
+- v2: 15 citations, 12 figures, minor edits
+- v3: 16 citations, 13 figures, added new analysis
+Decision: v3 has most content AND is latest
+
+CONCLUSIONS SECTION:
+Selected: conclusions.tex
+Reason: Only one version exists
+Decision: Use available version
+```
+
+## 🚨 Warning Scenarios
+
+### Red Flags Requiring Manual Review:
+
+1. **Dramatic Size Reduction** (>30% smaller)
+   ```
+   WARNING: methods_v3.tex is 35% smaller than methods_v2.tex
+   Possible content loss - manual review required
+   ```
+
+2. **Citation Count Decrease** (>10% fewer)
+   ```
+   WARNING: introduction_v3.tex has 17 fewer citations than v2
+   Literature review may have been accidentally deleted
+   ```
+
+3. **Missing Key Sections**
+   ```
+   WARNING: methods_v3.tex missing subsection "3.2 Algorithm Details"
+   Content regression detected
+   ```
+
+4. **Figure/Table Loss**
+   ```
+   WARNING: results_v3.tex missing figures 4 and 5
+   Visualization content lost
+   ```
+
+## 🔧 Implementation Example
+
+### Python Implementation for Content Analysis:
+
+```python
+#!/usr/bin/env python3
+"""
+analyze_section_versions.py - Analyze content completeness of section versions
+"""
+import os
+import re
+import json
+from datetime import datetime
+from pathlib import Path
+
+class SectionAnalyzer:
+    def __init__(self, output_dir="."):
+        self.output_dir = Path(output_dir)
+        self.sections = ["introduction", "methods", "resultsAndDiscussions", "conclusions"]
+        
+    def analyze_file(self, filepath):
+        """Analyze a single .tex file for content metrics"""
+        with open(filepath, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        metrics = {
+            'file': filepath.name,
+            'size': os.path.getsize(filepath),
+            'modified': datetime.fromtimestamp(os.path.getmtime(filepath)),
+            'citations': len(re.findall(r'\\cite\{[^}]+\}', content)),
+            'unique_citations': len(set(re.findall(r'\\cite\{([^}]+)\}', content))),
+            'figures': len(re.findall(r'\\includegraphics', content)),
+            'tables': len(re.findall(r'\\begin\{table\}', content)),
+            'equations': len(re.findall(r'\\begin\{equation\}|\\\\\\[|\$\$', content)),
+            'subsections': len(re.findall(r'\\(?:sub)?section\{', content)),
+            'references': len(re.findall(r'\\ref\{[^}]+\}', content)),
+        }
+        
+        # Extract subsection titles
+        metrics['subsection_titles'] = re.findall(r'\\(?:sub)?section\{([^}]+)\}', content)
+        
+        # Check for review approval
+        metrics['has_approval'] = 'approved' in filepath.name.lower() or \
+                                 self._check_version_log(filepath.name)
+        
+        return metrics
+    
+    def _check_version_log(self, filename):
+        """Check version_log.txt for approval status"""
+        log_file = self.output_dir / 'version_log.txt'
+        if log_file.exists():
+            with open(log_file, 'r') as f:
+                return f'approved {filename}' in f.read()
+        return False
+    
+    def compare_versions(self, section):
+        """Compare all versions of a section"""
+        # Find all versions
+        pattern = f"{section}*.tex"
+        versions = list(self.output_dir.glob(pattern))
+        
+        if not versions:
+            return None
+        
+        # Analyze each version
+        analyses = []
+        for version in sorted(versions):
+            analyses.append(self.analyze_file(version))
+        
+        # Score each version
+        for analysis in analyses:
+            analysis['score'] = self._calculate_score(analysis, analyses)
+        
+        # Sort by score
+        analyses.sort(key=lambda x: x['score'], reverse=True)
+        
+        return {
+            'section': section,
+            'versions': analyses,
+            'recommendation': analyses[0] if analyses else None
+        }
+    
+    def _calculate_score(self, version, all_versions):
+        """Calculate content completeness score"""
+        score = 0
+        
+        # Get max values for normalization
+        max_citations = max(v['citations'] for v in all_versions)
+        max_figures = max(v['figures'] for v in all_versions) or 1
+        max_equations = max(v['equations'] for v in all_versions) or 1
+        max_size = max(v['size'] for v in all_versions)
+        
+        # Content completeness (40%)
+        if max_citations > 0:
+            score += 40 * (version['citations'] / max_citations)
+        
+        # Figures and equations (20%)
+        score += 10 * (version['figures'] / max_figures)
+        score += 10 * (version['equations'] / max_equations)
+        
+        # Approval status (30%)
+        if version['has_approval']:
+            score += 30
+        
+        # Version naming (10%)
+        filename = version['file'].lower()
+        if 'final' in filename:
+            score += 10
+        elif 'approved' in filename:
+            score += 8
+        elif '_v' in filename:
+            score += 5
+        elif 'revised' in filename:
+            score += 3
+        
+        # Penalty for significant size reduction
+        if version['size'] < 0.7 * max_size:
+            score -= 20
+        
+        return score
+    
+    def generate_report(self):
+        """Generate complete analysis report"""
+        report = {
+            'generated': datetime.now().isoformat(),
+            'sections': {}
+        }
+        
+        decisions = []
+        
+        for section in self.sections:
+            analysis = self.compare_versions(section)
+            if analysis:
+                report['sections'][section] = analysis
+                
+                # Generate decision log entry
+                rec = analysis['recommendation']
+                decision = f"\n{section.upper()} SECTION:\n"
+                decision += f"Selected: {rec['file']}\n"
+                decision += f"Reason: Highest content completeness score ({rec['score']:.1f}/100)\n"
+                
+                # Add comparison details
+                for v in analysis['versions']:
+                    decision += f"- {v['file']}: {v['citations']} citations, "
+                    decision += f"{v['size']/1024:.1f}KB, "
+                    decision += f"score={v['score']:.1f}\n"
+                
+                decisions.append(decision)
+        
+        # Save report
+        with open(self.output_dir / 'section_analysis_report.json', 'w') as f:
+            json.dump(report, f, indent=2, default=str)
+        
+        # Save decisions log
+        with open(self.output_dir / 'assembly_decisions.log', 'w') as f:
+            f.write("=== Version Selection Report ===\n")
+            f.write(f"Generated: {datetime.now()}\n")
+            f.writelines(decisions)
+        
+        return report
+
+if __name__ == "__main__":
+    analyzer = SectionAnalyzer()
+    report = analyzer.generate_report()
+    
+    # Print warnings
+    for section, data in report['sections'].items():
+        if data['recommendation']:
+            rec = data['recommendation']
+            
+            # Check for content loss
+            if len(data['versions']) > 1:
+                prev = data['versions'][1]  # Second best
+                
+                if rec['citations'] < prev['citations'] * 0.9:
+                    print(f"WARNING: {section} may have lost citations")
+                
+                if rec['size'] < prev['size'] * 0.7:
+                    print(f"WARNING: {section} file size reduced significantly")
+```
+
+## 📊 Manual Override Process
+
+When automatic selection is incorrect:
+
+1. **Review the analysis report**
+   ```bash
+   cat section_analysis_report.json
+   cat assembly_decisions.log
+   ```
+
+2. **Manually inspect versions**
+   ```bash
+   # Use diff to compare versions
+   diff methods_v2.tex methods_v3.tex | less
+   ```
+
+3. **Override decision**
+   ```bash
+   echo "MANUAL OVERRIDE: Using methods_v2.tex instead of methods_v3.tex" >> assembly_decisions.log
+   echo "Reason: v3 missing critical Algorithm 3.2 section" >> assembly_decisions.log
+   ```
+
+4. **Update detection report**
+   ```python
+   # Edit section_detection_report.json to use manual selection
+   {
+     "methods": {
+       "selected": "methods_v2.tex",
+       "override": true,
+       "reason": "Manual selection - v3 missing content"
+     }
+   }
+   ```
+
+## 🔄 Integration with detect_latest_sections.py
+
+The enhanced `detect_latest_sections.py` script should:
+1. Run content analysis using the above protocol
+2. Generate scoring based on content completeness
+3. Create detailed logs explaining selections
+4. Flag potential content loss issues
+5. Support manual override options
+
+See implementation in `utilityScripts/detect_latest_sections.py`.
+
+## 📄 Handling Multiple Section Versions
+
+**PROBLEM**: During paper generation, sections may be revised multiple times, creating files like:
+- `methods.tex` (original)
+- `methods_modified.tex` (first revision)
+- `methods_v3.tex` (third version)
+- `methods_final.tex` (final version)
+
+**WARNING: Latest by modification time ≠ Best version**
+- ALWAYS review the content of each version before selection
+- Check for missing citations, figures, or important content
+- If an older version has more complete content, use it instead
+- Document why you chose a specific version in the assembly log
+
+**SOLUTION**: Use version selection protocol to find the BEST version:
+
+```bash
+# Before final assembly, ALWAYS run:
+cd output
+~/.venv/ml_31123121/bin/python ../utilityScripts/detect_latest_sections.py --analyze-content
+
+# This will analyze each version for:
+# - Citation count
+# - File size
+# - Figure/table references
+# - Content completeness score
+# And recommend the BEST version, not just the latest!
+```
+
+**KEY PRINCIPLE**: Content completeness is the PRIMARY criterion, NOT modification time!
+
+## 📝 Version Numbering Examples
+
+### Sequential Version Numbering Convention
+
+**CRITICAL: When updating ANY file (codes, figures, tex files, PDFs), use sequential version numbering**
+
+#### LaTeX Files
+```
+introduction_v1.tex
+introduction_v2.tex
+introduction_v3.tex
+```
+
+#### Figures
+```
+architecture_v1.png
+architecture_v2.png
+architecture_v3.png
+results_comparison_v1.pdf
+results_comparison_v2.pdf
+```
+
+#### Code Files
+```
+analysis_v1.py
+analysis_v2.py
+analysis_v3.py
+model_training_v1.py
+model_training_v2.py
+```
+
+#### PDF Compilations
+```
+introduction_v1.pdf
+introduction_v2.pdf
+introduction_v3.pdf
+```
+
+### Important Rules
+- This applies to BOTH user-requested updates AND system-initiated modifications
+- Never overwrite existing versioned files; always create new version
+- Enables tracking of improvements and rollback if needed
+- When in doubt, increment the version number
+
+### Version Tracking Best Practices
+1. **Keep a version log**: Document what changed in each version
+2. **Preserve all versions**: Don't delete old versions until final assembly
+3. **Use consistent naming**: Always use _v{n} format
+4. **Start from v1**: First version should be _v1, not unnumbered

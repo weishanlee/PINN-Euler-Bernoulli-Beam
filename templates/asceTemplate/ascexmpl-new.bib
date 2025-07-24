@@ -1,0 +1,99 @@
+%
+%
+% August 20, 2011
+%
+% Bibtex bibliographic data base using the canonical set given in the
+%   ASCE web document "Instructions For Preparation Of Electronic Manuscripts"
+% For use with the ascelike.bst bibliographic style file.
+%
+% A few 'fine points' about bibtex data bases:
+%   1) Entries that are NOT enclosed in quotations marks ("" "") 
+%      must contain data.  For example, the NUMBER entry.  If you don't
+%      know the NUMBER, don't leave it blank.  Just remove the entire 
+%      NUMBER line.
+%   2) Bibtex will suppress capital letters within the TITLE of an article
+%      (except for the first word of the title).  To force capitalization, 
+%      enclose the capitalized letter(s) in curly braces, such as {ASCE}
+%      of {SI}.
+%   3) Although unusual, if the reference has no author, you will need to
+%      be somewhat creative to produce ASCE-like output.  This usually occurs
+%      when the "non-author" is an organization instead of a person, but
+%      it also applies to newspaper articles.  Try the following:
+%        a) if the non-author is a a single word or abreviation ("ASTM" or
+%           "Newsweek"), try formatting as a book, incollection, or article,
+%           placing the non-author in the AUTHOR field.
+%        b) if the non-author is multiple word (Federal Highway 
+%           Administration), you will need to be creative, since bibtex
+%           will confuse the non-author as a person with first, middle, and
+%           last names (for example, Federal, H. A.).  Try using the MANUAL
+%           format as shown in FHWA:1991a, FR:1968a, and ICBO:1988a
+%
+%
+@article{raissi2019physics,
+  title={Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations},
+  author={Raissi, Maziar and Perdikaris, Paris and Karniadakis, George E},
+  journal={Journal of Computational Physics},
+  volume={378},
+  pages={686--707},
+  year={2019},
+  publisher={Elsevier}
+}
+
+@article{karniadakis2021physics,
+  title={Physics-informed machine learning},
+  author={Karniadakis, George Em and Kevrekidis, Yannis and Lu, Lu and Perdikaris, Paris and Wang, Sifan and Yang, Liu},
+  journal={Nature Reviews Physics},
+  volume={3},
+  number={6},
+  pages={422--440},
+  year={2021},
+  publisher={Nature Publishing Group}
+}
+
+@book{timoshenko1959theory,
+  title={Theory of plates and shells},
+  author={Timoshenko, Stephen and Woinowsky-Krieger, S},
+  year={1959},
+  publisher={McGraw-Hill}
+}
+
+@article{hochreiter1997long,
+  title={Long short-term memory},
+  author={Hochreiter, Sepp and Schmidhuber, J{\"u}rgen},
+  journal={Neural Computation},
+  volume={9},
+  number={8},
+  pages={1735--1780},
+  year={1997},
+  publisher={MIT Press}
+}
+
+@article{kingma2015adam,
+  title={Adam: A method for stochastic optimization},
+  author={Kingma, Diederik P and Ba, Jimmy},
+  journal={International Conference on Learning Representations},
+  year={2015}
+}
+
+@misc{paszke2019pytorch,
+  title={PyTorch: An Imperative Style, High-Performance Deep Learning Library},
+  author={Paszke, Adam and Gross, Sam and Massa, Francisco and Lerer, Adam and Bradbury, James and Chanan, Gregory and Killeen, Trevor and Lin, Zeming and Gimelshein, Natalia and Antiga, Luca and others},
+  howpublished={Advances in Neural Information Processing Systems},
+  year={2019}
+}
+
+@inproceedings{woo2018cbam,
+  title={Cbam: Convolutional block attention module},
+  author={Woo, Sanghyun and Park, Jongchan and Lee, Joon-Young and Kweon, In So},
+  booktitle={Proceedings of the European conference on computer vision (ECCV)},
+  pages={3--19},
+  year={2018}
+}
+
+@inproceedings{bahdanau2015neural,
+  title={Neural machine translation by jointly learning to align and translate},
+  author={Bahdanau, Dzmitry and Cho, Kyunghyun and Bengio, Yoshua},
+  booktitle={International Conference on Learning Representations},
+  year={2015}
+}
+

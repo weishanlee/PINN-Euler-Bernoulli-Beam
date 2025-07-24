@@ -1,0 +1,193 @@
+\begin{thebibliography}{}
+
+\bibitem[Antonion and Tsai, 2024]{antonion2024pikans}
+Antonion, J.~D. and Tsai, R. (2024).
+\newblock From pinns to pikans: Recent advances in physics-informed machine
+  learning.
+\newblock {\em arXiv preprint arXiv:2410.13228}.
+
+\bibitem[Arzani et~al., 2023]{arzani2023theory}
+Arzani, A., Cassel, K., and D'Souza, R. (2023).
+\newblock Theory-guided physics-informed neural networks for boundary layer
+  problems with singular perturbation.
+\newblock {\em Journal of Computational Physics}, 473:111756.
+
+\bibitem[Brunton and Kutz, 2024]{brunton2024machine}
+Brunton, S.~L. and Kutz, J.~N. (2024).
+\newblock Promising directions of machine learning for partial differential
+  equations.
+\newblock {\em Nature Computational Science}, 4(7):483--494.
+
+\bibitem[Chen et~al., 2021]{chen2021physics}
+Chen, Z., Liu, Y., and Sun, H. (2021).
+\newblock Physics-informed learning of governing equations from scarce data.
+\newblock {\em Nature Communications}, 12(1):6136.
+
+\bibitem[Chen et~al., 2024]{chen2024teng}
+Chen, Z., McCarran, J., Vizcaino, E., Soljacic, M., and Luo, D. (2024).
+\newblock Teng: Time-evolving natural gradient for solving pdes with deep
+  neural nets toward machine precision.
+\newblock {\em Proceedings of the 41st International Conference on Machine
+  Learning}.
+
+\bibitem[Cho et~al., 2023]{cho2023separable}
+Cho, J., Nam, S., Yang, H., Yun, S.-B., Hong, Y., and Park, E. (2023).
+\newblock Separable physics-informed neural networks.
+\newblock {\em arXiv preprint arXiv:2306.15969}.
+
+\bibitem[Cuomo et~al., 2022]{cuomo2022scientific}
+Cuomo, S., Di~Cola, V.~S., Giampaolo, F., Rozza, G., Raissi, M., and Piccialli,
+  F. (2022).
+\newblock Scientific machine learning through physics--informed neural
+  networks: Where we are and what's next.
+\newblock {\em Journal of Scientific Computing}, 92(3):88.
+
+\bibitem[Haghighat et~al., 2022]{haghighat2022physics}
+Haghighat, E., Amini, D., and Juanes, R. (2022).
+\newblock Physics-informed neural network simulation of multiphase
+  poroelasticity using stress-split sequential training.
+\newblock {\em Computer Methods in Applied Mechanics and Engineering},
+  397:115038.
+
+\bibitem[Hu et~al., 2024]{hu2024hutchinson}
+Hu, Z., Shi, K., Shi, H., and Lai, Z. (2024).
+\newblock Hutchinson trace estimation for high-dimensional and high-order
+  physics-informed neural networks.
+\newblock {\em arXiv preprint arXiv:2312.14499}.
+
+\bibitem[Jagtap and Karniadakis, 2020]{jagtap2020extended}
+Jagtap, A.~D. and Karniadakis, G.~E. (2020).
+\newblock Extended physics-informed neural networks (xpinns): A generalized
+  space-time domain decomposition based deep learning framework for nonlinear
+  partial differential equations.
+\newblock {\em Communications in Computational Physics}, 28(5):2002--2041.
+
+\bibitem[Jagtap et~al., 2020]{jagtap2020conservative}
+Jagtap, A.~D., Kawaguchi, K., and Karniadakis, G.~E. (2020).
+\newblock Conservative physics-informed neural networks on discrete domains for
+  conservation laws: Applications to forward and inverse problems.
+\newblock {\em Computer Methods in Applied Mechanics and Engineering},
+  365:113028.
+
+\bibitem[Kapoor et~al., 2023]{kapoor2023physics}
+Kapoor, T., Wang, H., N{\'u}{\~n}ez, A., and Dollevoet, R. (2023).
+\newblock Physics-informed neural networks for solving forward and inverse
+  problems in complex beam systems.
+\newblock {\em arXiv preprint arXiv:2303.01055}.
+
+\bibitem[Karniadakis et~al., 2021]{karniadakis2021physics}
+Karniadakis, G.~E., Kevrekidis, I.~G., Lu, L., Perdikaris, P., Wang, S., and
+  Yang, L. (2021).
+\newblock Physics-informed machine learning.
+\newblock {\em Nature Reviews Physics}, 3(6):422--440.
+
+\bibitem[Kharazmi et~al., 2021]{kharazmi2021hp}
+Kharazmi, E., Zhang, Z., and Karniadakis, G.~E. (2021).
+\newblock hp-vpinns: Variational physics-informed neural networks with domain
+  decomposition.
+\newblock {\em Computer Methods in Applied Mechanics and Engineering},
+  374:113547.
+
+\bibitem[Krishnapriyan et~al., 2021]{krishnapriyan2021characterizing}
+Krishnapriyan, A., Gholami, A., Zhe, S., Kirby, R., and Mahoney, M.~W. (2021).
+\newblock Characterizing possible failure modes in physics-informed neural
+  networks.
+\newblock {\em Advances in Neural Information Processing Systems},
+  34:26548--26560.
+
+\bibitem[Lee, 2024]{lee2024anti}
+Lee, J. (2024).
+\newblock Anti-derivatives approximator for enhancing physics-informed neural
+  networks.
+\newblock {\em Computer Methods in Applied Mechanics and Engineering},
+  419:116971.
+
+\bibitem[Li et~al., 2020]{li2020fourier}
+Li, Z., Kovachki, N., Azizzadenesheli, K., Liu, B., Bhattacharya, K., Stuart,
+  A., and Anandkumar, A. (2020).
+\newblock Fourier neural operator for parametric partial differential
+  equations.
+\newblock {\em arXiv preprint arXiv:2010.08895}.
+
+\bibitem[Lin and Chen, 2022]{lin2022two}
+Lin, S. and Chen, Y. (2022).
+\newblock A two-stage physics-informed neural network method based on conserved
+  quantities and applications in localized wave solutions.
+\newblock {\em Journal of Computational Physics}, 457:111052.
+
+\bibitem[Lu et~al., 2021]{lu2021deepxde}
+Lu, L., Meng, X., Mao, Z., and Karniadakis, G.~E. (2021).
+\newblock Deepxde: A deep learning library for solving differential equations.
+\newblock {\em SIAM Review}, 63(1):208--228.
+
+\bibitem[McClenny and Braga-Neto, 2023]{mcclenny2023self}
+McClenny, L. and Braga-Neto, U. (2023).
+\newblock Self-adaptive physics-informed neural networks.
+\newblock {\em Journal of Computational Physics}, 474:111722.
+
+\bibitem[Mukhametzhanov, 2022]{mukhametzhanov2022high}
+Mukhametzhanov, M.~S. (2022).
+\newblock High precision differentiation techniques for data-driven solution of
+  nonlinear pdes by physics-informed neural networks.
+\newblock {\em arXiv preprint arXiv:2210.00518}.
+
+\bibitem[Pang et~al., 2019]{pang2020fPINNs}
+Pang, G., Lu, L., and Karniadakis, G.~E. (2019).
+\newblock fpinns: Fractional physics-informed neural networks.
+\newblock {\em SIAM Journal on Scientific Computing}, 41(4):A2603--A2626.
+
+\bibitem[Penwarden et~al., 2023]{penwarden2023unified}
+Penwarden, M., Jagtap, A., Zhe, S., and Karniadakis, G. (2023).
+\newblock A unified scalable framework for causal sweeping strategies for
+  physics-informed neural networks (pinns) and their temporal decompositions.
+\newblock {\em Journal of Computational Physics}, 493:112464.
+
+\bibitem[Raissi et~al., 2017a]{raissi2017physics1}
+Raissi, M., Perdikaris, P., and Karniadakis, G.~E. (2017a).
+\newblock Physics informed deep learning (part i): Data-driven solutions of
+  nonlinear partial differential equations.
+\newblock {\em arXiv preprint arXiv:1711.10561}.
+
+\bibitem[Raissi et~al., 2017b]{raissi2017physics2}
+Raissi, M., Perdikaris, P., and Karniadakis, G.~E. (2017b).
+\newblock Physics informed deep learning (part ii): Data-driven discovery of
+  nonlinear partial differential equations.
+\newblock {\em arXiv preprint arXiv:1711.10566}.
+
+\bibitem[Vahab et~al., 2022]{vahab2022physics}
+Vahab, M., Haghighat, E., Khaleghi, M., and Khalili, N. (2022).
+\newblock A physics-informed neural network approach to solution and
+  identification of biharmonic equations of elasticity.
+\newblock {\em Journal of Engineering Mechanics}, 148(2):04021139.
+
+\bibitem[Wang et~al., 2024]{wang2024transfer}
+Wang, H., Kapoor, T., N{\'u}{\~n}ez, A., and Dollevoet, R. (2024).
+\newblock Transfer learning for improved generalizability in causal
+  physics-informed neural networks for beam simulations.
+\newblock {\em Engineering Applications of Artificial Intelligence},
+  131:107850.
+
+\bibitem[Wang et~al., 2021]{wang2021understanding}
+Wang, S., Teng, Y., and Perdikaris, P. (2021).
+\newblock Understanding and mitigating gradient flow pathologies in
+  physics-informed neural networks.
+\newblock {\em SIAM Journal on Scientific Computing}, 43(5):A3055--A3081.
+
+\bibitem[Wang and Zhong, 2024]{wang2024nas}
+Wang, Y. and Zhong, L. (2024).
+\newblock Nas-pinn: Neural architecture search-guided physics-informed neural
+  network for solving pdes.
+\newblock {\em Journal of Computational Physics}, 496:112603.
+
+\bibitem[Wong et~al., 2024]{wong2022learning}
+Wong, J.~C., Ooi, C., Gupta, A., and Ong, Y.-S. (2024).
+\newblock Learning in sinusoidal spaces with physics-informed neural networks.
+\newblock {\em IEEE Transactions on Artificial Intelligence}, 5(6):2547--2557.
+
+\bibitem[Zakian, 2023]{zakian2023physics}
+Zakian, P. (2023).
+\newblock Physics-informed neural networks for nonlinear bending of 3d
+  functionally graded beam.
+\newblock {\em Mechanical Systems and Signal Processing}, 200:110575.
+
+\end{thebibliography}
