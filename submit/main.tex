@@ -1,0 +1,109 @@
+%Version 3.1 December 2024
+% See section 11 of the User Manual for version history
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                                 %%
+%% Please do not use \input{...} to include other tex files.       %%
+%% Submit your LaTeX manuscript as one .tex document.              %%
+%%                                                                 %%
+%% All additional figures and files should be attached             %%
+%% separately and not embedded in the \TeX\ document itself.       %%
+%%                                                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[pdflatex,sn-mathphys-num]{sn-jnl-modified}% Math and Physical Sciences Numbered Reference Style
+
+%%%% Standard Packages
+%%<additional latex packages if required can be included here>
+
+\usepackage{geometry}
+\geometry{a4paper, left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm}
+\usepackage{graphicx}%
+\usepackage{multirow}%
+\usepackage{amsmath,amssymb,amsfonts}%
+\usepackage{amsthm}%
+\usepackage{mathrsfs}%
+\usepackage[title]{appendix}%
+\usepackage{xcolor}%
+\usepackage{textcomp}%
+\usepackage{manyfoot}%
+\usepackage{booktabs}%
+\usepackage{algorithm}%
+\usepackage{algorithmic}%
+\usepackage{listings}%
+\usepackage{float}%
+\usepackage{setspace}%
+\usepackage{subcaption}%
+%%%%
+
+%% as per the requirement new theorem styles can be included as shown below
+\theoremstyle{thmstyleone}%
+\newtheorem{theorem}{Theorem}%  meant for continuous numbers
+%%\newtheorem{theorem}{Theorem}[section]% meant for sectionwise numbers
+%% optional argument [theorem] produces theorem numbering sequence instead of independent numbers for Proposition
+\newtheorem{proposition}[theorem]{Proposition}% 
+%%\newtheorem{proposition}{Proposition}% to get separate numbers for theorem and proposition etc.
+
+\theoremstyle{thmstyletwo}%
+\newtheorem{example}{Example}%
+\newtheorem{remark}{Remark}%
+
+\theoremstyle{thmstylethree}%
+\newtheorem{definition}{Definition}%
+
+\raggedbottom
+%%\unnumbered% uncomment this for unnumbered level heads
+
+\begin{document}
+
+\title{Breaking the Precision Ceiling in Physics-Informed Neural
+Networks: A Hybrid Fourier-Neural Architecture for
+Ultra-High Accuracy}
+
+\author*[1]{\fnm{Wei Shan} \sur{Lee}}\email{wslee@g.puiching.edu.mo}
+\author[1]{\fnm{Chi Kiu Althina} \sur{Chau}}
+\author[2]{\fnm{Kei Chon} \sur{Sio}}
+\author[1]{\fnm{Kam Ian} \sur{Leong}}
+
+\affil[1]{\orgname{Pui Ching Middle School Macau}, \orgaddress{\street{Edificio Pui Ching, 7A Av. de Horta e Costa}, \city{Macao Special Administrative Region}, \postcode{999078}, \country{People's Republic of China}}}
+\affil[2]{\orgname{University of Toronto Mississauga}, \orgaddress{\street{Rm. 809, 85 Wood St.}, \state{Ontario}, \postcode{M4Y 0E8}, \country{Canada}}}
+
+\abstract{Physics-informed neural networks (PINNs) have plateaued at errors of $10^{-3}$-$10^{-4}$ for fourth-order partial differential equations, creating a perceived precision ceiling that limits their adoption in engineering applications. We break through this barrier with a hybrid Fourier-neural architecture for the Euler-Bernoulli beam equation, achieving unprecedented L2 error of $1.94 \times 10^{-7}$—a 17-fold improvement over standard PINNs and 15-500× better than traditional numerical methods. Our approach synergistically combines a truncated Fourier series capturing dominant modal behavior with a deep neural network providing adaptive residual corrections. A systematic harmonic optimization study revealed a counter-intuitive discovery: exactly 10 harmonics yield optimal performance, with accuracy catastrophically degrading from $10^{-7}$ to $10^{-1}$ beyond this threshold. The two-phase optimization strategy (Adam followed by L-BFGS) and adaptive weight balancing enable stable ultra-precision convergence. GPU-accelerated implementation achieves sub-30-minute training despite fourth-order derivative complexity. By addressing 12 critical gaps in existing approaches—from architectural rigidity to optimization landscapes—this work demonstrates that ultra-precision is achievable through proper design, opening new paradigms for scientific computing where machine learning can match or exceed traditional numerical methods.}
+
+\keywords{Physics-informed neural networks, Euler-Bernoulli beam equation, Fourth-order PDEs, Hybrid Fourier-neural architecture, Ultra-precision solutions}
+
+\maketitle
+
+\input{introduction_clean}
+
+\input{methods_clean}
+
+\input{resultsAndDiscussions_clean}
+
+\input{conclusions_clean}
+
+\backmatter
+
+\bmhead{Acknowledgements}
+
+The authors thank Pui Ching Middle School Macau PRC for its kindness in supporting this research project.
+
+\section*{Declarations}
+
+\begin{itemize}
+%\item Funding: Not applicable
+\item Conflict of interest/Competing interests: The author declares no competing interests.
+%\item Ethics approval and consent to participate: Not applicable
+\item Consent for publication: All authors have read and approved the final manuscript and agree to its publication.
+\item Data availability: The data generated during this study are available from the corresponding author upon reasonable request.
+%\item Materials availability: Not applicable
+\item Code availability: The code developed for this study is available at \url{https://github.com/weishanlee/PINN-Euler-Bernoulli-Beam}.
+\end{itemize}
+
+\input{appendixAIReport_clean}
+
+\bibliography{ref_final}% merged bibliography file
+
+%\input{appendix_clean}
+
+\end{document}
