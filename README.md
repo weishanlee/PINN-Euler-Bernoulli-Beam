@@ -91,17 +91,35 @@ If you use this code in your research, please cite our paper:
 ```bibtex
 @article{lee2025physics,
   title={Physics-Informed Neural Networks for Ultra-High Precision Solution of Euler-Bernoulli Beam Problems},
-  author={Lee, Wei Shan},
+  author={Lee, Wei Shan and Sio, Kei Chon and Leong, Hoi Cheng and Chan, Lok Hang and Cheok, Chi Tong and Mak, I Chon and Leong, Kam Ian},
   journal={arXiv preprint arXiv:2507.20929},
   year={2025}
 }
 ```
 
-## Author
+## Authors
 
-**Wei Shan Lee**  
+**Wei Shan Lee*** (Corresponding Author)  
 Pui Ching Middle School Macau  
 Email: wslee@g.puiching.edu.mo
+
+**Kei Chon Sio**  
+Affiliation not specified
+
+**Hoi Cheng Leong**  
+Pui Ching Middle School Macau
+
+**Lok Hang Chan**  
+Pui Ching Middle School Macau
+
+**Chi Tong Cheok**  
+Pui Ching Middle School Macau
+
+**I Chon Mak**  
+Pui Ching Middle School Macau
+
+**Kam Ian Leong**  
+Pui Ching Middle School Macau
 
 ## License
 
