@@ -1,3 +1,0 @@
-Harmonics: 5
-L2 Error: 5.4171320447e-04
-Target Met: No
