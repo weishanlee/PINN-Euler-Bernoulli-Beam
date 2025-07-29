@@ -1,0 +1,31 @@
+# Core dependencies for PINN-Euler-Bernoulli-Beam
+
+# PyTorch with CUDA support
+torch==2.3.1
+torchvision==0.18.1
+torchaudio==2.3.1
+
+# Scientific computing
+numpy==2.1.2
+scipy==1.16.0
+pandas==2.3.1
+
+# Visualization
+matplotlib==3.10.3
+seaborn==0.13.2
+plotly==6.2.0
+
+# Progress tracking
+tqdm==4.67.1
+
+# Machine learning utilities
+scikit-learn==1.7.1
+
+# System monitoring
+psutil==7.0.0
+
+# Symbolic mathematics (for analytical solutions)
+sympy==1.13.3
+
+# Additional utilities
+joblib==1.5.1
