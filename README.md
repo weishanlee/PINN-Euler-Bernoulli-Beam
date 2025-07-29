@@ -1,4 +1,4 @@
-# Physics-Informed Neural Networks for Solving Euler-Bernoulli Beam Equation
+# Breaking the Precision Ceiling in Physics-Informed Neural Networks: A Hybrid Fourier-Neural Architecture for Ultra-High Accuracy
 
 Paper announced arXiv preprint:
 arXiv:2507.20929 [cs.LG] 
