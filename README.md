@@ -99,27 +99,13 @@ If you use this code in your research, please cite our paper:
 
 ## Authors
 
-**Wei Shan Lee*** (Corresponding Author)  
-Pui Ching Middle School Macau  
-Email: wslee@g.puiching.edu.mo
-
-**Kei Chon Sio**  
-Affiliation not specified
-
-**Hoi Cheng Leong**  
-Pui Ching Middle School Macau
-
-**Lok Hang Chan**  
-Pui Ching Middle School Macau
-
-**Chi Tong Cheok**  
-Pui Ching Middle School Macau
-
-**I Chon Mak**  
-Pui Ching Middle School Macau
-
-**Kam Ian Leong**  
-Pui Ching Middle School Macau
+- Wei Shan Lee* (Corresponding Author, wslee@g.puiching.edu.mo)
+- Kei Chon Sio
+- Hoi Cheng Leong
+- Lok Hang Chan
+- Chi Tong Cheok
+- I Chon Mak
+- Kam Ian Leong
 
 ## License
 
