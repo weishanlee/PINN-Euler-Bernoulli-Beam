@@ -50,15 +50,14 @@ Contains all generated visualizations including:
 
 ### Prerequisites
 - Python 3.8+
-- PyTorch 1.9+ with CUDA support
-- NumPy, Matplotlib, SciPy
-- GPU with CUDA capability (recommended)
+- CUDA-enabled GPU (recommended)
+- PyTorch 2.3+ with CUDA support
 
 ### Installation
 ```bash
 git clone https://github.com/weishanlee/PINN-Euler-Bernoulli-Beam.git
 cd PINN-Euler-Bernoulli-Beam
-pip install -r requirements.txt  # requirements file to be added
+pip install -r requirements.txt
 ```
 
 ### Running the Code
