@@ -89,7 +89,7 @@ If you use this code in your research, please cite our paper:
 
 ```bibtex
 @article{lee2025physics,
-  title={Physics-Informed Neural Networks for Ultra-High Precision Solution of Euler-Bernoulli Beam Problems},
+  title={Breaking the Precision Ceiling in Physics-Informed Neural Networks: A Hybrid Fourier-Neural Architecture for Ultra-High Accuracy},
   author={Lee, Wei Shan and Chau, Chi Kiu Althina and Sio, Kei Chon and Leong, Kam Ian},
   journal={arXiv preprint arXiv:2507.20929},
   year={2025}
